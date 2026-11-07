@@ -486,5 +486,13 @@
   "riscoFraude": 0,
   "urgencia": 2.31,
   "perguntouFraude": false
+ },
+ "TP499002": {
+  "titulo_id": "TP499002",
+  "decisao": "manter_no_lote",
+  "confianca": 0.73,
+  "riscoFraude": 0.07,
+  "urgencia": 1.77,
+  "perguntouFraude": true
  }
 }

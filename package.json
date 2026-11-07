@@ -10,7 +10,10 @@
     "typecheck": "tsc --noEmit",
     "ping": "tsx scripts/ping.ts",
     "analisar": "tsx --tsconfig tsconfig.json scripts/analisar.ts",
-    "ablacao": "tsx --tsconfig tsconfig.json scripts/ablacao.ts"
+    "ablacao": "tsx --tsconfig tsconfig.json scripts/ablacao.ts",
+    "snapshot": "tsx --tsconfig tsconfig.json scripts/snapshot.ts",
+    "handoff": "node scripts/handoff.mjs",
+    "segredos": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/verificar-segredos.ps1"
   },
   "dependencies": {
     "next": "^15.5.29",

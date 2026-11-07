@@ -140,6 +140,21 @@ describe("3. rejeição pela política: o agente corrige e o trace registra", ()
     expect(kinds).toContain("correcao");
     expect(kinds.indexOf("rejeicao_politica")).toBeLessThan(kinds.indexOf("correcao"));
   });
+
+  it("503 do modelo extra → refaz UMA vez com 'latest' e não repete se falhar de novo", async () => {
+    const ok = { texto: "", toolCalls: [{ id: "tc", type: "function" as const, function: { name: "emitir_parecer", arguments: JSON.stringify({ acao: "retirar", risco: 0, confianca: 0.9, evidencias: [], resumo: "ok" }) } }], modelo: "mock", entrada: 1, saida: 1, linhaCusto: "" };
+    vi.mocked(chat).mockRejectedValueOnce(new Error("HTTP 503 GLM indisponível")).mockResolvedValueOnce(ok);
+    const base = { especialista: "compras" as const, system: "t", usuario: "u", ferramentas: [], registro: registroTools(), ctxTool: { papel: "auditor" as const, agente: "compras", agora: "2026-11-02T08:00:00" }, emit: () => {} };
+    const r1 = await rodarAgente({ ...base, model: "glm-5.3-flash" });
+    expect(r1.parecer?.acao).toBe("retirar");
+    expect(vi.mocked(chat).mock.calls[1][0].model).toBe("latest");
+
+    vi.mocked(chat).mockReset();
+    vi.mocked(chat).mockRejectedValue(new Error("HTTP 503"));
+    const r2 = await rodarAgente({ ...base, model: "glm-5.3-flash" });
+    expect(r2.parecer).toBeNull();
+    expect(vi.mocked(chat)).toHaveBeenCalledTimes(2); // 1 tentativa + 1 fallback, sem loop
+  });
 });
 
 describe("4. conflito entre especialistas", () => {

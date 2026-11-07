@@ -3,9 +3,10 @@
 import { jev, type JevPergunta } from "@/lib/ai/proxy";
 import type { EstadoTitulo } from "@/lib/rules/tipos";
 import type { ComunicacaoCaso, JevCaso } from "@/lib/contratos/caso";
-import { lerReplay, gravarReplay } from "./replay";
+import { lerReplay, gravarReplay, mascararContas } from "./replay";
 
 export const LIMITE_STATE_JEV = 20_000;
+export { mascararContas };
 
 /** "ted 551/9119/3967423-4" → "ted 551/…23-4" (banco + 4 últimos). */
 export function mascararDestino(d: string): string {
@@ -14,9 +15,6 @@ export function mascararDestino(d: string): string {
   const [, forma, banco, resto] = m;
   return `${forma} ${banco ?? ""}${resto ? `/…${resto.replace(/\s/g, "").slice(-4)}` : ""}`.trim();
 }
-
-/** Mascara qualquer número de conta/chave longo em texto livre: "4471203-9" → "…03-9". */
-export const mascararContas = (s: string) => s.replace(/\b\d{5,}-\d\b/g, (m) => `…${m.slice(-4)}`).replace(/\b\d{9,}\b/g, (m) => `…${m.slice(-4)}`);
 
 export function montarStateJev(t: EstadoTitulo, comunicacoes: ComunicacaoCaso[], trocas: unknown[]): string {
   const base = {

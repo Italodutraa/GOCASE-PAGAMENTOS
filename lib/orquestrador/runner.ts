@@ -332,6 +332,19 @@ async function rodarHumanos(st: Estado) {
   }
 }
 
+/** Passo C: redige as mensagens ainda vazias (crítico + template) e grava em analise/replay/mensagens.json. */
+async function redigirPendentes(st: Estado) {
+  for (const ac of st.acionamentos.filter((a) => !a.mensagem)) {
+    const casos = ac.casoIds.map((id) => casoRT(st, id)!).filter(Boolean);
+    const chave = `${ac.id}`;
+    const cache = lerReplay<{ mensagem: string; critico: string }>("mensagens")[chave];
+    const red = cache && st.modo === "replay" ? { ...cache, fonte: "cache" } : await redigirAcionamento({ pessoa: ac.pessoa, titulos: ac.titulos, valorTotal: ac.valorTotal, motivos: ac.motivos, acoes: ac.acoes, fornecedores: [...new Set(casos.map((c) => c.entrada.fornecedor_nome))], evidencias: [...new Set(casos.flatMap((c) => c.decisao.evidencias))].slice(0, 10), resumoCasos: casos.map(resumoParaHumano).join(" | ") }, st.store, st.modo === "live");
+    ac.mensagem = red.mensagem;
+    if (st.modo === "live") gravarReplay("mensagens", chave, { mensagem: red.mensagem, critico: red.critico });
+    for (const c of casos) c.trace.push({ t: Date.now(), kind: "critico", agente: "critico", texto: `acionamento ${ac.pessoa}: ${red.critico}` });
+  }
+}
+
 // ---------- corte ----------
 function proximoCorte(st: Estado) {
   return st.cortes.find((c) => !st.processados.has(c.lote)) ?? null;
@@ -371,17 +384,7 @@ export async function avancar(opts: { modo?: Modo; humanos?: "auto" | "manual" }
   const fraude = new Set<string>();
   await limitar(pendentes, 8, (c) => processarCaso(st, c, fraude));
 
-  // Passo C: redação das mensagens novas (crítico + template)
-  for (const ac of st.acionamentos.filter((a) => !a.mensagem)) {
-    const casos = ac.casoIds.map((id) => casoRT(st, id)!).filter(Boolean);
-    const chave = `${ac.id}`;
-    const cache = lerReplay<{ mensagem: string; critico: string }>("mensagens")[chave];
-    const red = cache && st.modo === "replay" ? { ...cache, fonte: "cache" } : await redigirAcionamento({ pessoa: ac.pessoa, titulos: ac.titulos, valorTotal: ac.valorTotal, motivos: ac.motivos, acoes: ac.acoes, fornecedores: [...new Set(casos.map((c) => c.entrada.fornecedor_nome))], evidencias: [...new Set(casos.flatMap((c) => c.decisao.evidencias))].slice(0, 10), resumoCasos: casos.map(resumoParaHumano).join(" | ") }, st.store, st.modo === "live");
-    ac.mensagem = red.mensagem;
-    if (st.modo === "live") gravarReplay("mensagens", chave, { mensagem: red.mensagem, critico: red.critico });
-    for (const c of casos) c.trace.push({ t: Date.now(), kind: "critico", agente: "critico", texto: `acionamento ${ac.pessoa}: ${red.critico}` });
-  }
-
+  await redigirPendentes(st);
   await rodarHumanos(st);
   st.agora = corte.em;
   fecharLote(st, corte.lote);
@@ -527,7 +530,12 @@ export async function processarCasoInjetado(entrada: CasoEntrada, eventoInicial:
       st.analise.estados.push(t);
     }
   }
+  // injeção é demo ao vivo: usa o proxy se houver chave (o cache de replay, se existir, tem prioridade dentro de processarCaso)
+  const modoAntes = st.modo;
+  st.modo = liveDisponivel() ? "live" : "replay";
   await processarCaso(st, c, new Set());
+  await redigirPendentes(st);
   await rodarHumanos(st);
+  st.modo = modoAntes;
   return entrada.id;
 }

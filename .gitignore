@@ -15,3 +15,6 @@ dist/
 # estado local da simulação
 data/estado.json
 data/*.sqlite
+
+# resultado local do ultimo teste (handoff)
+.handoff-testes.json

@@ -1,32 +1,54 @@
-# STATUS (retomada sem depender da conversa)
+# STATUS (máx. 80 linhas; atualizar a cada checkpoint, antes do commit)
 
-Atualizado: checkpoint 2 (pilar 1 FEITO).
+## Estado atual
+Pilar 1 feito (pipeline v4 ponta a ponta, replay na UI, 81 testes verdes). Pilar 2 em curso: ablação rodando, injeção e snapshot por validar.
+Último commit: f6bc9f2 (remoção da chave do .env.example; antes, 3b98b06 = checkpoint 2). Há mudanças locais não commitadas (ver docs/HANDOFF.md).
+Repo privado; token mantido; hook de pre-commit instalado pelo usuário.
 
 ## Feito
-- M0/M1: Next.js 15 + wrapper AI Proxy (`lib/ai/proxy.ts`, linha 💲 com raciocínio) + Passo A (`lib/rules`, gabarito).
-- Arquitetura v4 ponta a ponta: Jev (`lib/orquestrador/jev.ts`, cache) → 3 especialistas (`lib/agents/especialistas`, tool calling nativo, fallback glm→latest em 503) → política pura (`politica.ts`) → crítico (`critico.ts`) → tools simuladas (`lib/tools/registro.ts`) → acionamentos por pessoa+janela+caso (`runner.ts`) → personas (`lib/agents/humanos.ts`) → reação (mais_info 1 rodada; reverter só com dupla).
-- Cena Embalarte validada em live: fornecedor nega (simulado) → risco 0,98 → bloquear + incidente → aprovador+PS01+PS03 aprovam → `reverter_alteracao_cadastro` executa → 25 títulos pela conta antiga, atraso R$ 0.
-- Rotas: GET /api/estado, POST /api/avancar {modo,humanos}, /api/acao, /api/injetar {cenario}, /api/reset (relê store e limpa cenários).
-- UI (components/, app/page.tsx, app/avaliacao) consome ExecucaoView real; replay roda sem proxy a partir de analise/replay/*.json.
-- Testes: 80 verdes (inclui 8 de aceite em `lib/orquestrador/aceite.test.ts`).
-- Ablação: só `so_regras` rodada (analise/ablacao.json). llm_puro e hibrido NÃO rodados.
+- M0/M1: Next.js 15, wrapper do AI Proxy (`lib/ai/proxy.ts`, linha 💲 com raciocínio), Passo A (`lib/rules`, gabarito).
+- v4: Jev (`lib/orquestrador/jev.ts`, cache) → 3 especialistas (`lib/agents/especialistas`) → política (`politica.ts`) → crítico → ferramentas simuladas (`lib/tools`) → acionamentos → personas (`lib/agents/humanos.ts`) → reação.
+- Cena Embalarte validada em live: fornecedor nega (simulado), risco 0,98, bloqueio, 3 aprovações, reversão da troca, 25 títulos na conta antiga.
+- Rotas: /api/estado, avancar, acao, injetar, reset, analise, custos, ping.
+- UI consome ExecucaoView real; replay roda sem proxy (`analise/replay/*.json`).
+- Segredos: `npm run segredos` (aborta), `mascararContas` em replay e snapshot. Docs: correcoes-ia.md com 10 entradas.
+- Seção "Regras aprendidas" no CLAUDE.md. Teste do fallback 503. Injeção grava mensagem em replay.
+- Handoff: `npm run handoff` gera docs/HANDOFF.md; AGENTS.md aponta para os docs.
 
-## Pendente (ordem)
-1. Push: bloqueado esperando login do GitHub (`git push -u origin main`). Commits locais ok.
-2. Rodar `npm run ablacao` (llm_puro + hibrido live) e levar erros do llm_puro para docs/correcoes-ia.md.
-3. Testar os 3 botões de injeção na UI (código pronto, testes verdes; rota não exercitada no navegador).
-4. `npm run snapshot` + build de produção + deploy em modo replay.
-5. Passada "bonito"; avatares (cereja).
+## Em andamento
+- Ablação `llm_puro` + `hibrido` em segundo plano. Conferir `analise/ablacao.json` e `analise/ablacao_llm_puro.json`. Só `so_regras` está confirmada.
 
-## Comandos
-- `npm test` · `npm run typecheck` · `npm run analisar` · `npm run ping`
-- `npx tsx --tsconfig tsconfig.json scripts/rodar.ts --modo live|replay --lotes N` (pipeline sem UI)
-- `npm run ablacao -- --so so_regras|llm_puro|hibrido [--limite N] [--modo replay]`
-- Git fora do PATH: `$env:Path += ';C:\Program Files\Git\cmd'`
+## Próximos passos (ordem)
+1. Conferir a ablação; levar erros do `llm_puro` para docs/correcoes-ia.md (números só do que rodou, amostra declarada).
+2. Testar os 3 botões de injeção na UI e confirmar a gravação em analise/replay/.
+3. `npm run snapshot` (exige cache de todos os casos) e build de produção.
+4. Passada "bonito"; avatares só se public/agentes/ ainda não existir.
+5. Checkpoint: STATUS → `npm run segredos` → `npm run handoff` → commit/push.
+6. Deploy em modo replay (sem AI_PROXY_API_KEY o live fica desabilitado).
 
-## Decisões
-- Acionamento = 1 por pessoa por janela **por caso** (misturar fornecedores fez a persona recusar).
-- risco_fraude: parecer do cadastro_fraude prevalece sobre o Jev; bloqueio só com sinal de fraude no Passo A.
-- Escalar sobre piso "corrigir" com sugestão = pedir aprovação da correção; sobre piso "retirar" = retirar (alçada do agente).
-- Contas mascaradas em todo state do Jev (`mascararContas`).
-- Freio de orçamento: aviso de limite ou >85% → commit+push, atualizar este arquivo, rebaixar para Sonnet (exceto política/orquestrador), ordem de corte: conferir(3) → injeção(4) → especialistas paralelos(1) → ablação(5) e ciclo(2).
+## Decisões tomadas
+- Acionamento: 1 por pessoa, por janela de fechamento e por caso.
+- risco_fraude: o parecer do cadastro_fraude prevalece sobre o Jev; bloqueio só com sinal de fraude do Passo A.
+- Escalar sobre piso "corrigir" = pedir aprovação da correção; sobre "retirar" = retirar (alçada do agente).
+- Modelo dos agentes `glm-5.3-flash`, fallback `latest` em 503; teto de 600 chamadas de chat por execução.
+- Política de modelos: Opus para política, orquestrador, crítico, loop, especialistas, personas, ablação; Sonnet para ferramentas, injeção, UI; Haiku para docs.
+- Freio de orçamento (aviso de limite ou > 85%): commit + push, atualizar STATUS, rebaixar para Sonnet (exceto política e orquestrador); corte: conferir lançamento → injeção → especialistas paralelos → ablação e ciclo.
+
+## Armadilhas e erros já vistos
+- Token no `.env.example` foi commitado (3b98b06): o script alertou e não abortou. Agora aborta; não desative o hook.
+- Conta completa em resposta de persona no replay: sempre gravar via `gravarReplay` (mascara).
+- 503 "GLM indisponível": o loop refaz 1 vez com `latest`; se falhar, só o piso.
+- Misturar fornecedores num acionamento faz a persona recusar por alçada.
+- Persona aprovadora recusava reversão bancária citando R$ 50 mil; prompt corrigido.
+- Git fora do PATH: `$env:Path += ';C:\Program Files\Git\cmd'`. Node: recarregar PATH em PowerShell novo.
+- Vitest: mock que rejeita deve delegar a uma função comum.
+
+## Comandos úteis
+- `npm test` · `npm run typecheck` · `npm run segredos` · `npm run handoff [-- --testes]`
+- `npm run analisar` · `npm run ping` · `npm run snapshot` · `npm run ablacao -- --so so_regras|llm_puro|hibrido [--limite N] [--modo replay]`
+- `npx tsx --tsconfig tsconfig.json scripts/rodar.ts --modo live|replay --lotes N`
+
+## Pendências do usuário
+- Decidir o push (só o líder faz commit/push).
+- Gerar avatares fora do proxy, se quiser (public/agentes/<nome>.png); senão a UI usa ícones.
+- Publicar o deploy e testar em janela anônima.

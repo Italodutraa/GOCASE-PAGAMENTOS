@@ -20,19 +20,19 @@
  "ac-RM20261103-MER-PS01-FP4615|0": {
   "pessoa": "PS01",
   "decisao": "aprovar",
-  "motivo": "Aprovo exclusivamente a reversão das alterações AC31202, AC31205 e AC31208 para a conta anterior 774/7166/9517944-5. As evidências apontam troca sem confirmação por domínio imitador, e o fornecedor confirmou pelo telefone original do cadastro que não mudou de banco. Manter bloqueados os pagamentos ao destino fraudulento 905/0001/4471203-9. Esta aprovação não libera pagamentos nem dispensa os demais acionamentos exigidos pela política. A divergência entre 25 títulos relacionados e 27 citados no parecer deve ser conciliada antes da liberação dos pagamentos.",
+  "motivo": "Aprovo exclusivamente a reversão das alterações AC31202, AC31205 e AC31208 para a conta anterior 774/7166/…44-5. As evidências apontam troca sem confirmação por domínio imitador, e o fornecedor confirmou pelo telefone original do cadastro que não mudou de banco. Manter bloqueados os pagamentos ao destino fraudulento 905/0001/…03-9. Esta aprovação não libera pagamentos nem dispensa os demais acionamentos exigidos pela política. A divergência entre 25 títulos relacionados e 27 citados no parecer deve ser conciliada antes da liberação dos pagamentos.",
   "simulada": true
  },
  "ac-RM20261103-MER-PS03-FP4615|0": {
   "pessoa": "PS03",
   "decisao": "aprovar",
-  "motivo": "Autorizo reverter as alterações AC31202, AC31205 e AC31208, restaurando a conta anterior no banco 774, agência 7166, conta 9517944-5. O valor de R$ 96.480,00 do título TP432130 está claro, e a fraude foi confirmada por domínio imitador, alteração sem confirmação e contato pelo canal original do cadastro. Esta aprovação limita-se à reversão cadastral; não autoriza liberar pagamentos nem remover bloqueios dos títulos.",
+  "motivo": "Autorizo reverter as alterações AC31202, AC31205 e AC31208, restaurando a conta anterior no banco 774, agência 7166, conta …44-5. O valor de R$ 96.480,00 do título TP432130 está claro, e a fraude foi confirmada por domínio imitador, alteração sem confirmação e contato pelo canal original do cadastro. Esta aprovação limita-se à reversão cadastral; não autoriza liberar pagamentos nem remover bloqueios dos títulos.",
   "simulada": true
  },
  "ac-RM20261103-MER-aprovador-FP4615|0": {
   "pessoa": "aprovador",
   "decisao": "aprovar",
-  "motivo": "Aprovo a reversão das alterações AC31202, AC31205 e AC31208 e o restabelecimento da conta anterior 774/7166/9517944-5. Há evidência objetiva de troca fraudulenta sem confirmação e confirmação pelo telefone original do cadastro de que o fornecedor não alterou seus dados bancários. Esta aprovação é exclusivamente cadastral, sem liberação de pagamentos, e não está sujeita ao limite de R$ 50 mil. Devem ser mantidos os bloqueios ao destino fraudulento e observadas as aprovações adicionais de PS01 e, se houver título acima de R$ 50 mil, PS03, acionados à parte.",
+  "motivo": "Aprovo a reversão das alterações AC31202, AC31205 e AC31208 e o restabelecimento da conta anterior 774/7166/…44-5. Há evidência objetiva de troca fraudulenta sem confirmação e confirmação pelo telefone original do cadastro de que o fornecedor não alterou seus dados bancários. Esta aprovação é exclusivamente cadastral, sem liberação de pagamentos, e não está sujeita ao limite de R$ 50 mil. Devem ser mantidos os bloqueios ao destino fraudulento e observadas as aprovações adicionais de PS01 e, se houver título acima de R$ 50 mil, PS03, acionados à parte.",
   "simulada": true
  }
 }
