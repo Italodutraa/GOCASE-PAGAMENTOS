@@ -29,18 +29,18 @@ export function CostBar() {
 
   const ultima = linhas[linhas.length - 1];
   return (
-    <div className="fixed inset-x-0 bottom-0 z-50 border-t border-black/10 bg-[var(--bg)]/95 text-xs backdrop-blur dark:border-white/10">
+    <div className="fixed inset-x-0 bottom-0 z-50 border-t-4 border-[#d7d900] bg-[#2659a5] text-xs text-white shadow-lg">
       <button onClick={() => setAberta((a) => !a)} className="flex w-full flex-wrap items-center gap-x-4 gap-y-1 px-4 py-2 text-left">
-        <span className="font-semibold">AI Proxy</span>
-        <span>Chat: {s.chatChamadas} chamadas, {s.chatTokens.toLocaleString("pt-BR")} tok</span>
-        <span>Jev: {s.jevChamadas} chamadas, US$ {usd(s.jevUsd)}</span>
-        <span className="min-w-0 flex-1 truncate font-mono opacity-70">{ultima?.linha ?? "nenhuma chamada ainda"}</span>
-        <span className="opacity-60">{aberta ? "▾" : "▴"}</span>
+        <span className="rounded-full bg-[#d7d900] px-2.5 py-0.5 font-bold text-[#2659a5]">AI Proxy · Gogroup</span>
+        <span className="font-semibold">Chat: {s.chatChamadas} chamadas, {s.chatTokens.toLocaleString("pt-BR")} tok</span>
+        <span className="font-semibold">Jev: {s.jevChamadas} chamadas, US$ {usd(s.jevUsd)}</span>
+        <span className="min-w-0 flex-1 truncate font-mono opacity-90">{ultima?.linha ?? "nenhuma chamada ainda"}</span>
+        <span className="font-bold text-[#d7d900]">{aberta ? "▾" : "▴"}</span>
       </button>
       {aberta && (
         <ul className="max-h-56 overflow-y-auto px-4 pb-3 font-mono">
           {linhas.map((l, i) => (
-            <li key={i} className={l.tipo === "jev" ? "text-violet-700 dark:text-violet-300" : ""}>
+            <li key={i} className={l.tipo === "jev" ? "text-[#3dbfef]" : "text-white"}>
               {new Date(l.em).toLocaleTimeString("pt-BR")} {l.linha}
             </li>
           ))}

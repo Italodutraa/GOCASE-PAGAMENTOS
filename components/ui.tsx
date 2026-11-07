@@ -1,28 +1,51 @@
-// Utilitários visuais compartilhados.
+// Utilitários visuais compartilhados — Paleta Gogroup (#2659a5, #d7d900, #3dbfef, #f8ae13, #e5381a, #e5273c, #e61782, #ffffff).
+// Contraste: nunca texto branco sobre #d7d900; nunca depender só de cor.
 import type { Acao } from "@/lib/contratos/types";
 
 export const brl = (v: number) => v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
 export const CORES_ACAO: Record<Acao, string> = {
-  manter: "bg-emerald-500/15 text-emerald-300 ring-emerald-500/30",
-  corrigir: "bg-amber-500/15 text-amber-300 ring-amber-500/30",
-  retirar: "bg-orange-500/15 text-orange-300 ring-orange-500/30",
-  escalar: "bg-fuchsia-500/15 text-fuchsia-300 ring-fuchsia-500/30",
-  bloquear: "bg-red-500/15 text-red-300 ring-red-500/30",
+  manter: "bg-[#3dbfef] text-[#2659a5] border-[#2659a5]",
+  corrigir: "bg-[#f8ae13] text-[#2659a5] border-[#2659a5]",
+  retirar: "bg-[#d7d900] text-[#2659a5] border-[#2659a5]",
+  escalar: "bg-[#2659a5] text-white border-white/60",
+  bloquear: "bg-[#e5381a] text-white border-white/60",
 };
 
 export function ChipAcao({ acao }: { acao: Acao }) {
-  return <span className={`rounded px-1.5 py-0.5 text-[11px] font-medium uppercase tracking-wide ring-1 ${CORES_ACAO[acao]}`}>{acao}</span>;
+  return <span className={`inline-block rounded-full border px-2 py-0.5 text-[11px] font-bold uppercase tracking-wide ${CORES_ACAO[acao]}`}>{acao}</span>;
 }
 
+/** Rótulo em pílula amarelo-esverdeada (#d7d900) com texto azul (#2659a5), padrão Gogroup. */
+export function Pilula({ children }: { children: React.ReactNode }) {
+  return <span className="inline-block rounded-full bg-[#d7d900] px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wide text-[#2659a5]">{children}</span>;
+}
+
+const SEMAFORO: Record<"limpo" | "atencao" | "bloqueio", { bg: string; txt: string; rotulo: string; icone: string }> = {
+  limpo: { bg: "bg-[#3dbfef]", txt: "text-[#2659a5]", rotulo: "ok", icone: "✓" },
+  atencao: { bg: "bg-[#f8ae13]", txt: "text-[#2659a5]", rotulo: "atenção", icone: "!" },
+  bloqueio: { bg: "bg-[#e5381a]", txt: "text-white", rotulo: "bloqueado", icone: "×" },
+};
+
 export function Semaforo({ status }: { status: "limpo" | "atencao" | "bloqueio" }) {
-  const c = status === "limpo" ? "bg-emerald-400" : status === "atencao" ? "bg-amber-400" : "bg-red-500";
-  return <span title={status} aria-label={status} className={`inline-block h-2.5 w-2.5 shrink-0 rounded-full ${c}`} />;
+  const s = SEMAFORO[status];
+  return (
+    <span
+      title={`status: ${s.rotulo}`}
+      aria-label={`status: ${s.rotulo}`}
+      className={`inline-flex h-4 min-w-4 shrink-0 items-center justify-center rounded-full px-1 text-[10px] font-black leading-none ${s.bg} ${s.txt}`}
+    >
+      {s.icone}
+    </span>
+  );
 }
 
 export function SeloSimulado({ texto = "simulado" }: { texto?: string }) {
-  // Mesmo estilo do carimbo SIMULADO (padronizado), sem inclinação para caber em linha.
-  return <span className="inline-block rounded-sm border-2 border-dashed border-sky-400 px-1.5 py-0.5 text-[10px] font-black uppercase leading-none tracking-[0.12em] text-sky-300 opacity-90">{texto}</span>;
+  return (
+    <span className="inline-block rounded-full border-2 border-dashed border-[#3dbfef] bg-white px-2 py-0.5 text-[10px] font-black uppercase leading-none tracking-[0.1em] text-[#2659a5]">
+      {texto}
+    </span>
+  );
 }
 
 export type TipoCarimbo =
@@ -37,24 +60,24 @@ export type TipoCarimbo =
   | "LIBERADO";
 
 const CORES_CARIMBO: Record<TipoCarimbo, string> = {
-  BLOQUEADO: "border-red-400 text-red-300",
-  "RETIRADO DO LOTE": "border-orange-400 text-orange-300",
-  ESCALADO: "border-fuchsia-400 text-fuchsia-300",
-  CORRIGIDO: "border-amber-400 text-amber-300",
-  "INJEÇÃO IGNORADA": "border-orange-400 text-orange-300",
-  SIMULADO: "border-sky-400 text-sky-300 border-dashed",
-  "BARRADO PELA CERCA": "border-red-400 text-red-300",
-  REFEITO: "border-amber-400 text-amber-300",
-  LIBERADO: "border-emerald-400 text-emerald-300",
+  BLOQUEADO: "border-[#e5381a] bg-[#e5381a] text-white",
+  "RETIRADO DO LOTE": "border-[#2659a5] bg-[#d7d900] text-[#2659a5]",
+  ESCALADO: "border-white bg-[#2659a5] text-white",
+  CORRIGIDO: "border-[#2659a5] bg-[#f8ae13] text-[#2659a5]",
+  "INJEÇÃO IGNORADA": "border-[#2659a5] bg-[#d7d900] text-[#2659a5]",
+  SIMULADO: "border-[#3dbfef] border-dashed bg-white text-[#2659a5]",
+  "BARRADO PELA CERCA": "border-[#e5273c] bg-[#e5273c] text-white",
+  REFEITO: "border-[#2659a5] bg-[#f8ae13] text-[#2659a5]",
+  LIBERADO: "border-[#2659a5] bg-[#3dbfef] text-[#2659a5]",
 };
 
-/** Carimbo de borracha: rótulo único e padronizado para estados de destaque. */
+/** Carimbo padronizado para estados de destaque (paleta Gogroup). */
 export function Carimbo({ tipo, grande = false, inclinado = true }: { tipo: TipoCarimbo; grande?: boolean; inclinado?: boolean }) {
   return (
     <span
-      className={`inline-block select-none rounded-sm border-2 font-black uppercase leading-none tracking-[0.12em] ${CORES_CARIMBO[tipo]} ${
-        grande ? "px-2.5 py-1.5 text-sm" : "px-1.5 py-1 text-[10px]"
-      } ${inclinado ? "-rotate-3" : ""} opacity-90`}
+      className={`inline-block select-none rounded-md border-2 font-black uppercase leading-none tracking-[0.1em] ${CORES_CARIMBO[tipo]} ${
+        grande ? "px-2.5 py-1.5 text-xs" : "px-1.5 py-1 text-[10px]"
+      } ${inclinado ? "-rotate-2" : ""}`}
     >
       {tipo}
     </span>

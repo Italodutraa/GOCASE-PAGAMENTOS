@@ -1,12 +1,36 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&display=swap");
 @import "tailwindcss";
 
-/* Tema escuro fixo (painel sóbrio, um tom de destaque: sky). */
+/* Identidade Gogroup: azul #2659a5 protagonista, fundo claro, color blocking, títulos em Poppins bold. */
 :root {
-  --bg: #0f1013;
-  --fg: #e8e8ea;
-  color-scheme: dark;
+  --gg-blue: #2659a5;
+  --gg-lime: #d7d900;
+  --gg-cyan: #3dbfef;
+  --gg-amber: #f8ae13;
+  --gg-orange: #e5381a;
+  --gg-red: #e5273c;
+  --gg-pink: #e61782;
+  --bg: #ffffff;
+  --fg: #2659a5;
+  color-scheme: light;
 }
+
 body {
   background: var(--bg);
   color: var(--fg);
+}
+
+h1, h2, h3, h4 {
+  font-family: "Poppins", ui-sans-serif, system-ui, sans-serif;
+  font-weight: 700;
+}
+
+@keyframes pulso {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+}
+
+:focus-visible {
+  outline: 3px solid #d7d900;
+  outline-offset: 2px;
 }

@@ -1,38 +1,61 @@
 import type { Parecer } from "@/lib/contratos/types";
-import { ChipAcao } from "./ui";
-
-const NOMES: Record<string, string> = { compras: "Compras", bancario: "Bancário", cadastro_fraude: "Cadastro e fraude" };
+import { AGENTE_DO_ESPECIALISTA, AGENTES, AgenteAvatar } from "./AgenteAvatar";
+import { ChipAcao, num, Pilula } from "./ui";
 
 export function Pareceres({ pareceres }: { pareceres: Parecer[] }) {
-  if (pareceres.length === 0) return <p className="rounded border border-dashed border-white/15 p-3 text-xs opacity-60">Sem pareceres: decisão determinística do piso, sem especialistas.</p>;
+  if (pareceres.length === 0)
+    return (
+      <p className="rounded-2xl border-2 border-dashed border-[#2659a5]/30 bg-white p-4 text-xs text-[#2659a5]">
+        Sem pareceres: decisão determinística do piso (Cerca · Passo A), sem especialistas.
+      </p>
+    );
   return (
     <div className="grid gap-3 md:grid-cols-3">
-      {pareceres.map((p) => (
-        <article key={p.especialista} className="rounded-lg border border-white/10 p-3">
-          <header className="mb-2 flex items-center justify-between">
-            <h4 className="text-xs font-semibold">{NOMES[p.especialista] ?? p.especialista}</h4>
-            <ChipAcao acao={p.acao} />
-          </header>
-          <dl className="mb-2 grid grid-cols-2 gap-2 text-[11px]">
-            <div>
-              <dt className="opacity-60">risco</dt>
-              <dd className="tabular-nums">{p.risco.toFixed(2).replace(".", ",")}</dd>
-              <div className="mt-0.5 h-1 rounded bg-white/10"><div className="h-1 rounded bg-red-400" style={{ width: `${Math.round(p.risco * 100)}%` }} /></div>
+      {pareceres.map((p) => {
+        const agId = AGENTE_DO_ESPECIALISTA[p.especialista];
+        const ag = AGENTES[agId];
+        return (
+          <article key={p.especialista} className="rounded-2xl border-2 border-[#2659a5] bg-white p-3.5 text-[#2659a5] shadow-sm">
+            <header className="mb-2.5 flex items-center justify-between gap-2">
+              <div className="flex min-w-0 items-center gap-2">
+                <AgenteAvatar id={agId} size="sm" />
+                <div className="min-w-0">
+                  <h4 className="truncate text-xs font-bold leading-tight">{ag.nome}</h4>
+                  <p className="truncate text-[10px] opacity-80">{ag.papel.split(":")[0]}</p>
+                </div>
+              </div>
+              <div className="flex shrink-0 items-center gap-1.5">
+                <Pilula>conf. {Math.round(p.confianca * 100)}%</Pilula>
+                <ChipAcao acao={p.acao} />
+              </div>
+            </header>
+            <dl className="mb-2.5 grid grid-cols-2 gap-2 text-[11px]">
+              <div>
+                <dt className="font-semibold">risco</dt>
+                <dd className={num}>{p.risco.toFixed(2).replace(".", ",")}</dd>
+                <div className="mt-0.5 h-1.5 rounded-full bg-[#2659a5]/15">
+                  <div className="h-1.5 rounded-full bg-[#e5381a]" style={{ width: `${Math.round(p.risco * 100)}%` }} />
+                </div>
+              </div>
+              <div>
+                <dt className="font-semibold">confiança</dt>
+                <dd className={num}>{p.confianca.toFixed(2).replace(".", ",")}</dd>
+                <div className="mt-0.5 h-1.5 rounded-full bg-[#2659a5]/15">
+                  <div className="h-1.5 rounded-full bg-[#3dbfef]" style={{ width: `${Math.round(p.confianca * 100)}%` }} />
+                </div>
+              </div>
+            </dl>
+            <p className="mb-2 text-xs leading-snug">{p.resumo}</p>
+            <div className="flex flex-wrap gap-1">
+              {p.evidencias.map((e) => (
+                <span key={e} className="rounded-full bg-[#2659a5] px-2 py-0.5 font-mono text-[10px] text-white">
+                  {e}
+                </span>
+              ))}
             </div>
-            <div>
-              <dt className="opacity-60">confiança</dt>
-              <dd className="tabular-nums">{p.confianca.toFixed(2).replace(".", ",")}</dd>
-              <div className="mt-0.5 h-1 rounded bg-white/10"><div className="h-1 rounded bg-sky-400" style={{ width: `${Math.round(p.confianca * 100)}%` }} /></div>
-            </div>
-          </dl>
-          <p className="mb-2 text-xs leading-snug opacity-90">{p.resumo}</p>
-          <div className="flex flex-wrap gap-1">
-            {p.evidencias.map((e) => (
-              <span key={e} className="rounded bg-white/10 px-1.5 py-0.5 font-mono text-[10px]">{e}</span>
-            ))}
-          </div>
-        </article>
-      ))}
+          </article>
+        );
+      })}
     </div>
   );
 }

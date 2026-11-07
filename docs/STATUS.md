@@ -1,73 +1,45 @@
 # STATUS (máx. 80 linhas; atualizar a cada checkpoint, antes do commit)
 
-## Estado atual
-Pilar 1 feito (pipeline v4 ponta a ponta, replay na UI, 81 testes verdes). Pilar 2 em curso: ablação rodando, injeção e snapshot por validar.
-Último commit: f6bc9f2 (remoção da chave do .env.example; antes, 3b98b06 = checkpoint 2). Há mudanças locais não commitadas (ver docs/HANDOFF.md).
-Repo privado; token mantido; hook de pre-commit instalado pelo usuário.
+## Estado atual (2026-11-07 13:21)
+Pilares 1 (FEITO), 2 (CERTO) e 3 (BONITO / F4) concluídos; 96 testes verdes, build de produção validado em replay sem token.
+Próxima fase: F5 (DOCUMENTOS: README.md, docs/correcoes-ia.md, docs/pitch.md, docs/demo-checklist.md) e docs/RELATORIO_ALMOCO.md.
+Repo privado; token mantido; hook de pre-commit ativo.
 
 ## Feito
-- M0/M1: Next.js 15, wrapper do AI Proxy (`lib/ai/proxy.ts`, linha 💲 com raciocínio), Passo A (`lib/rules`, gabarito).
-- v4: Jev (`lib/orquestrador/jev.ts`, cache) → 3 especialistas (`lib/agents/especialistas`) → política (`politica.ts`) → crítico → ferramentas simuladas (`lib/tools`) → acionamentos → personas (`lib/agents/humanos.ts`) → reação.
-- Cena Embalarte validada em live: fornecedor nega (simulado), risco 0,98, bloqueio, 3 aprovações, reversão da troca, 25 títulos na conta antiga.
-- Rotas: /api/estado, avancar, acao, injetar, reset, analise, custos, ping.
-- UI consome ExecucaoView real; replay roda sem proxy (`analise/replay/*.json`).
-- Segredos: `npm run segredos` (aborta), `mascararContas` em replay e snapshot. Docs: correcoes-ia.md com 10 entradas.
-- Seção "Regras aprendidas" no CLAUDE.md. Teste do fallback 503. Injeção grava mensagem em replay.
-- Handoff: `npm run handoff` gera docs/HANDOFF.md; AGENTS.md aponta para os docs.
+- M0/M1: Next.js 15, wrapper do AI Proxy (`lib/ai/proxy.ts`, linha 💲), Passo A determinístico (`lib/rules`, gabarito).
+- Pipeline v4: Jev (`lib/orquestrador/jev.ts`, cache) → 3 especialistas (`lib/agents/especialistas`) → política (`politica.ts`) → crítico → ferramentas simuladas (`lib/tools`) → acionamentos → personas (`lib/agents/humanos.ts`) → reação.
+- F1 ablação validada (21590ea): placar único (`calcularPlacar`), 17 cortes (0 `na_fila`), híbrido em replay = live (−R$ 2.829,51).
+- F2 injeção ponta a ponta (541dead): 3 cenários em replay sem token via `POST /api/injetar`, reset restaura 876 títulos / R$ 648.210,75, canário testado, detector cobre PT/EN.
+- F3 snapshot e build (e8f7e63): `npm run snapshot` ok (25 casos), `SOMENTE_REPLAY=1` trava chamadas live na UI e na API.
+- F4 bonito + identidade Gogroup + avatares:
+  1. Trace como conversa (`components/Timeline.tsx`) com `<AgenteAvatar>`, carimbos `BARRADO PELA CERCA`/`REFEITO` (com avatar da Cerca), conferência do crítico (avatar da Lupa) e cartão de conflito com Maestro como árbitro.
+  2. Carimbos padronizados (`BLOQUEADO`, `RETIRADO DO LOTE`, `ESCALADO`, `CORRIGIDO`, `INJEÇÃO IGNORADA`, `SIMULADO`, `BARRADO PELA CERCA`, `REFEITO`, `LIBERADO`).
+  3. Placar antes × depois (`components/Placar.tsx`) com barras proporcionais e números reais da ablação.
+  4. Modo Palco (`components/usePalco.tsx`): tecla `P`, cenas `1–4` (Embalarte, duplicidades, injeção EM570996, agente barrado), `Esc` sai.
+  5. Chat estilo WhatsApp (`components/GavetaChat.tsx`): humanos simulados com iniciais + selo `simulado` (nunca PNG de agente).
+  6. Cartão da persona Renata Paiva (`components/CartaoRenata.tsx`, PS01 · Coordenadora CP, dupla alçada).
+  7. Funil animado (`components/Funil.tsx`) e faixa `Elenco` (`components/AgenteAvatar.tsx`) com pulso no agente do último evento.
+  8. Identidade Gogroup aplicada: Poppins bold nos títulos, paleta oficial (`#2659a5`, `#d7d900`, `#3dbfef`, `#f8ae13`, `#e5381a`, `#e5273c`, `#e61782`, `#ffffff`), pílulas `#d7d900` com texto `#2659a5`.
 
-## PRÓXIMO (retomar aqui, ex.: Antigravity)
-- F1, F2 e F3 concluídas e enviadas (21590ea, 541dead, e8f7e63). Pendentes: F4 (bonito, ~45 min; avatares só se public/agentes/ vazio) e F5 (README, docs/correcoes-ia.md com os erros desta rodada, docs/pitch.md com números REAIS de analise/ablacao.json, docs/demo-checklist.md), depois docs/RELATORIO_ALMOCO.md.
-- Erros a registrar em correcoes-ia.md (F5): ablação media ação e não dinheiro; placares divergentes; 267 títulos na_fila (loop de 10 cortes); llm_puro com 47 fora do formato + 15 falhas 503 tratados como "manter" (refeitos: 62/62 válidos); mascaramento sobre o JSON inteiro corrompeu o replay; detector de injeção só em português; .env local sobrepondo variável vazia (+8 chamadas live) → SOMENTE_REPLAY.
-- Números reais (ablacao.json): so_regras −R$ 33.182,92; llm_puro (amostra exata 79+60) −R$ 326.521,22, recall 0,72, FP 43/60; híbrido −R$ 2.829,51, 100% evitado, 21 acionamentos, 0 desnecessários. Cenários: híbrido FALHA no cnpj_clonado.
-- Orçamento live da sessão: 212 de 300 chamadas de chat usadas.
-- Dev server: `npm run dev` (porta 3000). Demo sem proxy: `SOMENTE_REPLAY=1`.
+## Notas de avatares e contratos (F4)
+- `public/agentes/` continha 5 PNGs e 2 JPGs originais com nomes descritivos (1.221 KB a 1.509 KB, > 500 KB); mantivemos os originais intactos sem renomear/apagar e geramos cópias recortadas 256×256 (`radar.png`, `confere.png`, `caixa.png`, `faro.png`, `maestro.png`, `cerca.png`, `lupa.png`, 99–121 KB cada).
+- `lib/contratos` não foi alterado; a derivação `TraceEvento`/`Parecer` → `AgenteId` vive no cliente (`lib/ui/agentes.ts` + `components/AgenteAvatar.tsx`, coberta por `lib/ui/agentes.test.ts`).
 
-## Sessão autônoma (usuário ausente)
-- Início: 2026-11-07 12:23. Fases F1→F5 (ver docs/RELATORIO_ALMOCO.md ao fim). Bloqueios em docs/BLOQUEIOS.md.
-- F1 ablação validada: 12:49 (commit 21590ea). Placar único (`calcularPlacar`), 17 cortes (0 "na_fila"), híbrido em replay = live (−R$ 2.829,51). so_regras −R$ 33.182,92; llm_puro (amostra exata) −R$ 326.521,22, recall 0,72, 43/60 limpos com FP. Cenários: híbrido FALHA no cnpj_clonado (manter). Chamadas live na sessão: 204 de 300 (62 llm_puro + 122 híbrido + 20 cenários).
-- F2 injeção: 12:51 (541dead). 3 cenários em replay sem token via POST /api/injetar (teste), reset restaura 876 títulos / R$ 648.210,75, canário com texto trocado = mesma decisão. Detector de injeção agora cobre inglês (antes o cenário marcava à mão e listar_comunicacoes vazaria o texto); risco residual: detector por padrões.
-- F3 snapshot e build: 12:55 (e8f7e63). `npm run snapshot` ok (25 casos, placar −R$ 2.829,51); `npm run build` ok; produção com `SOMENTE_REPLAY=1`: live desabilitado na UI e recusado na API (0 chamadas), injeção e reset ok, rótulos "simulado" na tela e no JSON. Antes da flag, o Next carregou o .env local e um teste pediu live: +8 chamadas (212 de 300).
-
-## Em andamento
-- Ablação `llm_puro` + `hibrido` em segundo plano. Conferir `analise/ablacao.json` e `analise/ablacao_llm_puro.json`. Só `so_regras` está confirmada.
-
-## Próximos passos (ordem)
-1. Conferir a ablação; levar erros do `llm_puro` para docs/correcoes-ia.md (números só do que rodou, amostra declarada).
-2. Testar os 3 botões de injeção na UI e confirmar a gravação em analise/replay/.
-3. `npm run snapshot` (exige cache de todos os casos) e build de produção.
-4. Passada "bonito"; avatares só se public/agentes/ ainda não existir.
-5. Checkpoint: STATUS → `npm run segredos` → `npm run handoff` → commit/push.
-6. Deploy em modo replay (sem AI_PROXY_API_KEY o live fica desabilitado).
+## PRÓXIMO (F5 — Documentos)
+- Erros a registrar em `docs/correcoes-ia.md`: ablação media ação e não dinheiro; placares divergentes; 267 títulos `na_fila` (loop de 10 cortes); `llm_puro` com 47 fora do formato + 15 falhas 503 tratados como `manter` (refeitos: 62/62 válidos); mascaramento sobre o JSON inteiro corrompeu o replay; detector de injeção só em português; `.env` local sobrepondo variável vazia (+8 chamadas live) → `SOMENTE_REPLAY`.
+- Números reais (`analise/ablacao.json`): `so_regras` −R$ 33.182,92; `llm_puro` (amostra exata 79+60) −R$ 326.521,22, recall 0,72, FP 43/60; `hibrido` −R$ 2.829,51, 100% evitado (R$ 648.210,75), 21 acionamentos, 0 desnecessários. Cenários fora das regras: híbrido pega `troca_conta_fornecedor_novo` e `injecao_prompt_v2`, e FALHA no `cnpj_clonado` (`manter`).
+- Orçamento live da sessão: 212 de 300 chamadas de chat usadas (0 chamadas novas na F4).
 
 ## Decisões tomadas
-- (autônomo) llm_puro: os 737 limpos fora da amostra entram como "manter" → placar EXATO na amostra; extrapolação só em detalhes, rotulada.
-- (autônomo) llm_puro: os 62 inválidos refeitos uma vez com o MESMO modelo (raciocínio mínimo, 6000 tokens) para não misturar modelos; todos ficaram válidos.
-- (autônomo) cache de casos.json restaurado do commit 3b98b06 (7 casos válidos) e o resto refeito em live; o arquivo do commit ee6334f estava corrompido.
-- (autônomo) teto do híbrido live fixado em 193 chamadas para preservar o orçamento dos cenários (não foi atingido: 122).
-- Acionamento: 1 por pessoa, por janela de fechamento e por caso.
-- risco_fraude: o parecer do cadastro_fraude prevalece sobre o Jev; bloqueio só com sinal de fraude do Passo A.
-- Escalar sobre piso "corrigir" = pedir aprovação da correção; sobre "retirar" = retirar (alçada do agente).
-- Modelo dos agentes `glm-5.3-flash`, fallback `latest` em 503; teto de 600 chamadas de chat por execução.
-- Política de modelos: Opus para política, orquestrador, crítico, loop, especialistas, personas, ablação; Sonnet para ferramentas, injeção, UI; Haiku para docs.
-- Freio de orçamento (aviso de limite ou > 85%): commit + push, atualizar STATUS, rebaixar para Sonnet (exceto política e orquestrador); corte: conferir lançamento → injeção → especialistas paralelos → ablação e ciclo.
+- `llm_puro`: 737 limpos fora da amostra entram como `manter` (placar exato na amostra; extrapolação rotulada em `detalhes`).
+- Acionamento humano: 1 por pessoa, por janela de fechamento e por caso.
+- `risco_fraude`: parecer de `cadastro_fraude` prevalece sobre Jev; bloqueio exige sinal de fraude do Passo A.
+- Escalar sobre piso `corrigir` = pedir aprovação da correção; sobre `retirar` = retirar.
 
-## Armadilhas e erros já vistos
-- Token no `.env.example` foi commitado (3b98b06): o script alertou e não abortou. Agora aborta; não desative o hook.
-- Conta completa em resposta de persona no replay: sempre gravar via `gravarReplay` (mascara).
-- Mascarar o TEXTO JSON inteiro corrompeu números (timestamps) e apagou o cache de replay em silêncio: mascarar só strings (`jsonMascarado`); `gravarReplay` aborta se o arquivo existente for ilegível; `npm run segredos` valida JSON.
-- Ablação: loop do híbrido parava em 10 de 17 cortes (267 títulos "na_fila"); placar medido por ação, não por dinheiro. Agora `avancarTudo` + `calcularPlacar` único.
-- 503 "GLM indisponível": o loop refaz 1 vez com `latest`; se falhar, só o piso.
-- Misturar fornecedores num acionamento faz a persona recusar por alçada.
-- Persona aprovadora recusava reversão bancária citando R$ 50 mil; prompt corrigido.
-- Git fora do PATH: `$env:Path += ';C:\Program Files\Git\cmd'`. Node: recarregar PATH em PowerShell novo.
-- Vitest: mock que rejeita deve delegar a uma função comum.
-
-## Comandos úteis
-- `npm test` · `npm run typecheck` · `npm run segredos` · `npm run handoff [-- --testes]`
-- `npm run analisar` · `npm run ping` · `npm run snapshot` · `npm run ablacao -- --so so_regras|llm_puro|hibrido [--limite N] [--modo replay]`
-- `npx tsx --tsconfig tsconfig.json scripts/rodar.ts --modo live|replay --lotes N`
+## Armadilhas conhecidas
+- Nunca mascarar JSON serializado inteiro (`jsonMascarado` só em strings); sempre validar com `npm run segredos`.
+- Git e Node podem exigir recarregar PATH no PowerShell (`C:\Program Files\Git\cmd;C:\Program Files\nodejs`).
 
 ## Pendências do usuário
-- Decidir o push (só o líder faz commit/push).
-- Gerar avatares fora do proxy, se quiser (public/agentes/<nome>.png); senão a UI usa ícones.
-- Publicar o deploy e testar em janela anônima.
+- Limpeza opcional do histórico do commit `3b98b06` (chave já removida em `f6bc9f2`).
+- Publicar o deploy em modo replay (`SOMENTE_REPLAY=1`) se desejar.
