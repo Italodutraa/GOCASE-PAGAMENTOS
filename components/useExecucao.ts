@@ -41,7 +41,17 @@ export function useExecucao() {
 
   const post = useCallback(
     async (rota: string, corpo: unknown, rotulo: string): Promise<Record<string, unknown> | null> => {
+      const scrollY = typeof window !== "undefined" ? window.scrollY : 0;
+      const restaurarScroll = () => {
+        if (typeof window === "undefined") return;
+        requestAnimationFrame(() => {
+          if (Math.abs(window.scrollY - scrollY) > 4) {
+            window.scrollTo({ top: scrollY, behavior: "instant" as ScrollBehavior });
+          }
+        });
+      };
       setOcupado(rotulo);
+      restaurarScroll();
       try {
         const r = await fetch(rota, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(corpo ?? {}) });
         if (!r.ok) {
@@ -55,6 +65,7 @@ export function useExecucao() {
       } finally {
         await refresh();
         setOcupado(null);
+        restaurarScroll();
       }
     },
     [avisar, refresh],

@@ -27,17 +27,29 @@ export default function Home() {
   const { view, avisar, injetar } = ex;
   const casos = useMemo(() => view?.casos ?? [], [view]);
   const avisarInfo = useCallback((t: string) => avisar(t, "info"), [avisar]);
+  const selecionarCaso = useCallback((id: string | undefined) => {
+    if (!id) return;
+    const y = typeof window !== "undefined" ? window.scrollY : 0;
+    setCasoSel(id);
+    if (typeof window !== "undefined") {
+      requestAnimationFrame(() => {
+        if (Math.abs(window.scrollY - y) > 4) {
+          window.scrollTo({ top: y, behavior: "instant" as ScrollBehavior });
+        }
+      });
+    }
+  }, []);
   const onInjetar = useCallback(
     async (c: Cenario) => {
       const id = await injetar(c);
-      if (id) setCasoSel(id);
+      if (id) selecionarCaso(id);
     },
-    [injetar],
+    [injetar, selecionarCaso],
   );
   const injetarAuto94 = useCallback(() => {
     void onInjetar("auto_efetivacao_94");
   }, [onInjetar]);
-  usePalco({ palco, setPalco, casos, abrir: setCasoSel, avisar: avisarInfo, injetarAuto94 });
+  usePalco({ palco, setPalco, casos, abrir: selecionarCaso, avisar: avisarInfo, injetarAuto94 });
 
   const caso = useMemo(() => casos.find((c) => c.id === casoSel) ?? casos[0], [casos, casoSel]);
   const resumoAutonomia = useMemo(
@@ -87,9 +99,11 @@ export default function Home() {
             const podeInjetar5 = c.tecla === "5" && !alvo;
             return (
               <button
+                type="button"
                 key={c.tecla}
                 disabled={!alvo && !podeInjetar5}
-                onClick={() => (alvo ? setCasoSel(alvo.id) : podeInjetar5 ? injetarAuto94() : undefined)}
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => (alvo ? selecionarCaso(alvo.id) : podeInjetar5 ? injetarAuto94() : undefined)}
                 className={`rounded-full border-2 px-3 py-1 font-bold disabled:opacity-40 ${
                   ativo ? "border-[#d7d900] bg-[#d7d900] text-[#2659a5]" : "border-white text-white hover:bg-white hover:text-[#2659a5]"
                 }`}
@@ -103,6 +117,7 @@ export default function Home() {
             {pilulaAutonomia}
             <button
               type="button"
+              onMouseDown={(e) => e.preventDefault()}
               onClick={() => setPalco(false)}
               className="rounded-full border border-white/60 px-3 py-1 font-bold text-[#d7d900] hover:bg-white/10"
             >
@@ -111,13 +126,13 @@ export default function Home() {
           </div>
         </nav>
       )}
-      <main className={`grid gap-4 p-4 ${palco ? "mx-auto max-w-5xl pt-6" : "lg:grid-cols-[minmax(320px,380px)_1fr]"}`}>
+      <main className={`grid gap-4 p-4 [overflow-anchor:none] ${palco ? "mx-auto max-w-5xl pt-6" : "lg:grid-cols-[minmax(320px,380px)_1fr]"}`}>
         {!palco && (
           <div className="min-w-0">
             {view.titulos.length === 0 ? (
               <p className="rounded-2xl border-2 border-dashed border-[#2659a5]/30 p-6 text-center text-sm text-[#2659a5]">Nenhum título na agenda.</p>
             ) : (
-              <ListaTitulos titulos={view.titulos} selecionado={caso?.id} onSelect={(id) => id && setCasoSel(id)} />
+              <ListaTitulos titulos={view.titulos} selecionado={caso?.id} onSelect={(id) => selecionarCaso(id)} />
             )}
           </div>
         )}

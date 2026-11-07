@@ -38,7 +38,14 @@ export function GovernancaZeroTrust({ caso, titulos }: { caso: CasoView; titulos
         </div>
         <button
           type="button"
-          onClick={() => setAberta((a) => !a)}
+          onMouseDown={(e) => e.preventDefault()}
+          onClick={() => {
+            const y = typeof window !== "undefined" ? window.scrollY : 0;
+            setAberta((a) => !a);
+            if (typeof window !== "undefined") {
+              requestAnimationFrame(() => window.scrollTo({ top: y, behavior: "instant" as ScrollBehavior }));
+            }
+          }}
           className="rounded-full bg-[#2659a5] px-3.5 py-1 text-xs font-bold text-white hover:bg-[#3dbfef] hover:text-[#2659a5]"
         >
           {aberta ? "Ocultar Payload Sanitizado ▴" : "Inspecionar Payload Sanitizado ▾"}

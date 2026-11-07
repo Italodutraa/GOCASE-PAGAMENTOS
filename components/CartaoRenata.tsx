@@ -26,6 +26,8 @@ export function CartaoRenata({ acionamentos, onAbrirChat }: { acionamentos: Acio
           </div>
         </div>
         <button
+          type="button"
+          onMouseDown={(e) => e.preventDefault()}
           onClick={onAbrirChat}
           className="rounded-full bg-[#d7d900] px-3.5 py-1.5 text-xs font-bold text-[#2659a5] hover:bg-[#3dbfef]"
         >

@@ -31,10 +31,8 @@ export function usePalco(opts: {
       const caso = casos.find(cena.acha);
       if (caso) {
         abrir(caso.id);
-        window.scrollTo({ top: 0, behavior: "smooth" });
       } else if (ev.key === "5" && injetarAuto94) {
         injetarAuto94();
-        window.scrollTo({ top: 0, behavior: "smooth" });
       } else avisar(`Cena "${cena.rotulo}" ainda não disponível: avance até o próximo corte.`);
     };
     window.addEventListener("keydown", onKey);

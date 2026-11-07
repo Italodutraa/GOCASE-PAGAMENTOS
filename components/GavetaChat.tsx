@@ -45,7 +45,9 @@ export function GavetaChat({
             const ativo = canal === p;
             return (
               <button
+                type="button"
                 key={p}
+                onMouseDown={(e) => e.preventDefault()}
                 onClick={() => setCanal(p)}
                 className={`flex items-center gap-2.5 rounded-xl px-2.5 py-2 text-left text-xs transition ${
                   ativo ? "bg-[#d7d900] font-bold text-[#2659a5]" : "text-white hover:bg-white/10"
@@ -76,7 +78,7 @@ export function GavetaChat({
             </div>
             <div className="flex items-center gap-2">
               <SeloSimulado texto="humano simulado" />
-              <button onClick={onClose} className="rounded-full bg-[#d7d900] px-3 py-1 text-xs font-bold text-[#2659a5] hover:bg-[#3dbfef]">
+              <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={onClose} className="rounded-full bg-[#d7d900] px-3 py-1 text-xs font-bold text-[#2659a5] hover:bg-[#3dbfef]">
                 Fechar
               </button>
             </div>
@@ -122,21 +124,27 @@ export function GavetaChat({
                   {a.status === "pendente" && (
                     <div className="mt-3 flex flex-wrap gap-2">
                       <button
+                        type="button"
                         disabled={ocupado}
+                        onMouseDown={(e) => e.preventDefault()}
                         onClick={() => onAcao(a.id, "aprovar")}
                         className="rounded-full bg-[#d7d900] px-3.5 py-1 text-xs font-bold text-[#2659a5] hover:bg-[#3dbfef] disabled:opacity-50"
                       >
                         Aprovar
                       </button>
                       <button
+                        type="button"
                         disabled={ocupado}
+                        onMouseDown={(e) => e.preventDefault()}
                         onClick={() => onAcao(a.id, "recusar")}
                         className="rounded-full bg-[#e5381a] px-3.5 py-1 text-xs font-bold text-white disabled:opacity-50"
                       >
                         Recusar
                       </button>
                       <button
+                        type="button"
                         disabled={ocupado}
+                        onMouseDown={(e) => e.preventDefault()}
                         onClick={() => onAcao(a.id, "mais_info")}
                         className="rounded-full border-2 border-[#2659a5] bg-white px-3.5 py-1 text-xs font-bold text-[#2659a5] hover:bg-[#f8ae13] disabled:opacity-50"
                       >

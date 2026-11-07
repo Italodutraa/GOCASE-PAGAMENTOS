@@ -22,8 +22,10 @@ export function BotoesInjecao({ onInjetar, desabilitado }: { onInjetar: (c: Cena
       <div className="flex flex-wrap gap-2">
         {ITENS.map((i) => (
           <button
+            type="button"
             key={i.c}
             disabled={desabilitado}
+            onMouseDown={(e) => e.preventDefault()}
             onClick={() => onInjetar(i.c)}
             className={
               i.destaque

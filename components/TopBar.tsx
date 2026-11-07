@@ -51,6 +51,8 @@ export function TopBar(p: {
           </div>
         </div>
         <button
+          type="button"
+          onMouseDown={(e) => e.preventDefault()}
           onClick={p.onAvancar}
           disabled={!!p.ocupado}
           className="rounded-full bg-[#d7d900] px-3.5 py-1.5 text-xs font-bold text-[#2659a5] hover:bg-[#3dbfef] disabled:opacity-50"
@@ -59,10 +61,10 @@ export function TopBar(p: {
         </button>
         <div className="flex items-center gap-1.5" title={view.liveDisponivel ? "" : "Modo live indisponível: sem chave do AI Proxy configurada"}>
           <span className={seg}>
-            <button disabled={!view.liveDisponivel} onClick={() => p.setModo("live")} className={`px-2.5 py-1 disabled:cursor-not-allowed disabled:opacity-40 ${p.modo === "live" ? on : "text-white"}`}>
+            <button type="button" onMouseDown={(e) => e.preventDefault()} disabled={!view.liveDisponivel} onClick={() => p.setModo("live")} className={`px-2.5 py-1 disabled:cursor-not-allowed disabled:opacity-40 ${p.modo === "live" ? on : "text-white"}`}>
               live
             </button>
-            <button onClick={() => p.setModo("replay")} className={`px-2.5 py-1 ${p.modo === "replay" ? on : "text-white"}`}>
+            <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => p.setModo("replay")} className={`px-2.5 py-1 ${p.modo === "replay" ? on : "text-white"}`}>
               replay
             </button>
           </span>
@@ -70,10 +72,10 @@ export function TopBar(p: {
         </div>
         <div className="flex items-center gap-1.5">
           <span className={seg}>
-            <button onClick={() => p.setHumanos("auto")} className={`px-2.5 py-1 ${p.humanos === "auto" ? on : "text-white"}`}>
+            <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => p.setHumanos("auto")} className={`px-2.5 py-1 ${p.humanos === "auto" ? on : "text-white"}`}>
               auto
             </button>
-            <button onClick={() => p.setHumanos("manual")} className={`px-2.5 py-1 ${p.humanos === "manual" ? on : "text-white"}`}>
+            <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => p.setHumanos("manual")} className={`px-2.5 py-1 ${p.humanos === "manual" ? on : "text-white"}`}>
               manual
             </button>
           </span>
@@ -84,10 +86,10 @@ export function TopBar(p: {
           <Link href="/avaliacao" className="rounded-full border border-white/70 px-2.5 py-1 text-xs font-bold text-white hover:bg-white hover:text-[#2659a5]">
             Ablação
           </Link>
-          <button onClick={p.onReset} disabled={!!p.ocupado} className="rounded-full border border-white/60 px-2.5 py-1 text-xs font-bold text-white hover:bg-white hover:text-[#2659a5] disabled:opacity-50">
+          <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={p.onReset} disabled={!!p.ocupado} className="rounded-full border border-white/60 px-2.5 py-1 text-xs font-bold text-white hover:bg-white hover:text-[#2659a5] disabled:opacity-50">
             Reiniciar
           </button>
-          <button onClick={p.onChat} className="relative rounded-full bg-[#3dbfef] px-3 py-1 text-xs font-bold text-[#2659a5] hover:bg-[#d7d900]">
+          <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={p.onChat} className="relative rounded-full bg-[#3dbfef] px-3 py-1 text-xs font-bold text-[#2659a5] hover:bg-[#d7d900]">
             Chat
             {p.pendentes > 0 && <span className="absolute -right-2 -top-2 rounded-full bg-[#e5381a] px-1.5 text-[10px] font-bold text-white">{p.pendentes}</span>}
           </button>

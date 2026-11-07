@@ -42,6 +42,8 @@ export function ListaTitulos({ titulos, selecionado, onSelect }: { titulos: Titu
               return (
                 <li key={t.titulo_id}>
                   <button
+                    type="button"
+                    onMouseDown={(e) => e.preventDefault()}
                     onClick={() => onSelect(t.casoId, t.titulo_id)}
                     className={`flex w-full flex-col gap-1 border-b border-[#2659a5]/15 px-3 py-2 text-left text-[#2659a5] last:border-0 hover:bg-[#3dbfef]/15 ${sel ? "bg-[#d7d900]/35 font-semibold" : ""}`}
                   >

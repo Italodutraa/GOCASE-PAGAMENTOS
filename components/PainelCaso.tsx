@@ -104,7 +104,14 @@ export function PainelCaso({
       <section className="rounded-2xl border-2 border-[#2659a5]/30 bg-white shadow-sm">
         <button
           type="button"
-          onClick={() => setGavetaAberta((v) => !v)}
+          onMouseDown={(e) => e.preventDefault()}
+          onClick={() => {
+            const y = typeof window !== "undefined" ? window.scrollY : 0;
+            setGavetaAberta((v) => !v);
+            if (typeof window !== "undefined") {
+              requestAnimationFrame(() => window.scrollTo({ top: y, behavior: "instant" as ScrollBehavior }));
+            }
+          }}
           className="flex w-full flex-wrap items-center justify-between gap-3 px-4 py-3 text-left text-[#2659a5] transition hover:bg-[#2659a5]/5"
         >
           <div className="flex flex-wrap items-center gap-2.5">
