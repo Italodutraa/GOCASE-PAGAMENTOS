@@ -1,22 +1,22 @@
 # HANDOFF (gerado por `npm run handoff`; não editar à mão)
 
-Gerado: 07/11/2026, 15:20:06 · branch: main · último commit: d3fd035 Auditoria final: renomeia para GoLastro e corrige P0 da delegação de alçada
+Gerado: 07/11/2026, 15:41:38 · branch: main · último commit: 134d93b GoLastro /hoje P3: resumo do lote e bloco Ja resolvido recolhido
 
 ## git
+- 134d93b GoLastro /hoje P3: resumo do lote e bloco Ja resolvido recolhido
+- 90f78e4 GoLastro /hoje P2: cartoes Precisa de voce com aprovar, recusar, pedir mais informacao e gaveta de detalhes
+- d938388 GoLastro /hoje P1: topo, proximo fechamento e botao principal
+- 224fcbd Auditoria final: ACEITE com evidencias da reverificacao em clone limpo
 - d3fd035 Auditoria final: renomeia para GoLastro e corrige P0 da delegação de alçada
 - 8de7fc6 docs(handoff): compactacao completa do estado atual para retomada no Claude
 - 0de017c fix(orquestrador): garante execucao real de Jev (/v1/systemone) e Chat (/v1/chat/completions) no modo live
 - 2418b1e fix(ui): preserva posicao de scroll ao clicar em botoes, trocar casos ou abrir gavetas
 - 12c5d49 refactor(ui): polimento visual executivo e limpeza de layout para o Modo Palco
 - d9a0814 feat(f4-f5): motor de auto-efetivacao (>=90%), governanca zero-trust e design executivo Gogroup
-- d5ce7b5 F5 documentos: README, correcoes-ia (17 itens), pitch com ablacao real, demo-checklist e RELATORIO_ALMOCO
-- ad0e2fa UI: avatares dos agentes
-- af4c1e2 F4.4 modo Palco: tecla P, cenas 1-4 (Embalarte, duplicidades, injecao EM570996, agente barrado), Esc sai
-- 30ab53b F4.3 placar antes x depois com barras e ablacao medida (so_regras, so LLM com amostra, hibrido)
-Não commitados (1): M docs/ACEITE.md
+Não commitados (3): M docs/STATUS.md | M vitest.config.mts | ?? lib/ui/hoje.test.ts
 
 ## Testes
-OK em 07/11/2026, 15:17:42: Tests  107 passed (107)
+OK em 07/11/2026, 15:41:38: Tests  123 passed (123)
 
 ## Artefatos
 - analise/ablacao.json: 07/11/2026, 12:48:20 · analise/snapshot.json: 07/11/2026, 12:51:44 · analise/estado_agenda.json: 07/11/2026, 15:09:11
@@ -38,6 +38,7 @@ P0 corrigidos: delegação de alçada (autonomia) violava a política; métricas
 Abertos (do usuário): instalar o hook de pre-commit; histórico com token (`3b98b06`). Ver `docs/BLOQUEIOS.md`.
 
 ## Feito
+- **Tela simples `/hoje`** (passada Rafaela; tag `pre-design` para voltar): topo com próximo fechamento e botão "Conferir o lote", cartões "Precisa de você (N)" com Aprovar/Recusar/Pedir mais informação (mesmo `POST /api/acao`), gaveta "Ver como o GoLastro chegou nisso" (reusa Timeline e Pareceres), "Resumo do lote" e "Já resolvido pelo GoLastro" recolhido. Lógica pura em `lib/ui/hoje.ts`, tela em `components/HojeView.tsx`, rota `app/hoje/page.tsx`. A rota padrão `/` NÃO mudou; links "Visão simples" (em `/`) e "Detalhes técnicos" (em `/hoje`). A barra de custos fica oculta em `/hoje`. Testes em `lib/ui/hoje.test.ts` (vocabulário proibido, cartões, resumo, bordas).
 - Passo A determinístico (`lib/rules`), Jev, 3 especialistas com tool calling, orquestrador, política (piso não rebaixável), crítico, tools simuladas, acionamentos agrupados, humanos simulados (`lib/agents/humanos.ts`).
 - Runner com 17 cortes, placar único `calcularPlacar` (runner = ablação, testado), replay sem rede (`SOMENTE_REPLAY=1`).
 - Ablação: so_regras, llm_puro (amostra declarada), híbrido; cenários fora das regras (falha no `cnpj_clonado`).
@@ -48,6 +49,7 @@ Abertos (do usuário): instalar o hook de pre-commit; histórico com token (`3b9
 - Nada.
 
 ## Próximos passos (do usuário)
+0. Olhar `/hoje` e decidir se vira a tela padrão (hoje o padrão continua sendo `/`). Dentro da gaveta de detalhes o vocabulário continua técnico (reusa componentes da tela técnica).
 1. Instalar o hook: `cp scripts/pre-commit-hook.sh .git/hooks/pre-commit`.
 2. Rotacionar o token e/ou publicar em repositório novo sem o commit `3b98b06`; renomear o repositório no GitHub.
 3. Gravar o plano B (vídeo da demo em replay); não publicar em serverless (estado em memória do processo).

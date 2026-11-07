@@ -6,6 +6,7 @@ P0 corrigidos: delegação de alçada (autonomia) violava a política; métricas
 Abertos (do usuário): instalar o hook de pre-commit; histórico com token (`3b98b06`). Ver `docs/BLOQUEIOS.md`.
 
 ## Feito
+- **Tela simples `/hoje`** (passada Rafaela; tag `pre-design` para voltar): topo com próximo fechamento e botão "Conferir o lote", cartões "Precisa de você (N)" com Aprovar/Recusar/Pedir mais informação (mesmo `POST /api/acao`), gaveta "Ver como o GoLastro chegou nisso" (reusa Timeline e Pareceres), "Resumo do lote" e "Já resolvido pelo GoLastro" recolhido. Lógica pura em `lib/ui/hoje.ts`, tela em `components/HojeView.tsx`, rota `app/hoje/page.tsx`. A rota padrão `/` NÃO mudou; links "Visão simples" (em `/`) e "Detalhes técnicos" (em `/hoje`). A barra de custos fica oculta em `/hoje`. Testes em `lib/ui/hoje.test.ts` (vocabulário proibido, cartões, resumo, bordas).
 - Passo A determinístico (`lib/rules`), Jev, 3 especialistas com tool calling, orquestrador, política (piso não rebaixável), crítico, tools simuladas, acionamentos agrupados, humanos simulados (`lib/agents/humanos.ts`).
 - Runner com 17 cortes, placar único `calcularPlacar` (runner = ablação, testado), replay sem rede (`SOMENTE_REPLAY=1`).
 - Ablação: so_regras, llm_puro (amostra declarada), híbrido; cenários fora das regras (falha no `cnpj_clonado`).
@@ -16,6 +17,7 @@ Abertos (do usuário): instalar o hook de pre-commit; histórico com token (`3b9
 - Nada.
 
 ## Próximos passos (do usuário)
+0. Olhar `/hoje` e decidir se vira a tela padrão (hoje o padrão continua sendo `/`). Dentro da gaveta de detalhes o vocabulário continua técnico (reusa componentes da tela técnica).
 1. Instalar o hook: `cp scripts/pre-commit-hook.sh .git/hooks/pre-commit`.
 2. Rotacionar o token e/ou publicar em repositório novo sem o commit `3b98b06`; renomear o repositório no GitHub.
 3. Gravar o plano B (vídeo da demo em replay); não publicar em serverless (estado em memória do processo).
