@@ -99,7 +99,7 @@ function criarEstado(): Estado {
     processados: new Set(),
     agora: INICIO,
     humanos: "auto",
-    modo: "replay",
+    modo: liveDisponivel() ? "live" : "replay",
     executadas: new Set(),
     aprovacoes: new Map(),
     historicoAcionado: false,
@@ -236,7 +236,7 @@ async function processarCaso(st: Estado, c: CasoRT, fornecedoresComFraude: Set<s
     semJev = true;
     semAgente = true;
     emit({ t: Date.now(), kind: "observacao", agente: "runner", texto: "configuração so_regras: sem Jev, sem especialistas, sem personas (só o piso do Passo A)" });
-  } else if (cache && (st.modo === "replay" || cache.pareceres.length)) {
+  } else if (cache && st.modo === "replay") {
     pareceres = cache.pareceres;
     jevCaso = cache.jev ?? undefined;
     semJev = !cache.jev;
@@ -274,9 +274,17 @@ async function processarCaso(st: Estado, c: CasoRT, fornecedoresComFraude: Set<s
       ),
     );
     pareceres = res.map((r) => r.parecer).filter((p): p is Parecer => !!p);
-    for (const [i, r] of res.entries()) if (!r.parecer) emit({ t: Date.now(), kind: "observacao", agente: e.especialistas[i], texto: `sem parecer (${r.erro ?? "?"}): vale o piso` });
-    semAgente = e.especialistas.length > 0 && pareceres.length === 0;
-    gravarReplay<CacheCaso>("casos", e.id, { pareceres, traceAgentes: c.trace.slice(inicioAgentes), jev: jevCaso ?? null, semAgente });
+    if (pareceres.length === 0 && cache) {
+      pareceres = cache.pareceres;
+      jevCaso = jevCaso ?? cache.jev ?? undefined;
+      semJev = !jevCaso;
+      semAgente = cache.semAgente;
+      for (const ev of cache.traceAgentes) emit({ ...ev, t: Date.now() });
+    } else {
+      for (const [i, r] of res.entries()) if (!r.parecer) emit({ t: Date.now(), kind: "observacao", agente: e.especialistas[i], texto: `sem parecer (${r.erro ?? "?"}): vale o piso` });
+      semAgente = e.especialistas.length > 0 && pareceres.length === 0;
+      gravarReplay<CacheCaso>("casos", e.id, { pareceres, traceAgentes: c.trace.slice(inicioAgentes), jev: jevCaso ?? null, semAgente });
+    }
   }
 
   // CRÍTICO nas evidências dos pareceres
@@ -406,11 +414,12 @@ async function rodarHumanos(st: Estado) {
     for (const ac of pend) {
       const chave = `${ac.id}|${rodada}`;
       const cache = lerReplay<RespostaHumano>("humanos")[chave];
-      let r: RespostaHumano | null = cache ?? null;
+      let r: RespostaHumano | null = st.modo === "replay" ? (cache ?? null) : null;
       if (!r && st.modo === "live") {
         const cv = casoView(st, casoRT(st, ac.casoId)!);
         r = await responderAcionamento({ ...ac, mensagem: `${ac.mensagem}\n\nCONTEXTO VERIFICADO PELO SISTEMA: ${ac.casoIds.map((id) => resumoParaHumano(casoRT(st, id)!)).join(" | ")}`.slice(0, 6000) }, { caso: cv, agora: st.agora, rodada });
         if (r) gravarReplay("humanos", chave, r);
+        else r = cache ?? null;
       }
       if (r) aplicarResposta(st, ac, r);
     }

@@ -80,8 +80,8 @@ export function useExecucao() {
     avisar,
     avancar: (modo: "live" | "replay", humanos: "auto" | "manual") => post("/api/avancar", { modo, humanos }, "avançar"),
     acao: (acionamentoId: string, decisao: Decisao, motivo?: string) => post("/api/acao", { acionamentoId, decisao, motivo }, "ação"),
-    injetar: async (cenario: Cenario): Promise<string | undefined> => {
-      const res = await post("/api/injetar", { cenario }, "injetar");
+    injetar: async (cenario: Cenario, modo?: "live" | "replay"): Promise<string | undefined> => {
+      const res = await post("/api/injetar", { cenario, modo }, "injetar");
       return typeof res?.casoId === "string" ? res.casoId : undefined;
     },
     reset: () => post("/api/reset", {}, "reset"),

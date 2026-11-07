@@ -17,7 +17,7 @@ import { calcularResumoAutonomia, type ModoPoliticaAutonomia } from "@/lib/orque
 
 export default function Home() {
   const ex = useExecucao();
-  const [modo, setModo] = useState<"live" | "replay">("replay");
+  const [modo, setModo] = useState<"live" | "replay">("live");
   const [humanos, setHumanos] = useState<"auto" | "manual">("auto");
   const [chat, setChat] = useState(false);
   const [palco, setPalco] = useState(false);
@@ -25,6 +25,7 @@ export default function Home() {
   const [limiar, setLimiar] = useState<number>(0.9);
   const [modoPolitica, setModoPolitica] = useState<ModoPoliticaAutonomia>("estrita");
   const { view, avisar, injetar } = ex;
+  const modoEfetivo = modo === "live" && view && !view.liveDisponivel ? "replay" : modo;
   const casos = useMemo(() => view?.casos ?? [], [view]);
   const avisarInfo = useCallback((t: string) => avisar(t, "info"), [avisar]);
   const selecionarCaso = useCallback((id: string | undefined) => {
@@ -41,10 +42,10 @@ export default function Home() {
   }, []);
   const onInjetar = useCallback(
     async (c: Cenario) => {
-      const id = await injetar(c);
+      const id = await injetar(c, modoEfetivo);
       if (id) selecionarCaso(id);
     },
-    [injetar, selecionarCaso],
+    [injetar, modoEfetivo, selecionarCaso],
   );
   const injetarAuto94 = useCallback(() => {
     void onInjetar("auto_efetivacao_94");
@@ -61,7 +62,6 @@ export default function Home() {
     return <main className="flex min-h-[60vh] items-center justify-center text-sm font-bold text-[#2659a5]">Carregando execução…</main>;
 
   const pendentes = view.acionamentos.filter((a) => a.status === "pendente").length;
-  const modoEfetivo = modo === "live" && !view.liveDisponivel ? "replay" : modo;
 
   const pilulaAutonomia = (
     <BarraAutonomia

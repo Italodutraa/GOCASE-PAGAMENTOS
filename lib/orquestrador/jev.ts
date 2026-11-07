@@ -54,11 +54,10 @@ export interface ResultadoJev extends JevCaso {
   perguntouFraude: boolean;
 }
 
-/** Chama o Jev (live) ou lê do cache (replay). null = falha → semJev. */
+/** Chama o Jev (live) ou lê do cache (replay). Em live, chama o AI Proxy (/v1/systemone) de verdade e usa o cache apenas como fallback de rede. */
 export async function jevTitulo(t: EstadoTitulo, state: string, perguntarFraude: boolean, modo: "live" | "replay"): Promise<ResultadoJev | null> {
   const cache = lerReplay<ResultadoJev>("jev");
-  if (cache[t.titulo_id]) return cache[t.titulo_id];
-  if (modo === "replay") return null;
+  if (modo === "replay") return cache[t.titulo_id] ?? null;
   try {
     const r = await jev({ state, questions: { decisao_lote: Q_DECISAO, urgencia_operacional: Q_URGENCIA, ...(perguntarFraude ? { risco_fraude: Q_FRAUDE } : {}) } });
     const d = r.respostas.decisao_lote as { choice: string; confidence?: number };
@@ -68,6 +67,6 @@ export async function jevTitulo(t: EstadoTitulo, state: string, perguntarFraude:
     gravarReplay("jev", t.titulo_id, out);
     return out;
   } catch {
-    return null;
+    return cache[t.titulo_id] ?? null;
   }
 }
