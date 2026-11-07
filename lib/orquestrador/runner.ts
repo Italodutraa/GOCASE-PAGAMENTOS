@@ -118,7 +118,8 @@ export function resetRunner() {
   return g.__runner;
 }
 
-export const liveDisponivel = () => !!process.env.AI_PROXY_API_KEY;
+// SOMENTE_REPLAY=1 força a demo sem proxy mesmo se houver chave (o Next carrega o .env local por cima de variável vazia)
+export const liveDisponivel = () => !!process.env.AI_PROXY_API_KEY && process.env.SOMENTE_REPLAY !== "1";
 
 // ---------- utilitários ----------
 async function limitar<T>(itens: T[], n: number, fn: (x: T) => Promise<void>) {

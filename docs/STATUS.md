@@ -19,6 +19,7 @@ Repo privado; token mantido; hook de pre-commit instalado pelo usuário.
 - Início: 2026-11-07 12:23. Fases F1→F5 (ver docs/RELATORIO_ALMOCO.md ao fim). Bloqueios em docs/BLOQUEIOS.md.
 - F1 ablação validada: 12:53. Placar único (`calcularPlacar`), 17 cortes (0 "na_fila"), híbrido em replay = live (−R$ 2.829,51). so_regras −R$ 33.182,92; llm_puro (amostra exata) −R$ 326.521,22, recall 0,72, 43/60 limpos com FP. Cenários: híbrido FALHA no cnpj_clonado (manter). Chamadas live na sessão: 204 de 300 (62 llm_puro + 122 híbrido + 20 cenários).
 - F2 injeção: 13:05. 3 cenários em replay sem token via POST /api/injetar (teste), reset restaura 876 títulos / R$ 648.210,75, canário com texto trocado = mesma decisão. Detector de injeção agora cobre inglês (antes o cenário marcava à mão e listar_comunicacoes vazaria o texto); risco residual: detector por padrões.
+- F3 snapshot e build: 13:20. `npm run snapshot` ok (25 casos, placar −R$ 2.829,51); `npm run build` ok; produção com `SOMENTE_REPLAY=1`: live desabilitado na UI e recusado na API (0 chamadas), injeção e reset ok, rótulos "simulado" na tela e no JSON. Antes da flag, o Next carregou o .env local e um teste pediu live: +8 chamadas (212 de 300).
 
 ## Em andamento
 - Ablação `llm_puro` + `hibrido` em segundo plano. Conferir `analise/ablacao.json` e `analise/ablacao_llm_puro.json`. Só `so_regras` está confirmada.

@@ -1,20 +1,21 @@
 # HANDOFF (gerado por `npm run handoff`; não editar à mão)
 
-Gerado: 07/11/2026, 12:51:29 · branch: main · último commit: 21590ea Ablacao validada: placar unico do runner, 17 cortes, hibrido replay = live, llm_puro refeito, cenarios fora das regras; corrige replay corrompido por mascaramento
+Gerado: 07/11/2026, 12:55:10 · branch: main · último commit: 541dead F2 injecao ponta a ponta: rota em replay sem token, reset, canario; detector de injecao em ingles
 
 ## git
+- 541dead F2 injecao ponta a ponta: rota em replay sem token, reset, canario; detector de injecao em ingles
 - 21590ea Ablacao validada: placar unico do runner, 17 cortes, hibrido replay = live, llm_puro refeito, cenarios fora das regras; corrige replay corrompido por mascaramento
 - ee6334f Checkpoint 3: verificacao de segredos que aborta, replay com contas mascaradas, handoff/STATUS/RETOMADA, regras aprendidas, fallback 503 testado, injecao redige e grava mensagem
 - f6bc9f2 Remove chave do AI Proxy do .env.example
 - 3b98b06 Checkpoint 2: pipeline v4 ponta a ponta (Jev, especialistas, politica, critico, tools, personas, UI, replay)
 - ef28265 M0+M1: setup Next.js, wrapper AI Proxy e Passo A deterministico
-Não commitados (6): M analise/estado_agenda.json | M docs/STATUS.md | M lib/mock/cenarios.ts | M lib/rules/comunicacoes.ts | M tsconfig.tsbuildinfo | ?? lib/mock/injecao.f2.test.ts
+Não commitados (7): M .env.example | M analise/estado_agenda.json | M analise/replay/mensagens.json | M docs/STATUS.md | M lib/orquestrador/runner.ts | M tsconfig.tsbuildinfo | ?? analise/snapshot.json
 
 ## Testes
-OK em 07/11/2026, 12:51:29: Tests  92 passed (92)
+OK em 07/11/2026, 12:55:10: Tests  92 passed (92)
 
 ## Artefatos
-- analise/ablacao.json: 07/11/2026, 12:48:20 · analise/snapshot.json: não existe · analise/estado_agenda.json: 07/11/2026, 12:51:11
+- analise/ablacao.json: 07/11/2026, 12:48:20 · analise/snapshot.json: 07/11/2026, 12:51:44 · analise/estado_agenda.json: 07/11/2026, 12:51:11
 - analise/replay/: 4 arquivo(s) · public/agentes/: 0 arquivo(s)
 - ATENÇÃO: ablação possivelmente em andamento (arquivos de ablação alterados nos últimos 10 min); confira analise/ablacao.json e analise/ablacao_llm_puro.json antes de rodar de novo.
 
@@ -22,7 +23,7 @@ OK em 07/11/2026, 12:51:29: Tests  92 passed (92)
 GET /api/analise · GET /api/custos · GET /api/estado · POST /api/acao · POST /api/avancar · POST /api/injetar · POST /api/ping · POST /api/reset
 
 ## Variáveis de ambiente (só nomes)
-AI_PROXY_API_KEY, AI_PROXY_BASE_URL, AI_CHAT_MODEL, AI_AGENT_MODEL
+AI_PROXY_API_KEY, AI_PROXY_BASE_URL, AI_CHAT_MODEL, AI_AGENT_MODEL, SOMENTE_REPLAY
 
 ## STATUS (docs/STATUS.md, integral)
 # STATUS (máx. 80 linhas; atualizar a cada checkpoint, antes do commit)
@@ -46,6 +47,7 @@ Repo privado; token mantido; hook de pre-commit instalado pelo usuário.
 - Início: 2026-11-07 12:23. Fases F1→F5 (ver docs/RELATORIO_ALMOCO.md ao fim). Bloqueios em docs/BLOQUEIOS.md.
 - F1 ablação validada: 12:53. Placar único (`calcularPlacar`), 17 cortes (0 "na_fila"), híbrido em replay = live (−R$ 2.829,51). so_regras −R$ 33.182,92; llm_puro (amostra exata) −R$ 326.521,22, recall 0,72, 43/60 limpos com FP. Cenários: híbrido FALHA no cnpj_clonado (manter). Chamadas live na sessão: 204 de 300 (62 llm_puro + 122 híbrido + 20 cenários).
 - F2 injeção: 13:05. 3 cenários em replay sem token via POST /api/injetar (teste), reset restaura 876 títulos / R$ 648.210,75, canário com texto trocado = mesma decisão. Detector de injeção agora cobre inglês (antes o cenário marcava à mão e listar_comunicacoes vazaria o texto); risco residual: detector por padrões.
+- F3 snapshot e build: 13:20. `npm run snapshot` ok (25 casos, placar −R$ 2.829,51); `npm run build` ok; produção com `SOMENTE_REPLAY=1`: live desabilitado na UI e recusado na API (0 chamadas), injeção e reset ok, rótulos "simulado" na tela e no JSON. Antes da flag, o Next carregou o .env local e um teste pediu live: +8 chamadas (212 de 300).
 
 ## Em andamento
 - Ablação `llm_puro` + `hibrido` em segundo plano. Conferir `analise/ablacao.json` e `analise/ablacao_llm_puro.json`. Só `so_regras` está confirmada.
