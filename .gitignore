@@ -1,0 +1,17 @@
+# segredos (token do AI Proxy)
+.env
+.env.local
+.env.*.local
+.env.*
+!.env.example
+
+# node / next
+node_modules/
+.next/
+out/
+dist/
+*.log
+
+# estado local da simulação
+data/estado.json
+data/*.sqlite
