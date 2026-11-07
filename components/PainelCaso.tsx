@@ -42,7 +42,7 @@ export function PainelCaso({ caso }: { caso?: CasoView }) {
         <Pareceres pareceres={caso.pareceres} />
       </section>
       <section>
-        <h3 className="mb-2 text-sm font-semibold">Trace do raciocínio</h3>
+        <h3 className="mb-2 text-sm font-semibold">Conversa dos agentes</h3>
         <Timeline trace={caso.trace} />
       </section>
     </div>

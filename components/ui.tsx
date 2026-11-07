@@ -24,6 +24,52 @@ export function SeloSimulado({ texto = "simulado" }: { texto?: string }) {
   return <span className="rounded border border-dashed border-sky-400/60 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-sky-300">{texto}</span>;
 }
 
+export type TipoCarimbo =
+  | "BLOQUEADO"
+  | "RETIRADO DO LOTE"
+  | "ESCALADO"
+  | "CORRIGIDO"
+  | "INJEÇÃO IGNORADA"
+  | "SIMULADO"
+  | "BARRADO PELA CERCA"
+  | "REFEITO"
+  | "LIBERADO";
+
+const CORES_CARIMBO: Record<TipoCarimbo, string> = {
+  BLOQUEADO: "border-red-400 text-red-300",
+  "RETIRADO DO LOTE": "border-orange-400 text-orange-300",
+  ESCALADO: "border-fuchsia-400 text-fuchsia-300",
+  CORRIGIDO: "border-amber-400 text-amber-300",
+  "INJEÇÃO IGNORADA": "border-orange-400 text-orange-300",
+  SIMULADO: "border-sky-400 text-sky-300 border-dashed",
+  "BARRADO PELA CERCA": "border-red-400 text-red-300",
+  REFEITO: "border-amber-400 text-amber-300",
+  LIBERADO: "border-emerald-400 text-emerald-300",
+};
+
+/** Carimbo de borracha: rótulo único e padronizado para estados de destaque. */
+export function Carimbo({ tipo, grande = false, inclinado = true }: { tipo: TipoCarimbo; grande?: boolean; inclinado?: boolean }) {
+  return (
+    <span
+      className={`inline-block select-none rounded-sm border-2 font-black uppercase leading-none tracking-[0.12em] ${CORES_CARIMBO[tipo]} ${
+        grande ? "px-2.5 py-1.5 text-sm" : "px-1.5 py-1 text-[10px]"
+      } ${inclinado ? "-rotate-3" : ""} opacity-90`}
+    >
+      {tipo}
+    </span>
+  );
+}
+
+export const CARIMBO_DA_ACAO: Record<Acao, TipoCarimbo> = {
+  manter: "LIBERADO",
+  corrigir: "CORRIGIDO",
+  retirar: "RETIRADO DO LOTE",
+  escalar: "ESCALADO",
+  bloquear: "BLOQUEADO",
+};
+
+export const ORDEM_ACAO: Acao[] = ["manter", "corrigir", "retirar", "escalar", "bloquear"];
+
 export const num = "tabular-nums [font-variant-numeric:tabular-nums]";
 
 export const fmtHora = (iso: string) => new Date(iso).toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
