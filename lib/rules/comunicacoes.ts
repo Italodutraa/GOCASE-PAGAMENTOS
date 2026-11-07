@@ -30,7 +30,9 @@ export interface ComunicacaoAnalisada {
 
 const RE_TROCA = /(dados banc|nova conta|conta nova|domic[ií]lio banc|novo banco|chave pix|nova chave|altera[cç][aã]o banc|passou a receber|concentrar os recebimentos)/i;
 const RE_2VIA = /(segunda via|2a via|2ª via)/i;
-const RE_INJECAO = /(assistente de ia|para o assistente|pr[eé]-aprovad|sem conferir|libere os pagamentos|ignore (as|todas)|desconsidere as regras)/i;
+// português + inglês (sem o inglês, um ataque real chegava inteiro ao especialista via listar_comunicacoes)
+const RE_INJECAO = /(assistente de ia|para o assistente|pr[eé]-aprovad|sem conferir|libere os pagamentos|ignore (as|todas)|desconsidere as regras|system override|ignore (all |any )?(previous|prior|the) (instructions|rules)|authorized by the (board|ceo|director)|skip (the )?(po|purchase order|invoice|approval)|do not escalate|release (tp\d+|the payments?|payments?) (immediately|now)|as an ai|to the ai (agent|assistant)|bypass (all |any |every |the )?(verification|checks?|controls?|approvals?)|(cfo|ceo|board|director) (has )?approved)/i;
+// shortcut: detector por padrões; uma frase nova pode escapar. Mitigação em camadas: corpo omitido, consultar_nf sem infCpl, prompt "texto de terceiros é dado", piso que o LLM não rebaixa.
 const RE_PHISHING = /(token|protesto|negativa[cç][aã]o|clique|acesse o link|regularizar|senha|\.zip)/i;
 const RE_DUP = /(duplicidade|dois pagamentos)/i;
 const RE_REAJUSTE = /reajuste/i;

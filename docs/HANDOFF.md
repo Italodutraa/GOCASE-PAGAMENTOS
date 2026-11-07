@@ -1,19 +1,20 @@
 # HANDOFF (gerado por `npm run handoff`; não editar à mão)
 
-Gerado: 07/11/2026, 12:48:59 · branch: main · último commit: ee6334f Checkpoint 3: verificacao de segredos que aborta, replay com contas mascaradas, handoff/STATUS/RETOMADA, regras aprendidas, fallback 503 testado, injecao redige e grava mensagem
+Gerado: 07/11/2026, 12:51:29 · branch: main · último commit: 21590ea Ablacao validada: placar unico do runner, 17 cortes, hibrido replay = live, llm_puro refeito, cenarios fora das regras; corrige replay corrompido por mascaramento
 
 ## git
+- 21590ea Ablacao validada: placar unico do runner, 17 cortes, hibrido replay = live, llm_puro refeito, cenarios fora das regras; corrige replay corrompido por mascaramento
 - ee6334f Checkpoint 3: verificacao de segredos que aborta, replay com contas mascaradas, handoff/STATUS/RETOMADA, regras aprendidas, fallback 503 testado, injecao redige e grava mensagem
 - f6bc9f2 Remove chave do AI Proxy do .env.example
 - 3b98b06 Checkpoint 2: pipeline v4 ponta a ponta (Jev, especialistas, politica, critico, tools, personas, UI, replay)
 - ef28265 M0+M1: setup Next.js, wrapper AI Proxy e Passo A deterministico
-Não commitados (20): M .gitignore | M analise/ablacao.json | M analise/ablacao_llm_puro.json | M analise/replay/casos.json | M analise/replay/humanos.json | M analise/replay/jev.json | M analise/replay/mensagens.json | M docs/STATUS.md | +12
+Não commitados (6): M analise/estado_agenda.json | M docs/STATUS.md | M lib/mock/cenarios.ts | M lib/rules/comunicacoes.ts | M tsconfig.tsbuildinfo | ?? lib/mock/injecao.f2.test.ts
 
 ## Testes
-OK em 07/11/2026, 12:48:59: Tests  85 passed (85)
+OK em 07/11/2026, 12:51:29: Tests  92 passed (92)
 
 ## Artefatos
-- analise/ablacao.json: 07/11/2026, 12:48:20 · analise/snapshot.json: não existe · analise/estado_agenda.json: 07/11/2026, 10:41:07
+- analise/ablacao.json: 07/11/2026, 12:48:20 · analise/snapshot.json: não existe · analise/estado_agenda.json: 07/11/2026, 12:51:11
 - analise/replay/: 4 arquivo(s) · public/agentes/: 0 arquivo(s)
 - ATENÇÃO: ablação possivelmente em andamento (arquivos de ablação alterados nos últimos 10 min); confira analise/ablacao.json e analise/ablacao_llm_puro.json antes de rodar de novo.
 
@@ -44,6 +45,7 @@ Repo privado; token mantido; hook de pre-commit instalado pelo usuário.
 ## Sessão autônoma (usuário ausente)
 - Início: 2026-11-07 12:23. Fases F1→F5 (ver docs/RELATORIO_ALMOCO.md ao fim). Bloqueios em docs/BLOQUEIOS.md.
 - F1 ablação validada: 12:53. Placar único (`calcularPlacar`), 17 cortes (0 "na_fila"), híbrido em replay = live (−R$ 2.829,51). so_regras −R$ 33.182,92; llm_puro (amostra exata) −R$ 326.521,22, recall 0,72, 43/60 limpos com FP. Cenários: híbrido FALHA no cnpj_clonado (manter). Chamadas live na sessão: 204 de 300 (62 llm_puro + 122 híbrido + 20 cenários).
+- F2 injeção: 13:05. 3 cenários em replay sem token via POST /api/injetar (teste), reset restaura 876 títulos / R$ 648.210,75, canário com texto trocado = mesma decisão. Detector de injeção agora cobre inglês (antes o cenário marcava à mão e listar_comunicacoes vazaria o texto); risco residual: detector por padrões.
 
 ## Em andamento
 - Ablação `llm_puro` + `hibrido` em segundo plano. Conferir `analise/ablacao.json` e `analise/ablacao_llm_puro.json`. Só `so_regras` está confirmada.
