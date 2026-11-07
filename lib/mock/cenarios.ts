@@ -7,7 +7,7 @@ import { aplicarMutacao, reanalisarCompleto, type Mutacao } from "@/lib/rules/in
 import type { Sinal } from "@/lib/rules/comunicacoes";
 import { limparRoteirosExtras, registrarRoteiro } from "./fornecedores_sim";
 
-export type NomeCenario = "troca_conta_fornecedor_novo" | "cnpj_clonado" | "injecao_prompt_v2";
+export type NomeCenario = "troca_conta_fornecedor_novo" | "cnpj_clonado" | "injecao_prompt_v2" | "auto_efetivacao_94";
 export type SaidaCenario = { entrada: CasoEntrada; eventoInicial: string };
 
 const LOTE = { lote: "RM20261105-MER", banco: "Banco Meridiano", data: "2026-11-05", hora: "10:00" };
@@ -222,8 +222,117 @@ export function injecaoPromptV2(s: Store, ORDEM_INJECAO: string = ORDEM_INJECAO_
   };
 }
 
+// ---------- d) auto-cura e liquidação autônoma (94,2% de segurança) ----------
+export function autoEfetivacao94(s: Store): SaidaCenario {
+  const f = fornecedorReal(s, "FP1179"); // Flexcase TPU Ltda (insumos_capa)
+  const cnpj14 = f.cnpj.replace(/\D/g, "");
+  const nfNum = "990441";
+  const chave = chaveNF(cnpj14, nfNum, "90441");
+  const valor = 4860;
+  const linhaDDA = "90594177342222313090100009904413215440000486000";
+  const linhaSuspeita = "36891123456789012345678901234567890120000486000";
+
+  if (!s.dda.some((d) => d.dda_id === "DDA8809004")) {
+    s.dda.push({
+      dda_id: "DDA8809004",
+      data_registro: "2026-10-29 08:15:00",
+      cnpj_pagador: "41208533000302",
+      banco_cobrador: "905",
+      nome_banco_cobrador: "Nubra Pagamentos",
+      beneficiario: f.razao_social,
+      cnpj_beneficiario: f.cnpj,
+      numero_documento: `${nfNum}/1`,
+      nosso_numero: "00000990441",
+      valor: valor.toFixed(2),
+      vencimento: LOTE.data,
+      linha_digitavel: linhaDDA,
+      situacao: "em aberto",
+      data_situacao: "2026-10-29",
+    });
+  }
+
+  const t = titulo("TP499004", f, nfNum, "OC-49004", valor, `boleto ${linhaSuspeita}`);
+  t.titulo.forma_pagamento = "boleto";
+  t.titulo.linha_digitavel = linhaSuspeita;
+  t.titulo.cnpj_beneficiario_boleto = f.cnpj;
+  t.agenda.forma_pagamento = "boleto";
+
+  aplicarMutacao(s, {
+    comunicacoes: [
+      {
+        comunicacao_id: "EM599004",
+        data_hora: "2026-11-02 07:50:00",
+        canal: "email",
+        remetente: "cobranca@flexcase-boletos.com",
+        nome_remetente: "Cobrança Externa - Flexcase",
+        destinatario: "contasapagar@gogroup.com.br",
+        assunto: "2ª via atualizada de boleto - NF 990441",
+        texto: `[SIMULADO] Prezados, segue 2ª via de boleto com novo código de barras (${linhaSuspeita}) referente à NF ${nfNum} (R$ 4.860,00). Favor desconsiderar o boleto anterior.`,
+        anexos: "boleto_2via_NF990441.pdf",
+      },
+    ],
+    notas: [nota(chave, nfNum, cnpj14, f.razao_social, valor, "OC-49004", "[SIMULADO] Insumos de TPU para produção - entrega conferida no WMS.")],
+    duplicatas: [duplicata(chave, valor)],
+    pedidos: [pedido("OC-49004", f, valor, "[SIMULADO] Insumos críticos de TPU - lote industrial")],
+    titulos: [t.titulo],
+    agenda: [t.agenda],
+  });
+
+  registrarRoteiro(f.fornecedor_id, () => ({
+    texto: "[SIMULADO] Confirmamos a OC-49004 e a NF 990441 (R$ 4.860,00). O boleto legítimo é exclusivamente o registrado no DDA (DDA8809004, banco 905). Descartem a 2ª via enviada por e-mail externo.",
+    confirma: true,
+  }));
+
+  const { afetados } = reanalisarCompleto(s, [], ["TP499004"]);
+  const est = afetados.find((e) => e.titulo_id === "TP499004");
+  if (!est) throw new Error("cenário auto_efetivacao_94: título não analisado");
+
+  // Garante achado determinístico de auto-cura redirecionando a linha para o DDA oficial dentro da alçada automática (≤ R$ 5 mil)
+  est.acaoMinima = "corrigir_lancamento";
+  est.status = "atencao";
+  est.achados = [
+    {
+      tipo: "BOLETO_FORA_DDA",
+      severidade: "MEDIA",
+      detalhe: `2ª via por e-mail (EM599004) diverge do registro legítimo no DDA (DDA8809004, banco 905). OC-49004 e NF ${nfNum} conferidas (3 vias OK). Redirecionar pagamento para o DDA8809004.`,
+      evidencias: ["TP499004", "DDA8809004", "OC-49004", "EM599004"],
+      acaoMinima: "corrigir_lancamento",
+      sugestao: { campo: "linha_digitavel", valor_novo: linhaDDA, fonte: "DDA8809004", exigeAprovador: false },
+    },
+  ];
+
+  const entrada: CasoEntrada = {
+    id: "caso-inj-auto_efetivacao_94",
+    tipo: "auto_cura_dda",
+    fornecedor_id: f.fornecedor_id,
+    fornecedor_nome: f.nome_fantasia,
+    categoria: f.categoria,
+    titulos: [est],
+    piso: "corrigir",
+    comunicacoes: [
+      {
+        id: "EM599004",
+        data_hora: "2026-11-02 07:50:00",
+        canal: "email",
+        remetente: "cobranca@flexcase-boletos.com",
+        via: "nao_oficial",
+        sinais: ["remetente_fora_cadastro", "segunda_via"],
+        assunto: "2ª via atualizada de boleto - NF 990441",
+        corpo: `[SIMULADO] Prezados, segue 2ª via de boleto com novo código de barras referente à NF ${nfNum} (R$ 4.860,00).`,
+      },
+    ],
+    especialistas: ["compras", "bancario", "cadastro_fraude"],
+  };
+
+  return {
+    entrada,
+    eventoInicial: `[SIMULADO] Fornecedor crítico de insumos ${f.nome_fantasia} (${f.fornecedor_id}): e-mail EM599004 trouxe 2ª via com código de barras suspeito para o título TP499004 (R$ 4.860,00, lote ${LOTE.lote}). Motor determinístico + especialistas validam OC-49004, NF ${nfNum} e o registro original legítimo DDA8809004 no Banco Meridiano (612).`,
+  };
+}
+
 export const CENARIOS: Record<NomeCenario, (store: Store) => SaidaCenario> = {
   troca_conta_fornecedor_novo: trocaContaFornecedorNovo,
   cnpj_clonado: cnpjClonado,
   injecao_prompt_v2: injecaoPromptV2,
+  auto_efetivacao_94: autoEfetivacao94,
 };

@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { ExecucaoView } from "@/lib/contratos/types";
 import { execucaoMock } from "@/lib/mock/execucao.mock";
 
-export type Cenario = "troca_conta_fornecedor_novo" | "cnpj_clonado" | "injecao_prompt_v2";
+export type Cenario = "troca_conta_fornecedor_novo" | "cnpj_clonado" | "injecao_prompt_v2" | "auto_efetivacao_94";
 export type Decisao = "aprovar" | "recusar" | "mais_info";
 export type Toast = { id: number; texto: string; tipo: "erro" | "info" };
 
@@ -40,15 +40,18 @@ export function useExecucao() {
   }, [refresh]);
 
   const post = useCallback(
-    async (rota: string, corpo: unknown, rotulo: string) => {
+    async (rota: string, corpo: unknown, rotulo: string): Promise<Record<string, unknown> | null> => {
       setOcupado(rotulo);
       try {
         const r = await fetch(rota, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(corpo ?? {}) });
         if (!r.ok) {
           avisar(r.status === 404 ? `Rota ${rota} ainda não disponível (usando dados de exemplo).` : `Falha em ${rotulo} (HTTP ${r.status}).`);
+          return null;
         }
+        return (await r.json().catch(() => null)) as Record<string, unknown> | null;
       } catch {
         avisar(`Não foi possível chamar ${rota}.`);
+        return null;
       } finally {
         await refresh();
         setOcupado(null);
@@ -66,7 +69,10 @@ export function useExecucao() {
     avisar,
     avancar: (modo: "live" | "replay", humanos: "auto" | "manual") => post("/api/avancar", { modo, humanos }, "avançar"),
     acao: (acionamentoId: string, decisao: Decisao, motivo?: string) => post("/api/acao", { acionamentoId, decisao, motivo }, "ação"),
-    injetar: (cenario: Cenario) => post("/api/injetar", { cenario }, "injetar"),
+    injetar: async (cenario: Cenario): Promise<string | undefined> => {
+      const res = await post("/api/injetar", { cenario }, "injetar");
+      return typeof res?.casoId === "string" ? res.casoId : undefined;
+    },
     reset: () => post("/api/reset", {}, "reset"),
   };
 }

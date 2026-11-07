@@ -1,8 +1,9 @@
 # HANDOFF (gerado por `npm run handoff`; não editar à mão)
 
-Gerado: 07/11/2026, 13:27:56 · branch: main · último commit: ad0e2fa UI: avatares dos agentes
+Gerado: 07/11/2026, 14:21:29 · branch: main · último commit: d5ce7b5 F5 documentos: README, correcoes-ia (17 itens), pitch com ablacao real, demo-checklist e RELATORIO_ALMOCO
 
 ## git
+- d5ce7b5 F5 documentos: README, correcoes-ia (17 itens), pitch com ablacao real, demo-checklist e RELATORIO_ALMOCO
 - ad0e2fa UI: avatares dos agentes
 - af4c1e2 F4.4 modo Palco: tecla P, cenas 1-4 (Embalarte, duplicidades, injecao EM570996, agente barrado), Esc sai
 - 30ab53b F4.3 placar antes x depois com barras e ablacao medida (so_regras, so LLM com amostra, hibrido)
@@ -12,11 +13,10 @@ Gerado: 07/11/2026, 13:27:56 · branch: main · último commit: ad0e2fa UI: avat
 - e8f7e63 F3 snapshot e build: SOMENTE_REPLAY para demo sem proxy, snapshot gerado, producao validada em replay
 - 541dead F2 injecao ponta a ponta: rota em replay sem token, reset, canario; detector de injecao em ingles
 - 21590ea Ablacao validada: placar unico do runner, 17 cortes, hibrido replay = live, llm_puro refeito, cenarios fora das regras; corrige replay corrompido por mascaramento
-- ee6334f Checkpoint 3: verificacao de segredos que aborta, replay com contas mascaradas, handoff/STATUS/RETOMADA, regras aprendidas, fallback 503 testado, injecao redige e grava mensagem
-Não commitados (15): M README.md | M docs/STATUS.md | M docs/correcoes-ia.md | M docs/pitch.md | M tsconfig.tsbuildinfo | ?? docs/PROMPT_ANTIGRAVITY.md | ?? docs/RELATORIO_ALMOCO.md | ?? docs/demo-checklist.md | +7
+Não commitados (29): M README.md | M analise/replay/mensagens.json | M app/page.tsx | M components/BotoesInjecao.tsx | M components/PainelCaso.tsx | M components/Placar.tsx | M components/useExecucao.ts | M components/usePalco.ts | +21
 
 ## Testes
-OK em 07/11/2026, 13:27:55: Tests  96 passed (96)
+OK em 07/11/2026, 14:21:28: Tests  100 passed (100)
 
 ## Artefatos
 - analise/ablacao.json: 07/11/2026, 12:48:20 · analise/snapshot.json: 07/11/2026, 12:51:44 · analise/estado_agenda.json: 07/11/2026, 12:51:11
@@ -32,10 +32,10 @@ AI_PROXY_API_KEY, AI_PROXY_BASE_URL, AI_CHAT_MODEL, AI_AGENT_MODEL, SOMENTE_REPL
 ## STATUS (docs/STATUS.md, integral)
 # STATUS (máx. 80 linhas; atualizar a cada checkpoint, antes do commit)
 
-## Estado atual (2026-11-07 13:27)
-Sessão concluída: fases **F1, F2, F3, F4 e F5** entregues e enviadas ao remoto (`origin/main`).
-96 testes verdes (`npm test`), `npm run typecheck` limpo, `npm run segredos` ok, build de produção validado em modo replay (`SOMENTE_REPLAY=1`).
-Relatório executivo da sessão em `docs/RELATORIO_ALMOCO.md`.
+## Estado atual (2026-11-07 14:21)
+Sessão concluída: fases **F1–F5 + Polimento Executivo Final** (Auto-Efetivação ≥90%, Governança Zero-Trust, Cenário Ao Vivo 94,2% e Design Executivo Fintech Gogroup) entregues.
+100 testes verdes (`npm test`, 15 suítes), `npm run typecheck` limpo, `npm run segredos` ok, build validado em modo replay (`SOMENTE_REPLAY=1`).
+Relatórios executivos em `RELATORIO_HACKATHON.md` e `docs/RELATORIO_ALMOCO.md`.
 
 ## Feito
 - **M0/M1**: Next.js 15, wrapper único do AI Proxy (`lib/ai/proxy.ts`, linhas `💲`), Passo A determinístico (`lib/rules`, gabarito).

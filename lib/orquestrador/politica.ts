@@ -193,7 +193,7 @@ export function aplicarPolitica(e: EntradaPolitica): SaidaPolitica {
     const sug = t.achados.find((x) => x.sugestao && x.acaoMinima === "corrigir_lancamento")?.sugestao;
     // escalar/bloquear sobre um piso "corrigir" com sugestão = pedir aprovação DA CORREÇÃO (não liberar o pagamento como está)
     if (sug && a !== "retirar" && pisoT === "corrigir") {
-      const diff = sug.campo === "valor" ? Math.abs(Number(sug.valor_novo) - t.valor) : Infinity;
+      const diff = sug.campo === "valor" ? Math.abs(Number(sug.valor_novo) - t.valor) : t.valor;
       const exec: PlanoExecucao = { ferramenta: "corrigir_lancamento", args: { titulo_id: t.titulo_id, campo: sug.campo, valor_novo: sug.valor_novo, justificativa: `Passo A: ${sug.fonte}`, evidencias: [t.titulo_id, sug.fonte] }, titulo_id: t.titulo_id };
       if (!sug.exigeAprovador && diff <= ANALISTA_ATE) imediatas.push(exec);
       else add({ pessoa: "aprovador", titulos: ids, valorTotal: t.valor, motivo: `corrigir ${sug.campo}`, acaoSolicitada: "corrigir_lancamento", execucoes: [{ ...exec, exigeAprovacao: ["aprovador"] }], obrigatorio: true });

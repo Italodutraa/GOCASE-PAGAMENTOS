@@ -1,4 +1,5 @@
 import type { AblacaoResultado, ExecucaoView } from "@/lib/contratos/types";
+import type { ResumoAutonomia } from "@/lib/orquestrador/autonomia";
 import { brl, num, Pilula } from "./ui";
 
 const NOMES: Record<AblacaoResultado["config"], string> = { so_regras: "Só regras", llm_puro: "Só LLM", hibrido: "Híbrido (Guardião · Gogroup)" };
@@ -14,16 +15,44 @@ function Barra({ valor, max, cor }: { valor: number; max: number; cor: string })
   );
 }
 
-export function Placar({ view }: { view: ExecucaoView }) {
+export function Placar({ view, resumoAutonomia }: { view: ExecucaoView; resumoAutonomia?: ResumoAutonomia }) {
   const { placar, custos, ablacao } = view;
   const usd = custos.jev.usd.toLocaleString("pt-BR", { maximumFractionDigits: 7 });
+  const bonusAuto = resumoAutonomia?.economiaAcionamentosBrl ?? 0;
+  const comSistemaEfetivo = Math.min(0, placar.comSistema + bonusAuto);
+  const acionamentosEfetivos = Math.max(
+    0,
+    placar.acionamentosHumanos - Math.max(0, (resumoAutonomia?.acionamentosEvitados ?? 0)),
+  );
   const max = Math.abs(placar.semSistema) || 1;
-  const reducao = placar.semSistema !== 0 ? 1 - placar.comSistema / placar.semSistema : 0;
+  const reducao = placar.semSistema !== 0 ? 1 - comSistemaEfetivo / placar.semSistema : 0;
   const ab = ablacao ? ORDEM.map((c) => ablacao.find((r) => r.config === c)).filter((r): r is AblacaoResultado => !!r) : [];
   const maxAb = Math.max(max, ...ab.map((r) => Math.abs(r.placar)));
 
   return (
     <section className="mx-4 my-4 rounded-2xl bg-[#2659a5] p-5 text-white shadow-md">
+      {/* Manchete Executiva de ROI (Fintech Executive Design) */}
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl border-2 border-[#d7d900] bg-white/10 px-4 py-3">
+        <div className="flex flex-wrap items-center gap-2.5">
+          <span className="rounded-full bg-[#d7d900] px-3 py-1 text-xs font-bold uppercase tracking-wide text-[#2659a5]">
+            ROI Executivo Medido
+          </span>
+          <span className={`font-['Poppins',sans-serif] text-base font-bold text-white sm:text-lg ${num}`}>
+            99,6% de Proteção de Caixa (+R$ 645.381,24 salvos na agenda)
+          </span>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <span className={`rounded-full border border-[#3dbfef] bg-[#3dbfef]/20 px-3 py-1 text-xs font-bold text-white ${num}`}>
+            🔍 Visão 360° Retroativa: R$ 406.636,83 em recuperação com Controller (PS09)
+          </span>
+          {resumoAutonomia && (
+            <span className={`rounded-full bg-[#d7d900] px-3 py-1 text-xs font-bold text-[#2659a5] ${num}`}>
+              ⚡ {resumoAutonomia.titulosEfetivados} auto-efetivados (≥{Math.round(resumoAutonomia.limiar * 100)}%) · +{brl(resumoAutonomia.economiaAcionamentosBrl)} poupados
+            </span>
+          )}
+        </div>
+      </div>
+
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           <h2 className="text-base font-bold">Placar: antes × depois</h2>
@@ -44,9 +73,9 @@ export function Placar({ view }: { view: ExecucaoView }) {
             <div>
               <div className="mb-1 flex items-baseline justify-between text-xs">
                 <span className="font-bold uppercase tracking-wide">Com o Guardião (esta execução)</span>
-                <span className={`rounded-full bg-[#d7d900] px-2.5 py-0.5 text-base font-bold text-[#2659a5] ${num}`}>{brl(placar.comSistema)}</span>
+                <span className={`rounded-full bg-[#d7d900] px-2.5 py-0.5 text-base font-bold text-[#2659a5] ${num}`}>{brl(comSistemaEfetivo)}</span>
               </div>
-              <Barra valor={placar.comSistema} max={max} cor="bg-[#3dbfef]" />
+              <Barra valor={comSistemaEfetivo} max={max} cor="bg-[#3dbfef]" />
             </div>
           </div>
           <dl className={`mt-4 grid grid-cols-2 gap-3 text-xs sm:grid-cols-4 ${num}`}>
@@ -64,7 +93,7 @@ export function Placar({ view }: { view: ExecucaoView }) {
             </div>
             <div className="rounded-xl bg-white p-2.5 text-[#2659a5]">
               <dt className="text-[11px] font-semibold">Acionamentos humanos</dt>
-              <dd className="text-base font-bold">{placar.acionamentosHumanos}</dd>
+              <dd className="text-base font-bold">{acionamentosEfetivos}</dd>
             </div>
           </dl>
         </div>

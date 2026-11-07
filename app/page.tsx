@@ -1,5 +1,6 @@
 "use client";
 import { useCallback, useMemo, useState } from "react";
+import { BarraAutonomia } from "@/components/BarraAutonomia";
 import { BotoesInjecao } from "@/components/BotoesInjecao";
 import { CartaoRenata } from "@/components/CartaoRenata";
 import { Funil } from "@/components/Funil";
@@ -10,8 +11,9 @@ import { Placar } from "@/components/Placar";
 import { Toasts } from "@/components/Toasts";
 import { TopBar } from "@/components/TopBar";
 import { Pilula } from "@/components/ui";
-import { useExecucao } from "@/components/useExecucao";
+import { type Cenario, useExecucao } from "@/components/useExecucao";
 import { CENAS, usePalco } from "@/components/usePalco";
+import { calcularResumoAutonomia, type ModoPoliticaAutonomia } from "@/lib/orquestrador/autonomia";
 
 export default function Home() {
   const ex = useExecucao();
@@ -20,14 +22,31 @@ export default function Home() {
   const [chat, setChat] = useState(false);
   const [palco, setPalco] = useState(false);
   const [casoSel, setCasoSel] = useState<string | undefined>();
-  const { view, avisar } = ex;
+  const [limiar, setLimiar] = useState<number>(0.9);
+  const [modoPolitica, setModoPolitica] = useState<ModoPoliticaAutonomia>("estrita");
+  const { view, avisar, injetar } = ex;
   const casos = useMemo(() => view?.casos ?? [], [view]);
   const avisarInfo = useCallback((t: string) => avisar(t, "info"), [avisar]);
-  usePalco({ palco, setPalco, casos, abrir: setCasoSel, avisar: avisarInfo });
+  const onInjetar = useCallback(
+    async (c: Cenario) => {
+      const id = await injetar(c);
+      if (id) setCasoSel(id);
+    },
+    [injetar],
+  );
+  const injetarAuto94 = useCallback(() => {
+    void onInjetar("auto_efetivacao_94");
+  }, [onInjetar]);
+  usePalco({ palco, setPalco, casos, abrir: setCasoSel, avisar: avisarInfo, injetarAuto94 });
 
   const caso = useMemo(() => casos.find((c) => c.id === casoSel) ?? casos[0], [casos, casoSel]);
+  const resumoAutonomia = useMemo(
+    () => (view ? calcularResumoAutonomia(view, limiar, modoPolitica) : undefined),
+    [view, limiar, modoPolitica],
+  );
 
-  if (!view) return <main className="flex min-h-[60vh] items-center justify-center text-sm font-bold text-[#2659a5]">Carregando execução…</main>;
+  if (!view || !resumoAutonomia)
+    return <main className="flex min-h-[60vh] items-center justify-center text-sm font-bold text-[#2659a5]">Carregando execução…</main>;
 
   const pendentes = view.acionamentos.filter((a) => a.status === "pendente").length;
   const modoEfetivo = modo === "live" && !view.liveDisponivel ? "replay" : modo;
@@ -47,17 +66,25 @@ export default function Home() {
         onChat={() => setChat(true)}
         pendentes={pendentes}
       />
+      <BarraAutonomia
+        limiar={limiar}
+        setLimiar={setLimiar}
+        modoPolitica={modoPolitica}
+        setModoPolitica={setModoPolitica}
+        resumo={resumoAutonomia}
+      />
       {palco && (
         <nav className="sticky top-[62px] z-20 flex flex-wrap items-center gap-2 border-b-2 border-[#d7d900] bg-[#2659a5] px-4 py-2 text-xs text-white shadow">
           <Pilula>Modo Palco</Pilula>
           {CENAS.map((c) => {
             const alvo = casos.find(c.acha);
             const ativo = alvo && alvo.id === caso?.id;
+            const podeInjetar5 = c.tecla === "5" && !alvo;
             return (
               <button
                 key={c.tecla}
-                disabled={!alvo}
-                onClick={() => alvo && setCasoSel(alvo.id)}
+                disabled={!alvo && !podeInjetar5}
+                onClick={() => (alvo ? setCasoSel(alvo.id) : podeInjetar5 ? injetarAuto94() : undefined)}
                 className={`rounded-full border-2 px-3 py-1 font-bold disabled:opacity-40 ${
                   ativo ? "border-[#d7d900] bg-[#d7d900] text-[#2659a5]" : "border-white text-white hover:bg-white hover:text-[#2659a5]"
                 }`}
@@ -83,14 +110,19 @@ export default function Home() {
         <div className="flex min-w-0 flex-col gap-4">
           {!palco && <Funil view={view} />}
           {!palco && <CartaoRenata acionamentos={view.acionamentos} onAbrirChat={() => setChat(true)} />}
-          {!palco && <BotoesInjecao onInjetar={ex.injetar} desabilitado={!!ex.ocupado} />}
-          <PainelCaso caso={caso} />
+          {!palco && <BotoesInjecao onInjetar={onInjetar} desabilitado={!!ex.ocupado} />}
+          <PainelCaso
+            caso={caso}
+            recibo={caso ? resumoAutonomia.porCaso[caso.id] : undefined}
+            limiar={limiar}
+            titulos={view.titulos}
+          />
         </div>
       </main>
-      <Placar view={view} />
+      <Placar view={view} resumoAutonomia={resumoAutonomia} />
       {!palco && (
         <p className="px-4 pb-16 text-xs font-semibold text-[#2659a5]">
-          Atalho: tecla <kbd className="rounded bg-[#2659a5] px-1.5 py-0.5 font-mono text-white">P</kbd> abre o modo Palco (cenas 1–4: Embalarte, duplicidades, injeção EM570996, agente barrado).
+          Atalho: tecla <kbd className="rounded bg-[#2659a5] px-1.5 py-0.5 font-mono text-white">P</kbd> abre o modo Palco (cenas 1–5: Embalarte, duplicidades, injeção EM570996, agente barrado, auto-efetivação 94%).
         </p>
       )}
       <GavetaChat aberta={chat} onClose={() => setChat(false)} acionamentos={view.acionamentos} onAcao={(id, d) => ex.acao(id, d)} ocupado={!!ex.ocupado} />

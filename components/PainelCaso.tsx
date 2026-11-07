@@ -1,10 +1,23 @@
-import type { CasoView } from "@/lib/contratos/types";
+import type { CasoView, TituloView } from "@/lib/contratos/types";
+import type { ReciboWriteBack } from "@/lib/orquestrador/autonomia";
 import { AgenteAvatar, agenteDoEvento, Elenco } from "./AgenteAvatar";
+import { GovernancaZeroTrust } from "./GovernancaZeroTrust";
 import { Pareceres } from "./Pareceres";
+import { ReciboAutonomo } from "./ReciboAutonomo";
 import { Timeline } from "./Timeline";
 import { brl, Carimbo, CARIMBO_DA_ACAO, ChipAcao, num, Pilula, SeloSimulado } from "./ui";
 
-export function PainelCaso({ caso }: { caso?: CasoView }) {
+export function PainelCaso({
+  caso,
+  titulos = [],
+  recibo,
+  limiar = 0.9,
+}: {
+  caso?: CasoView;
+  titulos?: TituloView[];
+  recibo?: ReciboWriteBack;
+  limiar?: number;
+}) {
   if (!caso)
     return (
       <div className="rounded-2xl border-2 border-dashed border-[#2659a5]/40 bg-white p-10 text-center text-sm text-[#2659a5]">
@@ -14,6 +27,7 @@ export function PainelCaso({ caso }: { caso?: CasoView }) {
   const d = caso.decisao;
   const ultimo = caso.trace[caso.trace.length - 1];
   const ativo = ultimo ? agenteDoEvento(ultimo) : "maestro";
+  const titulosDoCaso = titulos.filter((t) => t.casoId === caso.id || caso.titulos.includes(t.titulo_id));
 
   return (
     <div className="flex flex-col gap-5">
@@ -54,8 +68,12 @@ export function PainelCaso({ caso }: { caso?: CasoView }) {
           <span className="opacity-90">Decisão final:</span>
           <ChipAcao acao={d.acao} />
           <Pilula>origem: {d.origem}</Pilula>
-          <span className="rounded-full bg-white/15 px-2.5 py-0.5 font-semibold">{d.executaSozinho ? "executa sozinho" : "requer humano"}</span>
-          {d.contencaoNoCorte && <span className="rounded-full bg-[#f8ae13] px-2.5 py-0.5 font-bold text-[#2659a5]">contenção no corte: {d.contencaoNoCorte}</span>}
+          <span className="rounded-full bg-white/15 px-2.5 py-0.5 font-semibold">
+            {recibo?.efetivadoAuto ? "auto-efetivado (≥ limiar)" : d.executaSozinho ? "executa sozinho" : "requer humano"}
+          </span>
+          {d.contencaoNoCorte && !recibo?.efetivadoAuto && (
+            <span className="rounded-full bg-[#f8ae13] px-2.5 py-0.5 font-bold text-[#2659a5]">contenção no corte: {d.contencaoNoCorte}</span>
+          )}
           {d.semJev && <span className="rounded-full bg-white/20 px-2 py-0.5">sem Jev</span>}
           {d.semAgente && <span className="rounded-full bg-white/20 px-2 py-0.5">sem agente (só piso)</span>}
         </div>
@@ -68,6 +86,10 @@ export function PainelCaso({ caso }: { caso?: CasoView }) {
           ))}
         </div>
       </header>
+
+      {recibo && <ReciboAutonomo caso={caso} recibo={recibo} limiar={limiar} />}
+
+      <GovernancaZeroTrust caso={caso} titulos={titulosDoCaso} />
 
       <section>
         <div className="mb-2 flex items-center gap-2">
