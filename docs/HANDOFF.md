@@ -1,15 +1,16 @@
 # HANDOFF (gerado por `npm run handoff`; não editar à mão)
 
-Gerado: 07/11/2026, 12:55:10 · branch: main · último commit: 541dead F2 injecao ponta a ponta: rota em replay sem token, reset, canario; detector de injecao em ingles
+Gerado: 07/11/2026, 12:56:01 · branch: main · último commit: e8f7e63 F3 snapshot e build: SOMENTE_REPLAY para demo sem proxy, snapshot gerado, producao validada em replay
 
 ## git
+- e8f7e63 F3 snapshot e build: SOMENTE_REPLAY para demo sem proxy, snapshot gerado, producao validada em replay
 - 541dead F2 injecao ponta a ponta: rota em replay sem token, reset, canario; detector de injecao em ingles
 - 21590ea Ablacao validada: placar unico do runner, 17 cortes, hibrido replay = live, llm_puro refeito, cenarios fora das regras; corrige replay corrompido por mascaramento
 - ee6334f Checkpoint 3: verificacao de segredos que aborta, replay com contas mascaradas, handoff/STATUS/RETOMADA, regras aprendidas, fallback 503 testado, injecao redige e grava mensagem
 - f6bc9f2 Remove chave do AI Proxy do .env.example
 - 3b98b06 Checkpoint 2: pipeline v4 ponta a ponta (Jev, especialistas, politica, critico, tools, personas, UI, replay)
 - ef28265 M0+M1: setup Next.js, wrapper AI Proxy e Passo A deterministico
-Não commitados (7): M .env.example | M analise/estado_agenda.json | M analise/replay/mensagens.json | M docs/STATUS.md | M lib/orquestrador/runner.ts | M tsconfig.tsbuildinfo | ?? analise/snapshot.json
+Não commitados (2): M docs/STATUS.md | M tsconfig.tsbuildinfo
 
 ## Testes
 OK em 07/11/2026, 12:55:10: Tests  92 passed (92)
@@ -43,11 +44,18 @@ Repo privado; token mantido; hook de pre-commit instalado pelo usuário.
 - Seção "Regras aprendidas" no CLAUDE.md. Teste do fallback 503. Injeção grava mensagem em replay.
 - Handoff: `npm run handoff` gera docs/HANDOFF.md; AGENTS.md aponta para os docs.
 
+## PRÓXIMO (retomar aqui, ex.: Antigravity)
+- F1, F2 e F3 concluídas e enviadas (21590ea, 541dead, e8f7e63). Pendentes: F4 (bonito, ~45 min; avatares só se public/agentes/ vazio) e F5 (README, docs/correcoes-ia.md com os erros desta rodada, docs/pitch.md com números REAIS de analise/ablacao.json, docs/demo-checklist.md), depois docs/RELATORIO_ALMOCO.md.
+- Erros a registrar em correcoes-ia.md (F5): ablação media ação e não dinheiro; placares divergentes; 267 títulos na_fila (loop de 10 cortes); llm_puro com 47 fora do formato + 15 falhas 503 tratados como "manter" (refeitos: 62/62 válidos); mascaramento sobre o JSON inteiro corrompeu o replay; detector de injeção só em português; .env local sobrepondo variável vazia (+8 chamadas live) → SOMENTE_REPLAY.
+- Números reais (ablacao.json): so_regras −R$ 33.182,92; llm_puro (amostra exata 79+60) −R$ 326.521,22, recall 0,72, FP 43/60; híbrido −R$ 2.829,51, 100% evitado, 21 acionamentos, 0 desnecessários. Cenários: híbrido FALHA no cnpj_clonado.
+- Orçamento live da sessão: 212 de 300 chamadas de chat usadas.
+- Dev server: `npm run dev` (porta 3000). Demo sem proxy: `SOMENTE_REPLAY=1`.
+
 ## Sessão autônoma (usuário ausente)
 - Início: 2026-11-07 12:23. Fases F1→F5 (ver docs/RELATORIO_ALMOCO.md ao fim). Bloqueios em docs/BLOQUEIOS.md.
-- F1 ablação validada: 12:53. Placar único (`calcularPlacar`), 17 cortes (0 "na_fila"), híbrido em replay = live (−R$ 2.829,51). so_regras −R$ 33.182,92; llm_puro (amostra exata) −R$ 326.521,22, recall 0,72, 43/60 limpos com FP. Cenários: híbrido FALHA no cnpj_clonado (manter). Chamadas live na sessão: 204 de 300 (62 llm_puro + 122 híbrido + 20 cenários).
-- F2 injeção: 13:05. 3 cenários em replay sem token via POST /api/injetar (teste), reset restaura 876 títulos / R$ 648.210,75, canário com texto trocado = mesma decisão. Detector de injeção agora cobre inglês (antes o cenário marcava à mão e listar_comunicacoes vazaria o texto); risco residual: detector por padrões.
-- F3 snapshot e build: 13:20. `npm run snapshot` ok (25 casos, placar −R$ 2.829,51); `npm run build` ok; produção com `SOMENTE_REPLAY=1`: live desabilitado na UI e recusado na API (0 chamadas), injeção e reset ok, rótulos "simulado" na tela e no JSON. Antes da flag, o Next carregou o .env local e um teste pediu live: +8 chamadas (212 de 300).
+- F1 ablação validada: 12:49 (commit 21590ea). Placar único (`calcularPlacar`), 17 cortes (0 "na_fila"), híbrido em replay = live (−R$ 2.829,51). so_regras −R$ 33.182,92; llm_puro (amostra exata) −R$ 326.521,22, recall 0,72, 43/60 limpos com FP. Cenários: híbrido FALHA no cnpj_clonado (manter). Chamadas live na sessão: 204 de 300 (62 llm_puro + 122 híbrido + 20 cenários).
+- F2 injeção: 12:51 (541dead). 3 cenários em replay sem token via POST /api/injetar (teste), reset restaura 876 títulos / R$ 648.210,75, canário com texto trocado = mesma decisão. Detector de injeção agora cobre inglês (antes o cenário marcava à mão e listar_comunicacoes vazaria o texto); risco residual: detector por padrões.
+- F3 snapshot e build: 12:55 (e8f7e63). `npm run snapshot` ok (25 casos, placar −R$ 2.829,51); `npm run build` ok; produção com `SOMENTE_REPLAY=1`: live desabilitado na UI e recusado na API (0 chamadas), injeção e reset ok, rótulos "simulado" na tela e no JSON. Antes da flag, o Next carregou o .env local e um teste pediu live: +8 chamadas (212 de 300).
 
 ## Em andamento
 - Ablação `llm_puro` + `hibrido` em segundo plano. Conferir `analise/ablacao.json` e `analise/ablacao_llm_puro.json`. Só `so_regras` está confirmada.
