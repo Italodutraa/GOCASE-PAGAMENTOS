@@ -11,7 +11,7 @@ function arg(nome: string): string | undefined {
 
 async function main() {
   const so = arg("so");
-  if (so && !["so_regras", "llm_puro", "hibrido"].includes(so)) throw new Error(`--so inválido: ${so}`);
+  if (so && !["so_regras", "llm_puro", "hibrido", "cenarios"].includes(so)) throw new Error(`--so inválido: ${so}`);
   const modo = arg("modo");
   if (modo && !["live", "replay"].includes(modo)) throw new Error(`--modo inválido: ${modo}`);
   const limite = arg("limite") ? Number(arg("limite")) : undefined;

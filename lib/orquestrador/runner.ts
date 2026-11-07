@@ -66,6 +66,7 @@ interface Estado {
   executadas: Set<string>;
   aprovacoes: Map<string, Set<string>>; // chave da execução → quem aprovou
   historicoAcionado: boolean;
+  semIA: boolean; // configuração so_regras da ablação
 }
 
 const g = globalThis as unknown as { __runner?: Estado };
@@ -102,6 +103,7 @@ function criarEstado(): Estado {
     executadas: new Set(),
     aprovacoes: new Map(),
     historicoAcionado: false,
+    semIA: false,
   };
 }
 
@@ -160,7 +162,11 @@ async function processarCaso(st: Estado, c: CasoRT, fornecedoresComFraude: Set<s
   let semAgente = false;
   let semJev = false;
 
-  if (cache && (st.modo === "replay" || cache.pareceres.length)) {
+  if (st.semIA) {
+    semJev = true;
+    semAgente = true;
+    emit({ t: Date.now(), kind: "observacao", agente: "runner", texto: "configuração so_regras: sem Jev, sem especialistas, sem personas (só o piso do Passo A)" });
+  } else if (cache && (st.modo === "replay" || cache.pareceres.length)) {
     pareceres = cache.pareceres;
     jevCaso = cache.jev ?? undefined;
     semJev = !cache.jev;
@@ -315,7 +321,7 @@ function aplicarResposta(st: Estado, ac: AcionamentoRT, r: RespostaHumano) {
 }
 
 async function rodarHumanos(st: Estado) {
-  if (st.humanos !== "auto") return;
+  if (st.humanos !== "auto" || st.semIA) return;
   for (let rodada = 0; rodada < 2; rodada++) {
     const pend = st.acionamentos.filter((a) => a.status === "pendente" && temPersona(a.pessoa) && (a.rodadasMaisInfo ?? 0) === rodada);
     for (const ac of pend) {
@@ -350,15 +356,57 @@ function proximoCorte(st: Estado) {
   return st.cortes.find((c) => !st.processados.has(c.lote)) ?? null;
 }
 
+/** Regra ÚNICA de saída no corte (runner e ablação): o título é pago nesse lote? */
+export function pagaNoCorte(e: EstadoTitulo, d: { acao: Acao; resolvido?: unknown; recusado?: boolean }): boolean {
+  if (d.recusado) return false;
+  if (d.resolvido) return true;
+  if (d.acao === "manter") return true;
+  if (d.acao === "corrigir") return e.valorEmRisco === 0; // a menos: paga como está; a mais sem aprovação: contém
+  return false; // retirar / escalar / bloquear sem resolução → contenção no corte
+}
+
+export interface PlacarCalculado {
+  semSistema: number;
+  comSistema: number;
+  indevidoEvitado: number;
+  custoAtraso: number;
+  acionamentosHumanos: number;
+  acionamentosDesnecessarios: number;
+}
+
+/**
+ * Placar ÚNICO (runner, so_regras, llm_puro, hibrido) pela fórmula do evento:
+ * −(dinheiro indevido que saiu + custo de atraso de título legítimo retido + R$ 60 × acionamento desnecessário).
+ * `situacao(e)`: "pago" | "retido" | "pendente" (lote não processado: sai com o tesoureiro assinando sem conferir).
+ * Acionamento desnecessário = todos os títulos citados são da agenda e "limpos" no Passo A.
+ */
+export function calcularPlacar(estados: EstadoTitulo[], situacao: (e: EstadoTitulo) => { situacao: "pago" | "retido" | "pendente"; resolvido?: boolean }, acionamentos: { titulos: string[] }[]): PlacarCalculado {
+  const r2 = (x: number) => Math.round(x * 100) / 100;
+  const porId = new Map(estados.map((e) => [e.titulo_id, e]));
+  let total = 0;
+  let restante = 0;
+  let atraso = 0;
+  for (const e of estados) {
+    total += e.valorEmRisco;
+    const s = situacao(e);
+    if (s.situacao === "pendente" || (s.situacao === "pago" && !s.resolvido)) restante += e.valorEmRisco;
+    else if (s.situacao === "retido" && !e.achados.some((a) => a.acaoMinima === "retirar_do_lote")) atraso += custoAtraso(e.valor, e.categoria);
+  }
+  const desnecessarios = acionamentos.filter((a) => a.titulos.length > 0 && a.titulos.every((id) => porId.get(id)?.status === "limpo")).length;
+  return {
+    semSistema: -r2(total),
+    comSistema: -r2(restante + atraso + 60 * desnecessarios),
+    indevidoEvitado: r2(total - restante),
+    custoAtraso: r2(atraso),
+    acionamentosHumanos: acionamentos.length,
+    acionamentosDesnecessarios: desnecessarios,
+  };
+}
+
 function fecharLote(st: Estado, lote: string) {
   for (const e of st.analise.estados.filter((x) => x.lote === lote)) {
     const d = st.decisoes.get(e.titulo_id) ?? { acao: "manter" as Acao, origem: "piso" as const, situacao: "processado" as const };
-    let paga: boolean;
-    if (d.recusado) paga = false;
-    else if (d.resolvido) paga = true;
-    else if (d.acao === "manter") paga = true;
-    else if (d.acao === "corrigir") paga = e.valorEmRisco === 0; // a menos: paga como está; a mais sem aprovação: contém
-    else paga = false; // retirar / escalar / bloquear sem resolução → contenção no corte
+    const paga = pagaNoCorte(e, d);
     const c = casoRT(st, st.casoDoTitulo.get(e.titulo_id));
     if (!paga && (d.acao === "escalar" || d.acao === "bloquear" || d.acao === "corrigir" || d.recusado)) {
       registroTools().executar("retirar_do_lote", { titulo_id: e.titulo_id, motivo: "contenção no corte: sem decisão humana a tempo" }, ctx(st, "politica"));
@@ -371,24 +419,46 @@ function fecharLote(st: Estado, lote: string) {
 }
 
 // ---------- avançar ----------
-export async function avancar(opts: { modo?: Modo; humanos?: "auto" | "manual" } = {}) {
+/** Fim do período simulado: lotes que fecham depois disso são avaliados pelo estado nesta hora (parametros.md). */
+export const FIM_PERIODO = "2026-11-09T08:00:00";
+
+export async function avancar(opts: { modo?: Modo; humanos?: "auto" | "manual"; semIA?: boolean } = {}) {
   const st = estadoRunner();
   st.modo = opts.modo === "live" && liveDisponivel() ? "live" : "replay";
   if (opts.humanos) st.humanos = opts.humanos;
+  if (opts.semIA !== undefined) st.semIA = opts.semIA;
   const corte = proximoCorte(st);
   if (!corte) return { fim: true };
 
   if (!st.historicoAcionado) acionarHistorico(st, corte.lote);
 
-  const pendentes = st.casos.filter((c) => !c.processado && c.entrada.titulos.some((t) => t.lote === corte.lote));
+  // último passo: tudo o que fecha depois de 09/11 08:00 é decidido agora e avaliado pelo estado nesta hora
+  const final = corte.em > FIM_PERIODO;
+  const pendentes = st.casos.filter((c) => !c.processado && (final || c.entrada.titulos.some((t) => t.lote === corte.lote)));
   const fraude = new Set<string>();
   await limitar(pendentes, 8, (c) => processarCaso(st, c, fraude));
 
   await redigirPendentes(st);
   await rodarHumanos(st);
+  if (final) {
+    st.agora = FIM_PERIODO;
+    const restantes = st.cortes.filter((c) => !st.processados.has(c.lote));
+    for (const c of restantes) fecharLote(st, c.lote);
+    return { fim: true, lote: `${restantes.length} lote(s) após ${FIM_PERIODO}`, casos: pendentes.length };
+  }
   st.agora = corte.em;
   fecharLote(st, corte.lote);
   return { fim: false, lote: corte.lote, casos: pendentes.length };
+}
+
+/** Roda todos os cortes até o fim do período. `progresso` é chamado a cada corte (watchdog dos jobs longos). */
+export async function avancarTudo(opts: { modo?: Modo; humanos?: "auto" | "manual"; semIA?: boolean } = {}, progresso?: (lote: string, i: number, total: number) => void) {
+  const total = estadoRunner().cortes.length;
+  for (let i = 0; i < total + 1; i++) {
+    const r = await avancar(opts);
+    progresso?.(r.lote ?? "fim", i + 1, total);
+    if (r.fim) return;
+  }
 }
 
 function acionarHistorico(st: Estado, janela: string) {
@@ -436,34 +506,16 @@ function casoView(st: Estado, c: CasoRT): CasoView {
   };
 }
 
-export function placar(st: Estado) {
-  const total = Math.round(st.analise.estados.reduce((a, e) => a + e.valorEmRisco, 0) * 100) / 100;
-  let restante = 0;
-  let atraso = 0;
-  for (const e of st.analise.estados) {
-    const d = st.decisoes.get(e.titulo_id);
-    const lotePronto = st.processados.has(e.lote);
-    if (!lotePronto) {
-      restante += e.valorEmRisco; // sem sistema ainda: sairia com o tesoureiro assinando
-      continue;
-    }
-    if (d?.situacao === "pago") {
-      if (!d.resolvido) restante += e.valorEmRisco;
-    } else if (d?.situacao === "retido") {
-      const legitimo = !e.achados.some((a) => a.acaoMinima === "retirar_do_lote");
-      if (legitimo) atraso += custoAtraso(e.valor, e.categoria);
-    }
-  }
-  const desnecessarios = st.acionamentos.filter((a) => !a.obrigatorio).length;
-  restante = Math.round(restante * 100) / 100;
-  atraso = Math.round(atraso * 100) / 100;
-  return {
-    semSistema: -total,
-    comSistema: -Math.round((restante + atraso + 60 * desnecessarios) * 100) / 100,
-    indevidoEvitado: Math.round((total - restante) * 100) / 100,
-    custoAtraso: atraso,
-    acionamentosHumanos: st.acionamentos.length,
-  };
+export function placar(st: Estado): PlacarCalculado {
+  return calcularPlacar(
+    st.analise.estados,
+    (e) => {
+      if (!st.processados.has(e.lote)) return { situacao: "pendente" };
+      const d = st.decisoes.get(e.titulo_id);
+      return { situacao: d?.situacao === "retido" ? "retido" : "pago", resolvido: !!d?.resolvido };
+    },
+    st.acionamentos,
+  );
 }
 
 function lerAblacao(): AblacaoResultado[] | null {
@@ -519,7 +571,7 @@ export function view(): ExecucaoView {
 }
 
 /** Para cenários injetados (subagente injecao): registra um caso novo e processa na hora. */
-export async function processarCasoInjetado(entrada: CasoEntrada, eventoInicial: string): Promise<string> {
+export async function processarCasoInjetado(entrada: CasoEntrada, eventoInicial: string, modo?: Modo): Promise<string> {
   const st = estadoRunner();
   const c: CasoRT = { entrada, processado: false, pareceres: [], trace: [{ t: Date.now(), kind: "injecao", agente: "cenario", texto: eventoInicial }], decisao: { tituloIds: entrada.titulos.map((t) => t.titulo_id), acao: entrada.piso, origem: "piso", executaSozinho: true, justificativa: "processando", evidencias: [] }, simulado: true };
   st.casos.unshift(c);
@@ -532,7 +584,7 @@ export async function processarCasoInjetado(entrada: CasoEntrada, eventoInicial:
   }
   // injeção é demo ao vivo: usa o proxy se houver chave (o cache de replay, se existir, tem prioridade dentro de processarCaso)
   const modoAntes = st.modo;
-  st.modo = liveDisponivel() ? "live" : "replay";
+  st.modo = (modo ?? "live") === "live" && liveDisponivel() ? "live" : "replay";
   await processarCaso(st, c, new Set());
   await redigirPendentes(st);
   await rodarHumanos(st);

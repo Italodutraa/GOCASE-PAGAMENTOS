@@ -15,6 +15,8 @@ $arquivos = Get-ChildItem analise -Recurse -File -Include *.json -ErrorAction Si
 foreach ($a in $arquivos) {
   $txt = [IO.File]::ReadAllText($a.FullName)
   if ($txt.Contains($prefixo)) { $falhas += "token em $($a.Name)" }
+  # JSON corrompido (ex.: mascaramento sobre números) apaga o cache de replay em silêncio
+  try { $null = $txt | ConvertFrom-Json } catch { $falhas += "JSON inválido em $($a.Name)" }
   if ($a.FullName -match '\\replay\\|snapshot') {
     $vaz = @($contas | Where-Object { $txt.Contains($_) }).Count
     if ($vaz) { $falhas += "$vaz conta(s) completa(s) em $($a.Name)" }

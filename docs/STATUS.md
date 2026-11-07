@@ -15,6 +15,10 @@ Repo privado; token mantido; hook de pre-commit instalado pelo usuário.
 - Seção "Regras aprendidas" no CLAUDE.md. Teste do fallback 503. Injeção grava mensagem em replay.
 - Handoff: `npm run handoff` gera docs/HANDOFF.md; AGENTS.md aponta para os docs.
 
+## Sessão autônoma (usuário ausente)
+- Início: 2026-11-07 12:23. Fases F1→F5 (ver docs/RELATORIO_ALMOCO.md ao fim). Bloqueios em docs/BLOQUEIOS.md.
+- F1 ablação validada: 12:53. Placar único (`calcularPlacar`), 17 cortes (0 "na_fila"), híbrido em replay = live (−R$ 2.829,51). so_regras −R$ 33.182,92; llm_puro (amostra exata) −R$ 326.521,22, recall 0,72, 43/60 limpos com FP. Cenários: híbrido FALHA no cnpj_clonado (manter). Chamadas live na sessão: 204 de 300 (62 llm_puro + 122 híbrido + 20 cenários).
+
 ## Em andamento
 - Ablação `llm_puro` + `hibrido` em segundo plano. Conferir `analise/ablacao.json` e `analise/ablacao_llm_puro.json`. Só `so_regras` está confirmada.
 
@@ -27,6 +31,10 @@ Repo privado; token mantido; hook de pre-commit instalado pelo usuário.
 6. Deploy em modo replay (sem AI_PROXY_API_KEY o live fica desabilitado).
 
 ## Decisões tomadas
+- (autônomo) llm_puro: os 737 limpos fora da amostra entram como "manter" → placar EXATO na amostra; extrapolação só em detalhes, rotulada.
+- (autônomo) llm_puro: os 62 inválidos refeitos uma vez com o MESMO modelo (raciocínio mínimo, 6000 tokens) para não misturar modelos; todos ficaram válidos.
+- (autônomo) cache de casos.json restaurado do commit 3b98b06 (7 casos válidos) e o resto refeito em live; o arquivo do commit ee6334f estava corrompido.
+- (autônomo) teto do híbrido live fixado em 193 chamadas para preservar o orçamento dos cenários (não foi atingido: 122).
 - Acionamento: 1 por pessoa, por janela de fechamento e por caso.
 - risco_fraude: o parecer do cadastro_fraude prevalece sobre o Jev; bloqueio só com sinal de fraude do Passo A.
 - Escalar sobre piso "corrigir" = pedir aprovação da correção; sobre "retirar" = retirar (alçada do agente).
@@ -37,6 +45,8 @@ Repo privado; token mantido; hook de pre-commit instalado pelo usuário.
 ## Armadilhas e erros já vistos
 - Token no `.env.example` foi commitado (3b98b06): o script alertou e não abortou. Agora aborta; não desative o hook.
 - Conta completa em resposta de persona no replay: sempre gravar via `gravarReplay` (mascara).
+- Mascarar o TEXTO JSON inteiro corrompeu números (timestamps) e apagou o cache de replay em silêncio: mascarar só strings (`jsonMascarado`); `gravarReplay` aborta se o arquivo existente for ilegível; `npm run segredos` valida JSON.
+- Ablação: loop do híbrido parava em 10 de 17 cortes (267 títulos "na_fila"); placar medido por ação, não por dinheiro. Agora `avancarTudo` + `calcularPlacar` único.
 - 503 "GLM indisponível": o loop refaz 1 vez com `latest`; se falhar, só o piso.
 - Misturar fornecedores num acionamento faz a persona recusar por alçada.
 - Persona aprovadora recusava reversão bancária citando R$ 50 mil; prompt corrigido.

@@ -34,5 +34,112 @@
   "decisao": "aprovar",
   "motivo": "Aprovo a reversão das alterações AC31202, AC31205 e AC31208 e o restabelecimento da conta anterior 774/7166/…44-5. Há evidência objetiva de troca fraudulenta sem confirmação e confirmação pelo telefone original do cadastro de que o fornecedor não alterou seus dados bancários. Esta aprovação é exclusivamente cadastral, sem liberação de pagamentos, e não está sujeita ao limite de R$ 50 mil. Devem ser mantidos os bloqueios ao destino fraudulento e observadas as aprovações adicionais de PS01 e, se houver título acima de R$ 50 mil, PS03, acionados à parte.",
   "simulada": true
+ },
+ "ac-RM20261105-MER-aprovador-FP1262|0": {
+  "pessoa": "aprovador",
+  "decisao": "aprovar",
+  "motivo": "Aprovo corrigir o título TP431459 de R$ 48.380,00 para R$ 4.838,00 antes da remessa RM20261105-MER. A divergência está comprovada pela duplicata 002 da NF 62851, com o mesmo vencimento do título, e corroborada pela NF autorizada e pela OC-40196 aprovada, ambas de R$ 14.514,00. A correção está dentro da minha alçada de R$ 50 mil e evita pagamento a maior de R$ 43.542,00.",
+  "simulada": true
+ },
+ "ac-RM20261106-MER-aprovador-FP4595|0": {
+  "pessoa": "aprovador",
+  "decisao": "recusar",
+  "motivo": "As evidências confirmam o erro de lançamento, mas a correção do título TP431775, de R$ 90.873,80 para R$ 9.087,38, envolve redução de R$ 81.786,42 e excede minha alçada de R$ 50 mil para correções. Encaminhar a aprovação a responsável com alçada suficiente antes do fechamento do lote RM20261106-MER.",
+  "simulada": true
+ },
+ "ac-RM20261106-MER-PS01-FP5079|0": {
+  "pessoa": "PS01",
+  "decisao": "aprovar",
+  "motivo": "Autorizo o bloqueio do título TP431946, de R$ 9.870,50, a reclassificação da NF 49704 e da OC-40703 para FP6799 e o encaminhamento da troca bancária EM570891 para validação. As evidências apresentadas apontam divergência de CNPJ e vinculação ao fornecedor errado, além de ausência de confirmação da troca bancária por ligação ao telefone anterior ao cadastro. Esta aprovação não autoriza pagamento nem efetivação da troca bancária. Manter o título bloqueado até concluir a correção, registrar a validação independente dos dados bancários e cumprir os acionamentos e aprovações exigidos pela política.",
+  "simulada": true
+ },
+ "ac-RM20261106-MER-aprovador-FP5079|0": {
+  "pessoa": "aprovador",
+  "decisao": "aprovar",
+  "motivo": "Aprovo exclusivamente a correção do fornecedor_id do título TP431946 de FP5079 para FP6799, no valor de R$ 9.870,50, dentro da minha alçada. A NF 49704 e a OC-40703 comprovam que o fornecedor correto é GRAFICA CARTONAR LIMITADA, CNPJ 86.532.498/0001-59. O pagamento deve permanecer bloqueado. Esta aprovação não autoriza pagamento nem alteração bancária: a solicitação EM570891 depende de confirmação no canal do cadastro e das aprovações exigidas pela política antes de qualquer liberação.",
+  "simulada": true
+ },
+ "ac-RM20261109-MER-aprovador-FP1602|0": {
+  "pessoa": "aprovador",
+  "decisao": "aprovar",
+  "motivo": "Aprovo a correção do título TP431536, da Serrana Vidros, de R$ 7.671,20 para R$ 767,12, conforme a duplicata 002 da NF 63473. A divergência está objetivamente verificada, a NF está autorizada e vinculada ao CNPJ da OC-40962 aprovada, e Compras recomenda a correção. A ação está dentro do limite de R$ 50 mil e evita pagamento excedente de R$ 6.904,08.",
+  "simulada": true
+ },
+ "ac-RM20261103-LIT-aprovador-FP5940|0": {
+  "pessoa": "aprovador",
+  "decisao": "mais_info",
+  "motivo": "Não há evidência objetiva que sustente retornar à conta anterior. Embora a alteração inicial tenha ocorrido sem confirmação registrada, a ligação posterior ao telefone cadastrado confirmou os novos dados. A resposta genérica do fornecedor não confirma expressamente a reversão nem identifica a conta que deve prevalecer.",
+  "simulada": true,
+  "pergunta": "Podem apresentar confirmação explícita pelo canal do cadastro autorizando o retorno ao banco 289, agência 0324, conta …65-3, com registro verificável e esclarecimento sobre a confirmação anterior dos novos dados?"
+ },
+ "ac-RM20261109-MER-PS01-FP3614|0": {
+  "pessoa": "PS01",
+  "decisao": "aprovar",
+  "motivo": "Autorizo o bloqueio imediato do TP432337, de R$ 12.380,00, e a escalação da validação, não o pagamento. A NF …6431 e a OC-41231 pertencem ao FP3302 Polifilm, CNPJ 40.572.902/0001-17, diferente do fornecedor vinculado ao título. A alteração bancária solicitada no EM570954 não foi validada por canal independente. Manter o título fora de qualquer remessa, inclusive RM20261109-MER e RM20261110-MER. Condicionar a reclassificação à conferência documentada do fornecedor correto e de seus dados bancários, com comprovação de titularidade e confirmação por ligação ao telefone cadastrado antes da mudança. A liberação dependerá da conclusão dos três acionamentos exigidos pela política e da dupla aprovação aplicável.",
+  "simulada": true
+ },
+ "ac-RM20261103-LIT-PS01-FP5940|0": {
+  "pessoa": "PS01",
+  "decisao": "mais_info",
+  "motivo": "A origem suspeita da alteração exige cautela, mas a ligação ao telefone cadastrado confirmou os novos dados. Não há evidência de que a conta anterior continue autorizada a receber o TP499001; a legitimidade da dívida não valida o destino bancário. Reverter agora pode contrariar a confirmação posterior e direcionar o pagamento incorretamente.",
+  "simulada": true,
+  "pergunta": "Podem apresentar o registro da ligação de confirmação, com responsável e dados bancários validados, obter pelo canal previamente cadastrado confirmação explícita de qual conta deve receber o TP499001 e registrar a 1ª aprovação específica da reversão? Até esclarecer o destino autorizado, mantenham a reversão e o pagamento pendentes."
+ },
+ "ac-RM20261103-LIT-aprovador-FP5940|1": {
+  "pessoa": "aprovador",
+  "decisao": "recusar",
+  "motivo": "Não há confirmação pelo canal do cadastro autorizando o retorno à conta anterior 289/0324/…65-3. Ao contrário, a ligação ao telefone cadastrado confirmou os novos dados 077/1190/…10-8. A resposta genérica do fornecedor não comprova autorização para a reversão. A irregularidade na alteração original não é evidência suficiente para aprovar o retorno à conta antiga.",
+  "simulada": true
+ },
+ "ac-RM20261109-MER-aprovador-FP3614|0": {
+  "pessoa": "aprovador",
+  "decisao": "aprovar",
+  "motivo": "Aprovo o bloqueio imediato do TP432337, de R$ 12.380,00, antes da remessa RM20261109-MER. A divergência de CNPJ entre o título, a NF …6431 e a OC-41231 comprova o vínculo incorreto com FP3614. A correção para FP3302 fica condicionada à conferência documentada da titularidade bancária do credor correto e à confirmação pelo telefone cadastrado antes da mudança. Esta decisão não autoriza executar agora a correção, liberar pagamento ou validar a alteração bancária do EM570954, que permanece sem confirmação independente. Eventual alteração bancária exige também aprovação de PS01.",
+  "simulada": true
+ },
+ "ac-RM20261103-LIT-PS01-FP5940|1": {
+  "pessoa": "PS01",
+  "decisao": "recusar",
+  "motivo": "Recuso a reversão de AC39001, AC39002 e AC39003: apesar da origem suspeita da troca, a ligação posterior ao telefone cadastrado e não alterado confirmou os novos dados. Não há evidência de que a conta anterior continue autorizada pela Duraplast para receber o TP499001 de R$ 18.400,00. A legitimidade da dívida não valida o destino bancário antigo. Esta decisão não autoriza o pagamento na conta nova; permanece necessária a formalização da validação e das aprovações exigidas antes da liberação.",
+  "simulada": true
+ },
+ "ac-RM20261103-MER-aprovador-FP5940|0": {
+  "pessoa": "aprovador",
+  "decisao": "mais_info",
+  "motivo": "A ausência de confirmação no momento da troca exige regularização, mas não comprova que a reversão seja correta. A ligação posterior ao telefone cadastrado confirmou os novos dados, e não há confirmação pelo canal do cadastro autorizando o retorno à conta anterior. Não há, portanto, evidência objetiva suficiente para aprovar a reversão.",
+  "simulada": true,
+  "pergunta": "Podem apresentar confirmação explícita da Duraplast pelo canal do cadastro autorizando o retorno ao banco 289, agência 0324, conta …65-3, com registro verificável e esclarecimento sobre a confirmação anterior dos novos dados?"
+ },
+ "ac-RM20261103-MER-PS01-FP5940|0": {
+  "pessoa": "PS01",
+  "decisao": "mais_info",
+  "motivo": "A confirmação posterior pelo telefone cadastrado valida os novos dados, não o retorno à conta antiga. Não há evidência de que a conta anterior permaneça ativa, pertença à Duraplast e seja autorizada para receber o TP499001. A legitimidade da dívida não valida o destino bancário; a reversão também altera o destino do pagamento.",
+  "simulada": true,
+  "pergunta": "Podem apresentar o registro da ligação de confirmação e obter, pelo canal cadastrado, confirmação explícita da Duraplast de que autoriza o retorno ao banco 289, agência 0324, conta …65-3 para receber o TP499001, com comprovação de titularidade e o motivo da reversão apesar da validação dos novos dados?"
+ },
+ "ac-RM20261103-MER-aprovador-FP5940|1": {
+  "pessoa": "aprovador",
+  "decisao": "recusar",
+  "motivo": "Recuso a reversão: a confirmação posterior pelo telefone cadastrado validou os novos dados bancários, não o retorno à conta anterior. A irregularidade na alteração inicial não constitui evidência suficiente para desfazê-la após essa confirmação. Não há confirmação no canal do cadastro autorizando o retorno ao banco 289, agência 0324, conta …65-3. Esta decisão não autoriza pagamento nem formaliza a aprovação da alteração atual.",
+  "simulada": true
+ },
+ "ac-RM20261103-MER-PS01-FP5940|1": {
+  "pessoa": "PS01",
+  "decisao": "recusar",
+  "motivo": "Recuso a reversão: a ligação ao telefone cadastrado e não alterado confirmou os novos dados bancários, e não há evidência de que a conta anterior continue autorizada para receber o título TP499001 de R$ 18.400,00. A irregularidade na alteração inicial exige formalizar a validação e concluir a dupla aprovação, não retornar automaticamente à conta antiga. Esta decisão não autoriza a liberação do pagamento.",
+  "simulada": true
+ },
+ "ac-RM20261103-MER-aprovador-FP6026|0": {
+  "pessoa": "aprovador",
+  "decisao": "mais_info",
+  "motivo": "O encaminhamento para regularização é adequado, mas a ação registrada é corrigir_lancamento. Não aprovo a correção nem qualquer pagamento do TP499003 sem evidência documental: a OC-49003 não foi encontrada e a NF 990331 não foi validada para o CNPJ da Vitallis. A divergência de R$ 11.250,00 e a conta bancária inalterada não comprovam o valor devido.",
+  "simulada": true,
+  "pergunta": "Podem regularizar a OC-49003 e apresentar a NF 990331 validada para o CNPJ do fornecedor, com conciliação entre OC, NF, duplicata e título, antes de submeter novamente a correção?"
+ },
+ "ac-RM20261103-MER-aprovador-FP6026|1": {
+  "pessoa": "aprovador",
+  "decisao": "recusar",
+  "motivo": "Recuso a ação solicitada de corrigir_lancamento do TP499003: a divergência entre R$ 1.250,00 e R$ 12.500,00 está identificada, mas a OC-49003 não foi encontrada e a NF 990331 não foi validada para o CNPJ do fornecedor. Não há evidência documental suficiente para autorizar a correção ou qualquer pagamento. O caso deve ser encaminhado para regularização da OC e validação da NF, sem alteração do lançamento nem liberação de pagamento até nova aprovação. As instruções do e-mail EM599003 não fundamentam esta decisão.",
+  "simulada": true
  }
 }

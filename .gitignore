@@ -18,3 +18,5 @@ data/*.sqlite
 
 # resultado local do ultimo teste (handoff)
 .handoff-testes.json
+analise/*_progresso.json
+analise/ablacao.teste.json

@@ -62,6 +62,7 @@ export type ChatReq = {
   tools?: ToolDef[];
   tool_choice?: "auto" | "none" | "required";
   response_format?: { type: "json_object" };
+  reasoning_effort?: "minimal" | "low" | "medium" | "high";
 };
 export type ChatRes = { texto: string; toolCalls: ToolCall[]; modelo: string; entrada: number; saida: number; linhaCusto: string };
 

@@ -17,6 +17,9 @@ export interface RespostaLlmPuro {
   formatoOk: boolean;
   bruto?: string; // só quando o formato falhou
   modelo?: string;
+  /** 2ª tentativa de item inválido na 1ª rodada (fora do formato ou falha de chamada); `original` = como saiu na 1ª. */
+  retentativa?: boolean;
+  original?: "fora_do_formato" | "falha_de_chamada";
 }
 
 export const modeloAgente = () => process.env.AI_AGENT_MODEL || "glm-5.3-flash";
@@ -88,7 +91,7 @@ export interface ResultadoCamada {
 }
 
 /** Classifica os títulos (concorrência máx. 8, backoff em erro). Cache: não refaz chamadas já gravadas. */
-export async function classificarComLlm(titulos: EstadoTitulo[], store: Store, opts: { concorrencia?: number; log?: (s: string) => void } = {}): Promise<ResultadoCamada> {
+export async function classificarComLlm(titulos: EstadoTitulo[], store: Store, opts: { concorrencia?: number; log?: (s: string) => void; refazerInvalidos?: boolean; progresso?: (feitos: number, total: number) => void } = {}): Promise<ResultadoCamada> {
   const cache = lerCache();
   const agendaPorTitulo = new Map(store.agenda.map((a) => [a.titulo_id, a]));
   const respostas = new Map<string, RespostaLlmPuro>();
@@ -96,8 +99,17 @@ export async function classificarComLlm(titulos: EstadoTitulo[], store: Store, o
   let chamadasNovas = 0;
   let doCache = 0;
   const fila: EstadoTitulo[] = [];
+  // refazer: itens sem resposta válida na 1ª rodada (fora do formato, ou falha de chamada = ausente do cache), uma única vez
+  const original = new Map<string, RespostaLlmPuro["original"]>();
+  if (opts.refazerInvalidos)
+    for (const t of titulos) {
+      const c = cache[t.titulo_id];
+      if (c?.retentativa) continue;
+      if (!c) original.set(t.titulo_id, "falha_de_chamada");
+      else if (!c.formatoOk) original.set(t.titulo_id, "fora_do_formato");
+    }
   for (const t of titulos) {
-    if (cache[t.titulo_id]) {
+    if (cache[t.titulo_id] && !original.has(t.titulo_id)) {
       respostas.set(t.titulo_id, cache[t.titulo_id]);
       doCache++;
     } else fila.push(t);
@@ -111,12 +123,16 @@ export async function classificarComLlm(titulos: EstadoTitulo[], store: Store, o
       { role: "system" as const, content: SYSTEM_LLM_PURO },
       { role: "user" as const, content: montarPromptLlmPuro(t, store, agendaPorTitulo) },
     ];
+    const refazendo = original.get(t.titulo_id);
+    let modeloT = modelo;
     for (let tentativa = 1; ; tentativa++) {
       try {
-        const r = await chat({ model: modelo, max_tokens: 2000, messages, response_format: { type: "json_object" } });
+        // na retentativa: mesmo modelo, raciocínio mínimo e mais tokens (o 1º corte foi por max_tokens no raciocínio)
+        const r = await chat(refazendo ? { model: modeloT, max_tokens: 6000, reasoning_effort: "minimal", messages, response_format: { type: "json_object" } } : { model: modelo, max_tokens: 2000, messages, response_format: { type: "json_object" } });
         chamadasNovas++;
         const p = parsearRespostaLlmPuro(r.texto);
-        const resp: RespostaLlmPuro = p ? { ...p, formatoOk: true, modelo: r.modelo } : { acao: "manter", motivo: "resposta fora do formato: tratada como manter", formatoOk: false, bruto: r.texto.trim() ? r.texto.slice(0, 400) : "[vazio: resposta sem conteúdo, provável corte por max_tokens do modelo que raciocina]", modelo: r.modelo };
+        const base: RespostaLlmPuro = p ? { ...p, formatoOk: true, modelo: r.modelo } : { acao: "manter", motivo: "resposta fora do formato: tratada como manter", formatoOk: false, bruto: r.texto.trim() ? r.texto.slice(0, 400) : "[vazio: resposta sem conteúdo, provável corte por max_tokens do modelo que raciocina]", modelo: r.modelo };
+        const resp: RespostaLlmPuro = refazendo ? { ...base, retentativa: true, original: refazendo } : base;
         cache[t.titulo_id] = resp;
         fs.mkdirSync(path.dirname(ARQUIVO_CACHE()), { recursive: true });
         fs.writeFileSync(ARQUIVO_CACHE(), JSON.stringify(cache, null, 1));
@@ -129,10 +145,13 @@ export async function classificarComLlm(titulos: EstadoTitulo[], store: Store, o
           respostas.set(t.titulo_id, { acao: "manter", motivo: "chamada falhou: tratada como manter", formatoOk: false, bruto: "[erro de chamada]" });
           break;
         }
+        // retentativa com 503 do GLM: cai para "latest" (registrado em `modelo` do item)
+        if (refazendo && modeloT !== "latest") modeloT = "latest";
         await espera(2000 * 2 ** (tentativa - 1));
       }
     }
     feitos++;
+    opts.progresso?.(feitos, total);
     if (feitos % 10 === 0 || feitos === total) opts.log?.(`llm_puro: ${feitos}/${total} chamadas`);
   }
 

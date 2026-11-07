@@ -10,8 +10,8 @@ async function main() {
   for (let i = 0; i < 50; i++) if ((await avancar({ modo: "replay", humanos: "auto" })).fim) break;
   const v = view();
   const semCache = v.casos.filter((c) => c.trace.some((t) => t.texto.startsWith("replay sem cache")));
-  const { mascararContas } = await import("../lib/orquestrador/replay");
-  fs.writeFileSync(path.join(process.cwd(), "analise", "snapshot.json"), mascararContas(JSON.stringify(v)));
+  const { jsonMascarado } = await import("../lib/orquestrador/replay");
+  fs.writeFileSync(path.join(process.cwd(), "analise", "snapshot.json"), jsonMascarado(v));
   console.log(`snapshot: ${v.casos.length} casos, ${v.acionamentos.length} acionamentos, placar ${JSON.stringify(v.placar)}`);
   if (semCache.length) {
     console.error(`FALHA: ${semCache.length} caso(s) sem cache de replay: ${semCache.map((c) => c.id).join(", ")}`);

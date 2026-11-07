@@ -1,34 +1,106 @@
 {
  "ac-RM20261103-MER-PS09": {
-  "mensagem": "Rafael, precisamos recuperar R$ 406.636,83 pagos em duplicidade a vários fornecedores, referentes a 55 títulos, sendo o primeiro TP426461. A causa raiz foi o lançamento da mesma NF por xml_portal e boleto_email. Você autoriza iniciar a recuperação desse pagamento indevido?",
+  "mensagem": "Rafael, identificamos pagamentos em duplicidade a vários fornecedores em 55 títulos, sendo o primeiro TP426461, no total de R$ 406.636,83. A causa raiz foi o lançamento da mesma NF por xml_portal e boleto_email. Você autoriza iniciar a recuperação do valor pago indevidamente?",
   "critico": "citações e total conferidos"
  },
  "ac-RM20261103-MER-PS04-FP5525": {
-  "mensagem": "Carla, o título TP433196 da Flexipack, no valor total de R$ 14.215,00, está vinculado à OC-41440, com status “cancelada”, e não deve ser pago sem regularização. Compras também apontou divergência no TP432623 e condicionou os pagamentos à verificação do canal de comunicação e à regularização da OC. Você autoriza acionar Compras para regularizar a OC-41440?",
+  "mensagem": "Carla, o título TP433196, da Flexipack, no valor total de R$ 14.215,00, está bloqueado para pagamento porque a OC-41440 está cancelada.\nCompras também apontou divergência no título TP432623 e condicionou os pagamentos à verificação do canal de comunicação e à regularização da OC.\nVocê autoriza encaminhar a regularização da OC-41440 junto a Compras?",
   "critico": "citações e total conferidos"
  },
  "ac-RM20261103-MER-aprovador-FP5525": {
-  "mensagem": "Cláudia, o título TP432623 da Flexipack, com valor total informado de R$ 1.748,88, diverge da duplicata de R$ 17.488,78 e precisa de correção no lançamento.\nO título TP433196 está vinculado à OC-41440 cancelada e não deve ser pago sem regularização.\nConforme o parecer de compras, os pagamentos permanecem bloqueados até a verificação do canal de comunicação e a regularização da OC.\nVocê autoriza corrigir o lançamento do TP432623 para R$ 17.488,78, mantendo o bloqueio dos pagamentos?",
+  "mensagem": "Cláudia, o título TP432623 da Flexipack, com valor total de R$ 1.748,88, diverge da duplicata de R$ 17.488,78 e precisa de correção no lançamento. O título TP433196 está vinculado à OC-41440 cancelada; conforme compras, os pagamentos permanecem bloqueados até a verificação do canal de comunicação e a regularização da OC. Você autoriza corrigir o lançamento do TP432623 para R$ 17.488,78, mantendo o bloqueio dos pagamentos?",
   "critico": "citações e total conferidos"
  },
  "ac-RM20261103-MER-aprovador-FP4345": {
-  "mensagem": "Cláudia, o título TP431754, de Pigmentos Aquarela, no total de R$ 11.740,00, está com uma linha digitável fraudulenta, com banco e CNPJ divergentes, enviada por e-mail fora do cadastro. O fornecedor confirmou pelo canal cadastrado que não emitiu a segunda via e que o boleto válido é do banco 289. Você autoriza retirar a linha fraudulenta do lote RM20261103-MER, manter o título legítimo TP431706 e corrigir e reprogramar o TP431754 apenas com a linha validada do DDA8802768?",
+  "mensagem": "Cláudia, o título TP431754, de Pigmentos Aquarela, no valor total de R$ 11.740,00, está com linha digitável de boleto identificado como falso, com banco e CNPJ divergentes e origem em e-mail fora do cadastro. O fornecedor confirmou pelo canal cadastrado que não emitiu a segunda via e que o boleto válido é do banco 289. Você autoriza retirar a linha fraudulenta do lote RM20261103-MER, manter o título legítimo TP431706 e corrigir e reprogramar o TP431754 apenas com a linha validada do DDA8802768?",
   "critico": "citações e total conferidos"
  },
  "ac-RM20261103-MER-PS01-FP4615": {
-  "mensagem": "Renata, precisamos da sua 2ª aprovação para reverter a alteração cadastral da Embalarte (AC31202, AC31205 e AC31208), diante da fraude confirmada na troca bancária sem confirmação.\nA solicitação envolve 25 títulos, sendo o primeiro TP431502, no valor total de R$ 194.440,08.\nO fornecedor confirmou pelo canal do cadastro que não mudou de banco e não reconhece o domínio usado na solicitação.\nNão se trata de liberar novo pagamento: os títulos são dívidas legítimas que seguirão para a conta antiga.\nVocê aprova desfazer a troca de conta e restabelecer os dados bancários anteriores do cadastro, no banco 774?",
+  "mensagem": "Renata, precisamos da sua 2ª aprovação para reverter a alteração cadastral da Embalarte (AC31202, AC31205 e AC31208), devido à troca bancária sem confirmação solicitada por domínio imitador. São 25 títulos, sendo o primeiro TP431502, no valor total de R$ 194.440,08. O fornecedor confirmou pelo canal do cadastro que não trocou de banco. Não se trata de liberar pagamento novo: os títulos são dívidas legítimas que seguirão para a conta antiga. Você aprova desfazer a troca e restabelecer a conta anterior do cadastro, no banco 774?",
   "critico": "citações e total conferidos"
  },
  "ac-RM20261103-MER-PS08-FP4615": {
-  "mensagem": "Lívia, identificamos tentativa de golpe envolvendo a Embalarte: um e-mail de domínio imitador solicitou uma troca bancária registrada sem confirmação, e o fornecedor negou a alteração pelo canal cadastrado. Estão em análise 25 títulos, sendo o primeiro TP431502, no valor total de R$ 194.440,08. Você autoriza bloquear os 25 títulos, reverter a alteração bancária e encaminhar o caso ao compliance e à segurança da informação?",
+  "mensagem": "Lívia, identificamos uma tentativa de golpe envolvendo 25 títulos da Embalarte, sendo o primeiro TP431502, no valor total de R$ 194.440,08. A troca bancária foi registrada sem confirmação após solicitação de um domínio imitador, e o fornecedor confirmou pelo canal cadastrado que não alterou seus dados bancários. Você autoriza o bloqueio desses 25 títulos, a reversão da alteração bancária e o encaminhamento ao compliance/segurança da informação?",
   "critico": "citações e total conferidos"
  },
  "ac-RM20261103-MER-aprovador-FP4615": {
-  "mensagem": "Cláudia, solicito aprovação para reverter as alterações cadastrais AC31202, AC31205 e AC31208 da Embalarte e restabelecer a conta anterior, no banco 774. São 25 títulos, sendo o primeiro TP431502, no valor total de R$ 194.440,08. A troca bancária foi registrada sem confirmação após solicitação de um domínio imitador do fornecedor. Não se trata de liberar pagamento novo: os títulos são dívidas legítimas que seguirão para a conta antiga. Você aprova a reversão da alteração cadastral?",
+  "mensagem": "Cláudia, solicito aprovação para reverter as alterações cadastrais AC31202, AC31205 e AC31208 da Embalarte e restabelecer a conta anterior, no banco 774. A troca foi registrada sem confirmação, e o fornecedor confirmou pelo canal cadastrado que não mudou de banco. São 25 títulos, sendo o primeiro TP431502, no valor total de R$ 194.440,08. Não se trata de liberar novo pagamento: os títulos são dívidas legítimas que seguirão para a conta antiga. Você aprova a reversão da alteração cadastral?",
   "critico": "citações e total conferidos"
  },
  "ac-RM20261103-MER-PS03-FP4615": {
-  "mensagem": "Helena, solicito aprovação para reverter a troca de conta da Embalarte registrada em AC31202, AC31205 e AC31208, retornando ao banco anterior do cadastro (774). O título TP432130 tem valor total de R$ 96.480,00; também constam nas evidências os títulos TP432024 e TP431243. A alteração foi registrada sem confirmação, e o fornecedor confirmou pelo canal do cadastro que não mudou de banco nem reconhece o domínio que solicitou a troca. Não se trata de liberar novo pagamento: os títulos são dívidas legítimas que seguirão para a conta antiga. Você aprova a reversão da alteração cadastral?",
+  "mensagem": "Helena, solicito aprovação para reverter a troca de conta da Embalarte registrada em AC31202, AC31205 e AC31208, retornando ao banco anterior do cadastro (774). O título TP432130 tem valor total de R$ 96.480,00; as evidências também citam os títulos TP432024 e TP431243. A alteração foi registrada sem confirmação, e o fornecedor confirmou pelo canal do cadastro que não trocou de banco nem reconhece o domínio usado na solicitação. Não se trata de liberar novo pagamento: os títulos são dívidas legítimas que seguirão para a conta antiga. Você aprova a reversão da alteração cadastral?",
+  "critico": "citações e total conferidos"
+ },
+ "ac-RM20261105-MER-aprovador-FP1262": {
+  "mensagem": "Cláudia, o título TP431459, de Frascos Alvorada, está lançado com valor total de R$ 48.380,00, enquanto a duplicata 002 da NF 62851 é de R$ 4.838,00. A correção antes da remessa RM20261105-MER evita um pagamento a maior de R$ 43.542,00. Você aprova corrigir o lançamento para R$ 4.838,00?",
+  "critico": "citações e total conferidos"
+ },
+ "ac-RM20261106-MER-PS02-FP3062": {
+  "mensagem": "Marcos, o título TP432863 da TransNorte, no valor total de R$ 27.134,80, já foi pago fora do lote, mas segue agendado sem baixa no ERP, com risco de pagamento em duplicidade. Você autoriza retirar o título do lote RM20261106-MER antes do fechamento de 10:00 e realizar a baixa manual pelo pagamento já efetuado?",
+  "critico": "citações e total conferidos"
+ },
+ "ac-RM20261106-MER-aprovador-FP4595": {
+  "mensagem": "Cláudia, o título TP431775, da Vidraria Serrana, está lançado no total de R$ 90.873,80, mas a duplicata 001 da NF 35924 é de R$ 9.087,38. O erro de digitação foi confirmado nas três vias e geraria pagamento a maior de R$ 81.786,42. Você autoriza corrigir o lançamento para R$ 9.087,38 antes do fechamento do lote RM20261106-MER?",
+  "critico": "citações e total conferidos"
+ },
+ "ac-RM20261106-MER-PS01-FP5079": {
+  "mensagem": "Renata, o título TP431946, vinculado à Cartonart, no valor total de R$ 9.870,50, apresenta suspeita de fraude e risco de pagamento ao fornecedor errado. A NF 49704 e a OC-40703 pertencem à Gráfica Cartonar (FP6799), não à Cartonart (FP5079), e a troca bancária solicitada em EM570891 está sem registro de confirmação por ligação ao telefone anterior ao cadastro. Você autoriza bloquear o título, reclassificar a NF/OC para FP6799 e encaminhar a troca bancária para validação antes de qualquer pagamento?",
+  "critico": "citações e total conferidos"
+ },
+ "ac-RM20261106-MER-PS08-FP5079": {
+  "mensagem": "Lívia, o título TP431946, de Cartonart, no valor total de R$ 9.870,50, apresenta alto risco de fraude e pagamento ao fornecedor errado. A NF 49704 e a OC-40703 pertencem ao fornecedor FP6799 Cartonar, não ao FP5079 Cartonart, e a troca bancária solicitada em EM570891 não tem registro de confirmação por ligação ao telefone anterior ao cadastro. Você autoriza bloquear o título, reclassificar a NF/OC para FP6799 e escalar a validação da troca bancária antes de qualquer pagamento?",
+  "critico": "citações e total conferidos"
+ },
+ "ac-RM20261106-MER-aprovador-FP5079": {
+  "mensagem": "Cláudia, o título TP431946, no valor total de R$ 9.870,50, está lançado no fornecedor FP5079 Cartonart, mas a NF 49704 e a OC-40703 pertencem ao fornecedor FP6799 Cartonar (CNPJ 86.532.498/0001-59). A recomendação é bloquear o pagamento até corrigir o fornecedor_id e validar a troca bancária solicitada em EM570891. Você aprova a correção do lançamento de FP5079 para FP6799, com bloqueio do pagamento até a validação bancária?",
+  "critico": "citações e total conferidos"
+ },
+ "ac-RM20261109-MER-PS02-FP4939": {
+  "mensagem": "Marcos, o título TP432992, da Expressa Já, no valor total de R$ 72.436,61, já foi pago fora do lote, conforme documento 181675, mas segue agendado e sem baixa no contas a pagar. Para evitar pagamento em duplicidade, você autoriza retirar o título do lote, cancelar o agendamento e efetuar a baixa manual no ERP vinculada ao débito já realizado?",
+  "critico": "citações e total conferidos"
+ },
+ "ac-RM20261109-MER-PS02-FP6624": {
+  "mensagem": "Marcos, o título TP432865, da Rápido Sul, no total de R$ 59.597,64, já foi pago fora do lote, conforme documento bancário 181490, e o boleto está liquidado na CIP. Como permanece agendado e sem baixa no ERP, há risco de pagamento em duplicidade. Autoriza retirar o título do lote RM20261109-MER, cancelar seu agendamento e efetuar a baixa manual no ERP com conciliação ao documento 181490?",
+  "critico": "citações e total conferidos"
+ },
+ "ac-RM20261109-MER-aprovador-FP1602": {
+  "mensagem": "Cláudia, o título TP431536, da Serrana Vidros, está lançado com valor total de R$ 7.671,20, mas a duplicata 002 da NF 63473 indica R$ 767,12. Compras recomenda corrigir o lançamento antes de fechar a remessa, evitando pagamento excedente de R$ 6.904,08. Você aprova a correção do título TP431536 para R$ 767,12?",
+  "critico": "citações e total conferidos"
+ },
+ "ac-RM20261109-MER-PS05-FP6660": {
+  "mensagem": "Diego, o título TP433074, da Studio Claro, no total de R$ 8.900,00, está impedido de pagamento porque a OC-41494 permanece pendente de aprovação, sem aprovador nem data de aprovação. Compras recomenda retirar o título do lote até a regularização e validar a divergência entre o vencimento do título (09/11/2026) e o da duplicata (07/11/2026) antes da reinclusão. Você autoriza retirar o TP433074 do lote e acionar Compras para regularizar a OC-41494 e validar o vencimento?",
+  "critico": "citações e total conferidos"
+ },
+ "ac-RM20261109-MER-PS01-FP3614": {
+  "mensagem": "Renata, o título TP432337, de Polyfilm Brasil, no total de R$ 12.380,00, apresenta suspeita de fraude: a NF …6431 e a OC-41231 pertencem ao fornecedor FP3302 Polifilm, diferente do vinculado ao título. A alteração bancária solicitada pelo e-mail EM570954 não foi validada por canal independente. Você autoriza bloquear o título antes do lote RM20261110-MER e escalar a validação da titularidade bancária, deixando a reclassificação para o fornecedor correto condicionada à conferência documentada?",
+  "critico": "citações e total conferidos"
+ },
+ "ac-RM20261103-LIT-aprovador-FP5940": {
+  "mensagem": "Cláudia, solicito sua decisão sobre a reversão da troca de conta da Duraplast (AC39001, AC39002 e AC39003), referente ao título TP499001, no valor total de R$ 18.400,00. A alteração foi feita por e-mail de remetente fora do cadastro, sem confirmação registrada, embora uma ligação posterior ao telefone cadastrado tenha confirmado os novos dados. A solicitação é retornar ao banco anterior do cadastro, não liberar um novo pagamento: o título é uma dívida legítima e seguirá para a conta antiga. Você aprova a reversão da alteração cadastral?",
+  "critico": "citações e total conferidos"
+ },
+ "ac-RM20261109-MER-PS08-FP3614": {
+  "mensagem": "Lívia, o título TP432337, lançado para Polyfilm Brasil, no total de R$ 12.380,00, apresenta risco de fraude e pagamento ao fornecedor errado. A NF …6431 e a OC-41231 pertencem ao fornecedor FP3302 Polifilm, e a alteração bancária solicitada no e-mail EM570954 não foi validada por canal independente. Você autoriza bloquear o título antes da remessa e escalar a validação da titularidade bancária, com correção do fornecedor somente após conferência documentada?",
+  "critico": "citações e total conferidos"
+ },
+ "ac-RM20261103-LIT-PS01-FP5940": {
+  "mensagem": "Renata, solicito sua 2ª aprovação para reverter as alterações cadastrais AC39001, AC39002 e AC39003 da Duraplast e retornar à conta bancária anterior, referente ao título TP499001, no valor total de R$ 18.400,00. A troca foi feita por e-mail de remetente fora do cadastro (EM599001), sem confirmação registrada no momento; posteriormente, uma ligação ao telefone cadastrado confirmou os novos dados, mas o caso permanece escalado para decisão humana. Não se trata de liberar um pagamento novo: o título é uma dívida legítima que seguirá para a conta antiga com a reversão. Você aprova reverter a alteração cadastral e restabelecer a conta anterior?",
+  "critico": "citações e total conferidos"
+ },
+ "ac-RM20261109-MER-aprovador-FP3614": {
+  "mensagem": "Cláudia, o título TP432337, no valor total de R$ 12.380,00, está lançado em FP3614 Polyfilm Brasil, mas a NF …6431 e a OC-41231 pertencem ao fornecedor FP3302 Polifilm Filmes Técnicos. A alteração bancária solicitada no e-mail EM570954 não tem validação independente e não comprova a titularidade da conta do credor correto. Você aprova bloquear o título antes da remessa e corrigir o fornecedor_id para FP3302 somente após conferência documentada da titularidade bancária e validação pelo telefone cadastrado antes da mudança?",
+  "critico": "citações e total conferidos"
+ },
+ "ac-RM20261103-MER-aprovador-FP5940": {
+  "mensagem": "Cláudia, solicito sua decisão sobre a reversão da troca de conta da Duraplast (AC39001, AC39002 e AC39003), referente ao título TP499001, no total de R$ 18.400,00. A alteração veio de remetente fora do cadastro (EM599001), sem confirmação registrada no momento da troca, embora a ligação posterior ao telefone cadastrado tenha confirmado os novos dados. A solicitação é retornar ao banco anterior do cadastro, não liberar um novo pagamento: o título é uma dívida legítima e seguirá para a conta antiga. Você aprova a reversão da alteração cadastral?",
+  "critico": "citações e total conferidos"
+ },
+ "ac-RM20261103-MER-PS01-FP5940": {
+  "mensagem": "Renata, solicito sua 2ª aprovação para reverter a alteração cadastral da Duraplast (AC39001, AC39002 e AC39003), referente ao título TP499001, no total de R$ 18.400,00. A troca bancária foi feita por e-mail fora do cadastro, sem confirmação registrada no momento da alteração; posteriormente, uma ligação ao telefone cadastrado confirmou os novos dados. A decisão solicitada é desfazer a troca e retornar à conta anterior, não liberar um novo pagamento: o título é uma dívida legítima que seguirá para a conta antiga. Você aprova a reversão para o banco e a conta anteriores do cadastro?",
+  "critico": "citações e total conferidos"
+ },
+ "ac-RM20261103-MER-aprovador-FP6026": {
+  "mensagem": "Cláudia, o título TP499003, da Vitallis, tem valor total de R$ 1.250,00, mas a duplicata indica R$ 12.500,00, uma diferença de R$ 11.250,00 a menos. A OC-49003 não foi encontrada e a NF 990331 não foi localizada para o CNPJ do fornecedor, impedindo a validação documental. Você aprova encaminhar o caso para regularização da OC e validação da NF antes de corrigir o lançamento e realizar qualquer pagamento?",
   "critico": "citações e total conferidos"
  }
 }
