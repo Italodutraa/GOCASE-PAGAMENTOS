@@ -63,6 +63,7 @@ export function useExecucao() {
     ocupado,
     toasts,
     refresh,
+    avisar,
     avancar: (modo: "live" | "replay", humanos: "auto" | "manual") => post("/api/avancar", { modo, humanos }, "avançar"),
     acao: (acionamentoId: string, decisao: Decisao, motivo?: string) => post("/api/acao", { acionamentoId, decisao, motivo }, "ação"),
     injetar: (cenario: Cenario) => post("/api/injetar", { cenario }, "injetar"),
