@@ -21,7 +21,8 @@ export function Semaforo({ status }: { status: "limpo" | "atencao" | "bloqueio" 
 }
 
 export function SeloSimulado({ texto = "simulado" }: { texto?: string }) {
-  return <span className="rounded border border-dashed border-sky-400/60 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-sky-300">{texto}</span>;
+  // Mesmo estilo do carimbo SIMULADO (padronizado), sem inclinação para caber em linha.
+  return <span className="inline-block rounded-sm border-2 border-dashed border-sky-400 px-1.5 py-0.5 text-[10px] font-black uppercase leading-none tracking-[0.12em] text-sky-300 opacity-90">{texto}</span>;
 }
 
 export type TipoCarimbo =

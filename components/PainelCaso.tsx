@@ -1,7 +1,7 @@
 import type { CasoView } from "@/lib/contratos/types";
 import { Pareceres } from "./Pareceres";
 import { Timeline } from "./Timeline";
-import { brl, ChipAcao, num, SeloSimulado } from "./ui";
+import { brl, Carimbo, CARIMBO_DA_ACAO, ChipAcao, num, SeloSimulado } from "./ui";
 
 export function PainelCaso({ caso }: { caso?: CasoView }) {
   if (!caso) return <div className="rounded-lg border border-dashed border-white/15 p-10 text-center text-sm opacity-60">Nenhum caso aberto ainda. Avance até o próximo corte para os agentes analisarem o lote.</div>;
@@ -16,9 +16,14 @@ export function PainelCaso({ caso }: { caso?: CasoView }) {
             </p>
             <h2 className="text-lg font-semibold leading-snug">{caso.titulo}</h2>
           </div>
-          <div className="text-right">
+          <div className="flex flex-col items-end gap-2 text-right">
             <div className={`text-xl font-semibold ${num}`}>{brl(caso.valorTotal)}</div>
             <div className="text-[11px] opacity-60">{caso.titulos.length} título(s)</div>
+            <div className="flex flex-wrap justify-end gap-2">
+              {caso.trace.some((e) => e.kind === "injecao") && <Carimbo tipo="INJEÇÃO IGNORADA" />}
+              {caso.trace.some((e) => e.kind === "rejeicao_politica") && <Carimbo tipo="BARRADO PELA CERCA" />}
+              <Carimbo tipo={CARIMBO_DA_ACAO[d.acao]} grande />
+            </div>
           </div>
         </div>
         <div className="mt-3 flex flex-wrap items-center gap-2 text-xs">

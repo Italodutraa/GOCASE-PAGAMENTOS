@@ -1,7 +1,7 @@
 "use client";
 import { useMemo, useState } from "react";
 import type { TituloView } from "@/lib/contratos/types";
-import { brl, ChipAcao, num, Semaforo } from "./ui";
+import { brl, Carimbo, CARIMBO_DA_ACAO, ChipAcao, num, Semaforo } from "./ui";
 
 export function ListaTitulos({ titulos, selecionado, onSelect }: { titulos: TituloView[]; selecionado?: string; onSelect: (casoId: string | undefined, tituloId: string) => void }) {
   const [soAchado, setSoAchado] = useState(false);
@@ -47,7 +47,7 @@ export function ListaTitulos({ titulos, selecionado, onSelect }: { titulos: Titu
                     <span className={`text-xs font-medium ${num}`}>{brl(t.valor)}</span>
                   </span>
                   <span className="flex flex-wrap items-center gap-2 pl-4 text-[11px] opacity-90">
-                    <ChipAcao acao={t.acao} />
+                    {t.acao === "manter" ? <ChipAcao acao={t.acao} /> : <Carimbo tipo={CARIMBO_DA_ACAO[t.acao]} inclinado={false} />}
                     <span className="opacity-60">origem: {t.origem}</span>
                     <span className="opacity-60">{t.situacao.replace("_", " ")}</span>
                     {t.valorEmRisco > 0 && <span className={`text-red-300 ${num}`}>risco {brl(t.valorEmRisco)}</span>}
