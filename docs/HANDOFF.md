@@ -1,8 +1,9 @@
 # HANDOFF (gerado por `npm run handoff`; não editar à mão)
 
-Gerado: 07/11/2026, 14:21:29 · branch: main · último commit: d5ce7b5 F5 documentos: README, correcoes-ia (17 itens), pitch com ablacao real, demo-checklist e RELATORIO_ALMOCO
+Gerado: 07/11/2026, 14:34:33 · branch: main · último commit: d9a0814 feat(f4-f5): motor de auto-efetivacao (>=90%), governanca zero-trust e design executivo Gogroup
 
 ## git
+- d9a0814 feat(f4-f5): motor de auto-efetivacao (>=90%), governanca zero-trust e design executivo Gogroup
 - d5ce7b5 F5 documentos: README, correcoes-ia (17 itens), pitch com ablacao real, demo-checklist e RELATORIO_ALMOCO
 - ad0e2fa UI: avatares dos agentes
 - af4c1e2 F4.4 modo Palco: tecla P, cenas 1-4 (Embalarte, duplicidades, injecao EM570996, agente barrado), Esc sai
@@ -12,11 +13,10 @@ Gerado: 07/11/2026, 14:21:29 · branch: main · último commit: d5ce7b5 F5 docum
 - 41a7919 Handoff para retomada: STATUS com proximos passos (F4, F5) e numeros reais
 - e8f7e63 F3 snapshot e build: SOMENTE_REPLAY para demo sem proxy, snapshot gerado, producao validada em replay
 - 541dead F2 injecao ponta a ponta: rota em replay sem token, reset, canario; detector de injecao em ingles
-- 21590ea Ablacao validada: placar unico do runner, 17 cortes, hibrido replay = live, llm_puro refeito, cenarios fora das regras; corrige replay corrompido por mascaramento
-Não commitados (29): M README.md | M analise/replay/mensagens.json | M app/page.tsx | M components/BotoesInjecao.tsx | M components/PainelCaso.tsx | M components/Placar.tsx | M components/useExecucao.ts | M components/usePalco.ts | +21
+Não commitados (16): M analise/replay/mensagens.json | M app/page.tsx | M components/BarraAutonomia.tsx | M components/Funil.tsx | M components/PainelCaso.tsx | M components/TopBar.tsx | M docs/STATUS.md | M tsconfig.tsbuildinfo | +8
 
 ## Testes
-OK em 07/11/2026, 14:21:28: Tests  100 passed (100)
+OK em 07/11/2026, 14:34:33: Tests  100 passed (100)
 
 ## Artefatos
 - analise/ablacao.json: 07/11/2026, 12:48:20 · analise/snapshot.json: 07/11/2026, 12:51:44 · analise/estado_agenda.json: 07/11/2026, 12:51:11
@@ -32,8 +32,8 @@ AI_PROXY_API_KEY, AI_PROXY_BASE_URL, AI_CHAT_MODEL, AI_AGENT_MODEL, SOMENTE_REPL
 ## STATUS (docs/STATUS.md, integral)
 # STATUS (máx. 80 linhas; atualizar a cada checkpoint, antes do commit)
 
-## Estado atual (2026-11-07 14:21)
-Sessão concluída: fases **F1–F5 + Polimento Executivo Final** (Auto-Efetivação ≥90%, Governança Zero-Trust, Cenário Ao Vivo 94,2% e Design Executivo Fintech Gogroup) entregues.
+## Estado atual (2026-11-07 14:34)
+Sessão concluída: fases **F1–F5 + Polimento Executivo Final + Despoluição Visual (Modo Palco)** entregues.
 100 testes verdes (`npm test`, 15 suítes), `npm run typecheck` limpo, `npm run segredos` ok, build validado em modo replay (`SOMENTE_REPLAY=1`).
 Relatórios executivos em `RELATORIO_HACKATHON.md` e `docs/RELATORIO_ALMOCO.md`.
 

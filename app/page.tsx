@@ -51,30 +51,35 @@ export default function Home() {
   const pendentes = view.acionamentos.filter((a) => a.status === "pendente").length;
   const modoEfetivo = modo === "live" && !view.liveDisponivel ? "replay" : modo;
 
+  const pilulaAutonomia = (
+    <BarraAutonomia
+      limiar={limiar}
+      setLimiar={setLimiar}
+      modoPolitica={modoPolitica}
+      setModoPolitica={setModoPolitica}
+      resumo={resumoAutonomia}
+    />
+  );
+
   return (
     <>
-      <TopBar
-        view={view}
-        exemplo={ex.exemplo}
-        ocupado={ex.ocupado}
-        modo={modoEfetivo}
-        setModo={setModo}
-        humanos={humanos}
-        setHumanos={setHumanos}
-        onAvancar={() => ex.avancar(modoEfetivo, humanos)}
-        onReset={ex.reset}
-        onChat={() => setChat(true)}
-        pendentes={pendentes}
-      />
-      <BarraAutonomia
-        limiar={limiar}
-        setLimiar={setLimiar}
-        modoPolitica={modoPolitica}
-        setModoPolitica={setModoPolitica}
-        resumo={resumoAutonomia}
-      />
-      {palco && (
-        <nav className="sticky top-[62px] z-20 flex flex-wrap items-center gap-2 border-b-2 border-[#d7d900] bg-[#2659a5] px-4 py-2 text-xs text-white shadow">
+      {!palco ? (
+        <TopBar
+          view={view}
+          exemplo={ex.exemplo}
+          ocupado={ex.ocupado}
+          modo={modoEfetivo}
+          setModo={setModo}
+          humanos={humanos}
+          setHumanos={setHumanos}
+          onAvancar={() => ex.avancar(modoEfetivo, humanos)}
+          onReset={ex.reset}
+          onChat={() => setChat(true)}
+          pendentes={pendentes}
+          autonomia={pilulaAutonomia}
+        />
+      ) : (
+        <nav className="sticky top-0 z-30 flex flex-wrap items-center gap-2 border-b-4 border-[#d7d900] bg-[#2659a5] px-4 py-2.5 text-xs text-white shadow-md">
           <Pilula>Modo Palco</Pilula>
           {CENAS.map((c) => {
             const alvo = casos.find(c.acha);
@@ -94,10 +99,19 @@ export default function Home() {
               </button>
             );
           })}
-          <span className="ml-auto font-semibold text-[#d7d900]">P ou Esc para sair</span>
+          <div className="ml-auto flex items-center gap-2">
+            {pilulaAutonomia}
+            <button
+              type="button"
+              onClick={() => setPalco(false)}
+              className="rounded-full border border-white/60 px-3 py-1 font-bold text-[#d7d900] hover:bg-white/10"
+            >
+              Sair (P / Esc)
+            </button>
+          </div>
         </nav>
       )}
-      <main className={`grid gap-4 p-4 ${palco ? "mx-auto max-w-6xl" : "lg:grid-cols-[minmax(320px,380px)_1fr]"}`}>
+      <main className={`grid gap-4 p-4 ${palco ? "mx-auto max-w-5xl pt-6" : "lg:grid-cols-[minmax(320px,380px)_1fr]"}`}>
         {!palco && (
           <div className="min-w-0">
             {view.titulos.length === 0 ? (
@@ -107,7 +121,7 @@ export default function Home() {
             )}
           </div>
         )}
-        <div className="flex min-w-0 flex-col gap-4">
+        <div className="flex min-w-0 flex-col gap-3.5">
           {!palco && <Funil view={view} />}
           {!palco && <CartaoRenata acionamentos={view.acionamentos} onAbrirChat={() => setChat(true)} />}
           {!palco && <BotoesInjecao onInjetar={onInjetar} desabilitado={!!ex.ocupado} />}
@@ -119,7 +133,7 @@ export default function Home() {
           />
         </div>
       </main>
-      <Placar view={view} resumoAutonomia={resumoAutonomia} />
+      {!palco && <Placar view={view} resumoAutonomia={resumoAutonomia} />}
       {!palco && (
         <p className="px-4 pb-16 text-xs font-semibold text-[#2659a5]">
           Atalho: tecla <kbd className="rounded bg-[#2659a5] px-1.5 py-0.5 font-mono text-white">P</kbd> abre o modo Palco (cenas 1–5: Embalarte, duplicidades, injeção EM570996, agente barrado, auto-efetivação 94%).

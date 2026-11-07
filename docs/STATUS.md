@@ -1,7 +1,7 @@
 # STATUS (máx. 80 linhas; atualizar a cada checkpoint, antes do commit)
 
-## Estado atual (2026-11-07 14:21)
-Sessão concluída: fases **F1–F5 + Polimento Executivo Final** (Auto-Efetivação ≥90%, Governança Zero-Trust, Cenário Ao Vivo 94,2% e Design Executivo Fintech Gogroup) entregues.
+## Estado atual (2026-11-07 14:34)
+Sessão concluída: fases **F1–F5 + Polimento Executivo Final + Despoluição Visual (Modo Palco)** entregues.
 100 testes verdes (`npm test`, 15 suítes), `npm run typecheck` limpo, `npm run segredos` ok, build validado em modo replay (`SOMENTE_REPLAY=1`).
 Relatórios executivos em `RELATORIO_HACKATHON.md` e `docs/RELATORIO_ALMOCO.md`.
 

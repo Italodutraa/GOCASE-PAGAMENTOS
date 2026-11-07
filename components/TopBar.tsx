@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import type { ReactNode } from "react";
 import type { ExecucaoView } from "@/lib/contratos/types";
 import { fmtHora, Pilula, SeloSimulado } from "./ui";
 
@@ -27,6 +28,7 @@ export function TopBar(p: {
   onReset: () => void;
   onChat: () => void;
   pendentes: number;
+  autonomia?: ReactNode;
 }) {
   const { view } = p;
   const c = contagem(view);
@@ -34,60 +36,59 @@ export function TopBar(p: {
   const on = "bg-[#d7d900] text-[#2659a5] font-bold";
   return (
     <header className="sticky top-0 z-30 border-b-4 border-[#d7d900] bg-[#2659a5] text-white shadow-md">
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3">
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-2 px-4 py-2.5">
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-base font-bold leading-tight">Guardião de Pagamentos</h1>
             <Pilula>Gogroup</Pilula>
           </div>
-          <p className="text-[11px] opacity-90">Relógio da simulação: {fmtHora(view.relogio.agora)}</p>
+          <p className="text-[11px] opacity-90">Relógio: {fmtHora(view.relogio.agora)}</p>
         </div>
-        <div className="rounded-xl border-2 border-white/30 bg-white/10 px-3 py-1">
-          <div className="text-[10px] font-bold uppercase tracking-wide text-[#d7d900]">Próximo corte (simulado)</div>
-          <div className="text-sm font-bold tabular-nums">
+        <div className="rounded-xl border border-white/30 bg-white/10 px-2.5 py-1">
+          <div className="text-[10px] font-bold uppercase tracking-wide text-[#d7d900]">Próximo corte</div>
+          <div className="text-xs font-bold tabular-nums">
             {c.rotulo} {c.resto && <span className="ml-1 text-[#3dbfef]">em {c.resto}</span>}
           </div>
         </div>
         <button
           onClick={p.onAvancar}
           disabled={!!p.ocupado}
-          className="rounded-full bg-[#d7d900] px-4 py-1.5 text-sm font-bold text-[#2659a5] hover:bg-[#3dbfef] disabled:opacity-50"
+          className="rounded-full bg-[#d7d900] px-3.5 py-1.5 text-xs font-bold text-[#2659a5] hover:bg-[#3dbfef] disabled:opacity-50"
         >
-          {p.ocupado === "avançar" ? "Avançando…" : "Avançar até o próximo corte"}
+          {p.ocupado === "avançar" ? "Avançando…" : "Avançar corte"}
         </button>
         <div className="flex items-center gap-1.5" title={view.liveDisponivel ? "" : "Modo live indisponível: sem chave do AI Proxy configurada"}>
           <span className={seg}>
-            <button disabled={!view.liveDisponivel} onClick={() => p.setModo("live")} className={`px-3 py-1 disabled:cursor-not-allowed disabled:opacity-40 ${p.modo === "live" ? on : "text-white"}`}>
+            <button disabled={!view.liveDisponivel} onClick={() => p.setModo("live")} className={`px-2.5 py-1 disabled:cursor-not-allowed disabled:opacity-40 ${p.modo === "live" ? on : "text-white"}`}>
               live
             </button>
-            <button onClick={() => p.setModo("replay")} className={`px-3 py-1 ${p.modo === "replay" ? on : "text-white"}`}>
+            <button onClick={() => p.setModo("replay")} className={`px-2.5 py-1 ${p.modo === "replay" ? on : "text-white"}`}>
               replay
             </button>
           </span>
-          {p.modo === "replay" && <SeloSimulado texto="replay simulado" />}
-          {!view.liveDisponivel && <span className="text-[10px] opacity-80">live indisponível</span>}
+          {p.modo === "replay" && <SeloSimulado texto="replay" />}
         </div>
         <div className="flex items-center gap-1.5">
           <span className={seg}>
-            <button onClick={() => p.setHumanos("auto")} className={`px-3 py-1 ${p.humanos === "auto" ? on : "text-white"}`}>
-              humanos auto
+            <button onClick={() => p.setHumanos("auto")} className={`px-2.5 py-1 ${p.humanos === "auto" ? on : "text-white"}`}>
+              auto
             </button>
-            <button onClick={() => p.setHumanos("manual")} className={`px-3 py-1 ${p.humanos === "manual" ? on : "text-white"}`}>
+            <button onClick={() => p.setHumanos("manual")} className={`px-2.5 py-1 ${p.humanos === "manual" ? on : "text-white"}`}>
               manual
             </button>
           </span>
-          <SeloSimulado />
         </div>
+        {p.autonomia}
         <div className="ml-auto flex items-center gap-2">
-          {p.exemplo && <span className="rounded-full bg-[#f8ae13] px-2.5 py-0.5 text-[11px] font-bold text-[#2659a5]">dados de exemplo</span>}
-          <Link href="/avaliacao" className="rounded-full border-2 border-white px-3 py-1 text-xs font-bold text-white hover:bg-white hover:text-[#2659a5]">
-            Avaliação (ablação)
+          {p.exemplo && <span className="rounded-full bg-[#f8ae13] px-2.5 py-0.5 text-[11px] font-bold text-[#2659a5]">exemplo</span>}
+          <Link href="/avaliacao" className="rounded-full border border-white/70 px-2.5 py-1 text-xs font-bold text-white hover:bg-white hover:text-[#2659a5]">
+            Ablação
           </Link>
-          <button onClick={p.onReset} disabled={!!p.ocupado} className="rounded-full border-2 border-white/60 px-3 py-1 text-xs font-bold text-white hover:bg-white hover:text-[#2659a5] disabled:opacity-50">
+          <button onClick={p.onReset} disabled={!!p.ocupado} className="rounded-full border border-white/60 px-2.5 py-1 text-xs font-bold text-white hover:bg-white hover:text-[#2659a5] disabled:opacity-50">
             Reiniciar
           </button>
-          <button onClick={p.onChat} className="relative rounded-full bg-[#3dbfef] px-3.5 py-1 text-xs font-bold text-[#2659a5] hover:bg-[#d7d900]">
-            Chat de aprovações
+          <button onClick={p.onChat} className="relative rounded-full bg-[#3dbfef] px-3 py-1 text-xs font-bold text-[#2659a5] hover:bg-[#d7d900]">
+            Chat
             {p.pendentes > 0 && <span className="absolute -right-2 -top-2 rounded-full bg-[#e5381a] px-1.5 text-[10px] font-bold text-white">{p.pendentes}</span>}
           </button>
         </div>
