@@ -1,0 +1,20 @@
+{
+  "geradoEm": "2026-11-07T14:23:33.013Z",
+  "resultados": [
+    {
+      "config": "so_regras",
+      "indevidoEvitado": 648210.75,
+      "recall": 1,
+      "falsosPositivos": 0,
+      "acionamentos": 24,
+      "placar": 0
+    }
+  ],
+  "detalhes": {
+    "so_regras": {
+      "acionamentosAgrupadosPorPessoaELote": 24,
+      "desnecessarios": 0,
+      "nota": "política com pareceres vazios e sem Jev; não inclui o acionamento PS09 de recuperação do histórico (que o runner cria no híbrido)"
+    }
+  }
+}

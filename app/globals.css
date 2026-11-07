@@ -1,14 +1,10 @@
 @import "tailwindcss";
 
+/* Tema escuro fixo (painel sóbrio, um tom de destaque: sky). */
 :root {
-  --bg: #f7f7f5;
-  --fg: #1c1c1a;
-}
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #141413;
-    --fg: #ececea;
-  }
+  --bg: #0f1013;
+  --fg: #e8e8ea;
+  color-scheme: dark;
 }
 body {
   background: var(--bg);

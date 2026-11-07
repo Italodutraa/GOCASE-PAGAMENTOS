@@ -48,9 +48,22 @@ async function post(path: string, body: unknown): Promise<{ json: any; headers: 
 }
 
 // ---------------- Chat ----------------
-export type MsgChat = { role: "system" | "user" | "assistant"; content: string };
-export type ChatReq = { model?: string; messages: MsgChat[]; max_tokens?: number; temperature?: number };
-export type ChatRes = { texto: string; modelo: string; entrada: number; saida: number; linhaCusto: string };
+export type ToolCall = { id: string; type: "function"; function: { name: string; arguments: string } };
+export type MsgChat =
+  | { role: "system" | "user"; content: string }
+  | { role: "assistant"; content: string | null; tool_calls?: ToolCall[] }
+  | { role: "tool"; content: string; tool_call_id: string };
+export type ToolDef = { type: "function"; function: { name: string; description: string; parameters: Record<string, unknown> } };
+export type ChatReq = {
+  model?: string;
+  messages: MsgChat[];
+  max_tokens?: number;
+  temperature?: number;
+  tools?: ToolDef[];
+  tool_choice?: "auto" | "none" | "required";
+  response_format?: { type: "json_object" };
+};
+export type ChatRes = { texto: string; toolCalls: ToolCall[]; modelo: string; entrada: number; saida: number; linhaCusto: string };
 
 export async function chat(req: ChatReq): Promise<ChatRes> {
   const model = req.model || process.env.AI_CHAT_MODEL || "latest";
@@ -66,10 +79,12 @@ export async function chat(req: ChatReq): Promise<ChatRes> {
 
   sessao.chat.chamadas += 1;
   sessao.chat.tokens += entrada + saida;
-  const linhaCusto = linhaChat(modelo, entrada, saida, sessao.chat.chamadas, sessao.chat.tokens);
+  const raciocinio = Number(json.usage?.completion_tokens_details?.reasoning_tokens ?? 0);
+  const linhaCusto = linhaChat(modelo, entrada, saida, sessao.chat.chamadas, sessao.chat.tokens, raciocinio);
   publicar("chat", linhaCusto);
 
-  return { texto: json.choices?.[0]?.message?.content ?? "", modelo, entrada, saida, linhaCusto };
+  const msg = json.choices?.[0]?.message ?? {};
+  return { texto: msg.content ?? "", toolCalls: msg.tool_calls ?? [], modelo, entrada, saida, linhaCusto };
 }
 
 // ---------------- Jev (/v1/systemone) ----------------

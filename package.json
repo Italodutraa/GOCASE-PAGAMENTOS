@@ -9,7 +9,8 @@
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "ping": "tsx scripts/ping.ts",
-    "analisar": "tsx --tsconfig tsconfig.json scripts/analisar.ts"
+    "analisar": "tsx --tsconfig tsconfig.json scripts/analisar.ts",
+    "ablacao": "tsx --tsconfig tsconfig.json scripts/ablacao.ts"
   },
   "dependencies": {
     "next": "^15.5.29",

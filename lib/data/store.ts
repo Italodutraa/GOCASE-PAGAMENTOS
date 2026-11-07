@@ -82,3 +82,8 @@ const g = globalThis as unknown as { __store?: Store };
 export function carregarStore(): Store {
   return (g.__store ??= montarStore());
 }
+
+/** Descarta mutações (cenários injetados) e relê os CSVs no próximo acesso. */
+export function resetStore() {
+  delete g.__store;
+}

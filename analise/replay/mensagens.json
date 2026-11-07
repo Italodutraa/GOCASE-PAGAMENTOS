@@ -1,0 +1,34 @@
+{
+ "ac-RM20261103-MER-PS09": {
+  "mensagem": "Rafael, precisamos recuperar R$ 406.636,83 pagos em duplicidade a vários fornecedores, referentes a 55 títulos, sendo o primeiro TP426461. A causa raiz foi o lançamento da mesma NF por xml_portal e boleto_email. Você autoriza iniciar a recuperação desse pagamento indevido?",
+  "critico": "citações e total conferidos"
+ },
+ "ac-RM20261103-MER-PS04-FP5525": {
+  "mensagem": "Carla, o título TP433196 da Flexipack, no valor total de R$ 14.215,00, está vinculado à OC-41440, com status “cancelada”, e não deve ser pago sem regularização. Compras também apontou divergência no TP432623 e condicionou os pagamentos à verificação do canal de comunicação e à regularização da OC. Você autoriza acionar Compras para regularizar a OC-41440?",
+  "critico": "citações e total conferidos"
+ },
+ "ac-RM20261103-MER-aprovador-FP5525": {
+  "mensagem": "Cláudia, o título TP432623 da Flexipack, com valor total informado de R$ 1.748,88, diverge da duplicata de R$ 17.488,78 e precisa de correção no lançamento.\nO título TP433196 está vinculado à OC-41440 cancelada e não deve ser pago sem regularização.\nConforme o parecer de compras, os pagamentos permanecem bloqueados até a verificação do canal de comunicação e a regularização da OC.\nVocê autoriza corrigir o lançamento do TP432623 para R$ 17.488,78, mantendo o bloqueio dos pagamentos?",
+  "critico": "citações e total conferidos"
+ },
+ "ac-RM20261103-MER-aprovador-FP4345": {
+  "mensagem": "Cláudia, o título TP431754, de Pigmentos Aquarela, no total de R$ 11.740,00, está com uma linha digitável fraudulenta, com banco e CNPJ divergentes, enviada por e-mail fora do cadastro. O fornecedor confirmou pelo canal cadastrado que não emitiu a segunda via e que o boleto válido é do banco 289. Você autoriza retirar a linha fraudulenta do lote RM20261103-MER, manter o título legítimo TP431706 e corrigir e reprogramar o TP431754 apenas com a linha validada do DDA8802768?",
+  "critico": "citações e total conferidos"
+ },
+ "ac-RM20261103-MER-PS01-FP4615": {
+  "mensagem": "Renata, precisamos da sua 2ª aprovação para reverter a alteração cadastral da Embalarte (AC31202, AC31205 e AC31208), diante da fraude confirmada na troca bancária sem confirmação.\nA solicitação envolve 25 títulos, sendo o primeiro TP431502, no valor total de R$ 194.440,08.\nO fornecedor confirmou pelo canal do cadastro que não mudou de banco e não reconhece o domínio usado na solicitação.\nNão se trata de liberar novo pagamento: os títulos são dívidas legítimas que seguirão para a conta antiga.\nVocê aprova desfazer a troca de conta e restabelecer os dados bancários anteriores do cadastro, no banco 774?",
+  "critico": "citações e total conferidos"
+ },
+ "ac-RM20261103-MER-PS08-FP4615": {
+  "mensagem": "Lívia, identificamos tentativa de golpe envolvendo a Embalarte: um e-mail de domínio imitador solicitou uma troca bancária registrada sem confirmação, e o fornecedor negou a alteração pelo canal cadastrado. Estão em análise 25 títulos, sendo o primeiro TP431502, no valor total de R$ 194.440,08. Você autoriza bloquear os 25 títulos, reverter a alteração bancária e encaminhar o caso ao compliance e à segurança da informação?",
+  "critico": "citações e total conferidos"
+ },
+ "ac-RM20261103-MER-aprovador-FP4615": {
+  "mensagem": "Cláudia, solicito aprovação para reverter as alterações cadastrais AC31202, AC31205 e AC31208 da Embalarte e restabelecer a conta anterior, no banco 774. São 25 títulos, sendo o primeiro TP431502, no valor total de R$ 194.440,08. A troca bancária foi registrada sem confirmação após solicitação de um domínio imitador do fornecedor. Não se trata de liberar pagamento novo: os títulos são dívidas legítimas que seguirão para a conta antiga. Você aprova a reversão da alteração cadastral?",
+  "critico": "citações e total conferidos"
+ },
+ "ac-RM20261103-MER-PS03-FP4615": {
+  "mensagem": "Helena, solicito aprovação para reverter a troca de conta da Embalarte registrada em AC31202, AC31205 e AC31208, retornando ao banco anterior do cadastro (774). O título TP432130 tem valor total de R$ 96.480,00; também constam nas evidências os títulos TP432024 e TP431243. A alteração foi registrada sem confirmação, e o fornecedor confirmou pelo canal do cadastro que não mudou de banco nem reconhece o domínio que solicitou a troca. Não se trata de liberar novo pagamento: os títulos são dívidas legítimas que seguirão para a conta antiga. Você aprova a reversão da alteração cadastral?",
+  "critico": "citações e total conferidos"
+ }
+}

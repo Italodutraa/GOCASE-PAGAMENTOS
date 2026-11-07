@@ -1,34 +1,60 @@
 "use client";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { BotoesInjecao } from "@/components/BotoesInjecao";
+import { GavetaChat } from "@/components/GavetaChat";
+import { ListaTitulos } from "@/components/ListaTitulos";
+import { PainelCaso } from "@/components/PainelCaso";
+import { Placar } from "@/components/Placar";
+import { Toasts } from "@/components/Toasts";
+import { TopBar } from "@/components/TopBar";
+import { useExecucao } from "@/components/useExecucao";
 
 export default function Home() {
-  const [res, setRes] = useState<unknown>(null);
-  const [carregando, setCarregando] = useState(false);
+  const ex = useExecucao();
+  const [modo, setModo] = useState<"live" | "replay">("replay");
+  const [humanos, setHumanos] = useState<"auto" | "manual">("auto");
+  const [chat, setChat] = useState(false);
+  const [casoSel, setCasoSel] = useState<string | undefined>();
+  const { view } = ex;
 
-  async function testar() {
-    setCarregando(true);
-    try {
-      const r = await fetch("/api/ping", { method: "POST" });
-      setRes(await r.json());
-    } finally {
-      setCarregando(false);
-    }
-  }
+  const caso = useMemo(() => view?.casos.find((c) => c.id === casoSel) ?? view?.casos[0], [view, casoSel]);
+
+  if (!view) return <main className="flex min-h-[60vh] items-center justify-center text-sm opacity-70">Carregando execução…</main>;
+
+  const pendentes = view.acionamentos.filter((a) => a.status === "pendente").length;
+  const modoEfetivo = modo === "live" && !view.liveDisponivel ? "replay" : modo;
 
   return (
-    <main className="mx-auto max-w-3xl px-4 py-10">
-      <h1 className="text-2xl font-semibold">Guardião de Pagamentos</h1>
-      <p className="mt-1 text-sm opacity-70">M0: esqueleto + wrapper do AI Proxy. Painel de Lotes e Simulador de Chat chegam nos próximos marcos.</p>
-      <button
-        onClick={testar}
-        disabled={carregando}
-        className="mt-6 rounded-md bg-black px-4 py-2 text-sm text-white disabled:opacity-50 dark:bg-white dark:text-black"
-      >
-        {carregando ? "Testando…" : "Testar AI Proxy (chat + Jev)"}
-      </button>
-      {res !== null && (
-        <pre className="mt-4 overflow-x-auto rounded-md bg-black/5 p-4 text-xs dark:bg-white/5">{JSON.stringify(res, null, 2)}</pre>
-      )}
-    </main>
+    <>
+      <TopBar
+        view={view}
+        exemplo={ex.exemplo}
+        ocupado={ex.ocupado}
+        modo={modoEfetivo}
+        setModo={setModo}
+        humanos={humanos}
+        setHumanos={setHumanos}
+        onAvancar={() => ex.avancar(modoEfetivo, humanos)}
+        onReset={ex.reset}
+        onChat={() => setChat(true)}
+        pendentes={pendentes}
+      />
+      <main className="grid gap-4 p-4 lg:grid-cols-[minmax(320px,380px)_1fr]">
+        <div className="min-w-0">
+          {view.titulos.length === 0 ? (
+            <p className="rounded border border-dashed border-white/15 p-6 text-center text-sm opacity-60">Nenhum título na agenda.</p>
+          ) : (
+            <ListaTitulos titulos={view.titulos} selecionado={caso?.id} onSelect={(id) => id && setCasoSel(id)} />
+          )}
+        </div>
+        <div className="flex min-w-0 flex-col gap-4">
+          <BotoesInjecao onInjetar={ex.injetar} desabilitado={!!ex.ocupado} />
+          <PainelCaso caso={caso} />
+        </div>
+      </main>
+      <Placar view={view} />
+      <GavetaChat aberta={chat} onClose={() => setChat(false)} acionamentos={view.acionamentos} onAcao={(id, d) => ex.acao(id, d)} ocupado={!!ex.ocupado} />
+      <Toasts toasts={ex.toasts} />
+    </>
   );
 }

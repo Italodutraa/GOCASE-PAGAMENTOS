@@ -1,0 +1,21 @@
+{
+ "TP431999": {
+  "acao": "escalar",
+  "motivo": "O título está agendado no lote sem registro de aprovação (aprovado_por e data_aprovacao vazios), apesar do nível 'analista', exigindo validação humana antes de liberar o pagamento; os demais dados (destino TED 146/0788/2968108-4 compatível com o cadastro mascarado do fornecedor) estão consistentes.",
+  "formatoOk": true,
+  "modelo": "glm-5.3-flash"
+ },
+ "TP429834": {
+  "acao": "manter",
+  "motivo": "resposta fora do formato: tratada como manter",
+  "formatoOk": false,
+  "bruto": "",
+  "modelo": "glm-5.3-flash"
+ },
+ "TP429862": {
+  "acao": "escalar",
+  "motivo": "Título agendado no lote sem registro de aprovação (aprovado_por e data_aprovacao vazios) e com forma de pagamento divergente do padrão do fornecedor (TED em vez de boleto), sem comunicação vinculada que justifique, exigindo decisão humana antes do fechamento.",
+  "formatoOk": true,
+  "modelo": "glm-5.3-flash"
+ }
+}

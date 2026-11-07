@@ -7,6 +7,27 @@
 - **M1 (Passo A) concluído**: `lib/data` (loader papaparse, store com índices, normalize) e `lib/rules` (tresVias, duplicidade, extratos, boleto, cadastro, comunicacoes, alcadas, engine). `analisarAgenda()` → `EstadoTitulo[]` com achados, `acaoMinima` (guardrail que o Jev não pode rebaixar), `valorEmRisco`, `alcada` e comunicações vinculadas. `npm run analisar` grava `analise/estado_agenda.json`; `GET /api/analise`. Gabarito em `lib/rules/gabarito.test.ts`.
 - Resultado atual: 797 limpos, 36 atenção, 43 bloqueio; ações 18 retirar, 25 escalar, 11 corrigir; R$ 648.210,75 em risco.
 
+## Contratos e donos de pasta (arquitetura v4)
+- Fluxo: A (código, fonte da verdade) → B (Jev, triagem + risco_fraude, 1x por título não limpo, cache) → especialistas LLM em paralelo por caso (compras, bancario, cadastro_fraude; loop ≤ 4 passos, termina em `emitir_parecer`) → orquestrador (mais conservador vence; evento `conflito`) → política pura (piso, alçada, papel; rejeita e devolve até 2x → `correcao`) → crítico (citações existem, total bate; senão template) → tools simuladas → acionamentos agrupados → humanos simulados → reação.
+- **Tool calling nativo** funciona no proxy (`tools` + `tool_choice`) com `glm-5.3-flash` e `latest` (testado em `scripts/teste_tools.ts`). Agentes usam `AI_AGENT_MODEL` (padrão `glm-5.3-flash`, max_tokens 2000).
+- Contratos (só o LÍDER altera): `lib/contratos/types.ts` (Acao, TraceEvento, Parecer, Decisao, RespostaFornecedor, RespostaHumano, Acionamento, AblacaoResultado, TituloView, CasoView, ExecucaoView) e `lib/contratos/tools.ts` (Papel, ContextoTool, ResultadoTool, FerramentaSim, EstadoSimulado, RegistroTools). Mock para UI: `lib/mock/execucao.mock.ts`.
+- Acao (decisão) = manter | corrigir | retirar | escalar | bloquear; conservadorismo bloquear > escalar > retirar > corrigir > manter. `acaoDoPiso()` converte a ação do Passo A. Transições permitidas a partir do piso: manter→qualquer; corrigir→corrigir|escalar|bloquear; retirar→retirar|escalar|bloquear; escalar→escalar|bloquear.
+- Limiares de confidence 0,85 / 0,70 e risco_fraude 0,5 / 0,8 são **palpites calibráveis** pelo cache do Jev (analise/replay).
+- Orçamento: 600 chamadas de chat por execução (`lib/agents/orcamento.ts`); falha de LLM → só o piso, `semAgente`/`semJev`, sem acionar ninguém.
+
+| Dono | Pastas |
+|---|---|
+| LÍDER (opus) | lib/contratos, lib/orquestrador, lib/agents/loop.ts, lib/agents/orcamento.ts, integração, **commits/push (só o líder)** |
+| tools-sim (sonnet) | lib/tools/, lib/mock/fornecedores_sim.ts |
+| especialistas (sonnet) | lib/agents/especialistas/ |
+| humanos-sim (sonnet) | lib/agents/humanos.ts, app/api/acao |
+| injecao (sonnet) | lib/rules/incremental.ts, lib/mock/cenarios.ts, app/api/injetar |
+| avaliacao (sonnet) | lib/avaliacao/, scripts/ablacao.ts, testes de aceite |
+| ui (sonnet) | app/ (exceto app/api), components/ |
+| docs-dados (haiku) | docs/, README.md, .env.example |
+
+- Git: o binário está em `C:\Program Files\Git\cmd` (fora do PATH: `$env:Path += ';C:\Program Files\Git\cmd'`). Remoto `origin` = github.com/Italodutraa/GOCASE-PAGAMENTOS.
+
 ## Regras de trabalho
 - **Nunca** ler CSV inteiro no contexto. Máx. 5 linhas; para cruzar dados, usar script local.
 - Ambiente: Windows, PowerShell 5.1. **Sem Python e sem Node instalados** (instalar Node 20 LTS antes do MVP).
