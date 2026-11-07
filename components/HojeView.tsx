@@ -87,6 +87,58 @@ function PrecisaDeVoce({ view, cartoes, ocupado, onAcao }: { view: ExecucaoView;
   );
 }
 
+function Resumo({ h }: { h: ReturnType<typeof derivarHoje> }) {
+  const blocos: { rotulo: string; b: { qtd: number; valor: number }; cor: string }[] = [
+    { rotulo: "Liberados sem ajuda", b: h.resumo.liberados, cor: "bg-[#3dbfef]/25" },
+    { rotulo: "Resolvidos pelo GoLastro", b: h.resumo.resolvidos, cor: "bg-white border-2 border-[#2659a5]" },
+    { rotulo: "Aguardando você", b: h.resumo.aguardando, cor: "bg-[#f8ae13]/30" },
+    { rotulo: "Travados por segurança", b: h.resumo.travados, cor: "bg-[#e5381a]/15" },
+  ];
+  return (
+    <section aria-labelledby="resumo" className="mt-8">
+      <h2 id="resumo" className="font-['Poppins',sans-serif] text-xl font-bold text-[#2659a5]">Resumo do lote</h2>
+      <ul className="mt-2 grid grid-cols-2 gap-3 sm:grid-cols-4">
+        {blocos.map((x) => (
+          <li key={x.rotulo} className={`rounded-2xl p-3 text-[#2659a5] ${x.cor}`}>
+            <p className={`text-2xl font-extrabold ${num}`}>{x.b.qtd.toLocaleString("pt-BR")}</p>
+            <p className="text-xs font-bold">{x.rotulo}</p>
+            <p className={`text-xs ${num}`}>{brl(x.b.valor)}</p>
+          </li>
+        ))}
+      </ul>
+      {h.resumo.naoConferidos.qtd > 0 && (
+        <p className={`mt-2 text-xs text-[#2659a5] ${num}`}>
+          Ainda não conferidos: {h.resumo.naoConferidos.qtd.toLocaleString("pt-BR")} pagamentos · {brl(h.resumo.naoConferidos.valor)}
+        </p>
+      )}
+    </section>
+  );
+}
+
+function JaResolvido({ h }: { h: ReturnType<typeof derivarHoje> }) {
+  return (
+    <details className="mt-6 rounded-2xl border-2 border-[#2659a5]/40 bg-white p-3 text-[#2659a5]">
+      <summary className="cursor-pointer text-sm font-bold">Já resolvido pelo GoLastro ({h.resumo.resolvidos.qtd.toLocaleString("pt-BR")})</summary>
+      {h.resolvidos.length === 0 ? (
+        <p className="mt-2 text-sm">Ainda nada. Confira o lote para ver o que o GoLastro resolve sozinho.</p>
+      ) : (
+        <ul className="mt-2 space-y-2">
+          {h.resolvidos.map((r) => (
+            <li key={r.casoId} className="flex flex-wrap items-baseline justify-between gap-x-3 border-b border-[#2659a5]/15 pb-2 text-sm last:border-0">
+              <span className="min-w-0 flex-1 [overflow-wrap:anywhere]">
+                <strong>{r.rotulo}</strong> · {r.titulo}
+              </span>
+              <span className={`whitespace-nowrap ${num}`}>
+                {r.qtd} {r.qtd === 1 ? "pagamento" : "pagamentos"} · {brl(r.valor)}
+              </span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </details>
+  );
+}
+
 export function HojeView(p: HojeProps) {
   const { view } = p;
   if (!view)
@@ -162,6 +214,8 @@ export function HojeView(p: HojeProps) {
       )}
 
       <PrecisaDeVoce view={view} cartoes={h.cartoes} ocupado={!!p.ocupado} onAcao={p.onAcao} />
+      <Resumo h={h} />
+      <JaResolvido h={h} />
 
       <p className="mt-6 flex items-center gap-2 text-xs text-[#2659a5]">
         <SeloSimulado texto="simulado" /> Dados fictícios; respostas de fornecedores e de aprovadores são simuladas.
