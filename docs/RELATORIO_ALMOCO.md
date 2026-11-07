@@ -11,7 +11,7 @@
 - **Sem sistema**: **−R$ 648.210,75** (876 títulos, R$ 10,2 mi em 17 cortes MER/LIT).
 - **Só regras (`so_regras`)**: **−R$ 33.182,92** (100% do indevido evitado; R$ 33.182,92 de atraso; 16 acionamentos).
 - **Só LLM (`llm_puro`, amostra exata 79 não limpos + 60 de 797 limpos)**: **−R$ 326.521,22** (recall 72,2%, 43 FP em 60 limpos, 83 acionamentos).
-- **Híbrido (`hibrido`, Guardião Gogroup)**: **−R$ 2.829,51** (100% dos R$ 648.210,75 evitados, 0 FP, 21 acionamentos agrupados, 0 desnecessários).
+- **Híbrido (`hibrido`, GoLastro)**: **−R$ 2.829,51** (100% dos R$ 648.210,75 evitados, 0 FP, 21 acionamentos agrupados, 0 desnecessários).
 - **Cenários fora das regras**: híbrido captura `troca_conta_fornecedor_novo` e `injecao_prompt_v2`, e **falha** no `cnpj_clonado` (`TP499002` → `manter`).
 
 ## 3. Decisões tomadas autonomamente

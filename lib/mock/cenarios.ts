@@ -297,7 +297,7 @@ export function autoEfetivacao94(s: Store): SaidaCenario {
       detalhe: `2ª via por e-mail (EM599004) diverge do registro legítimo no DDA (DDA8809004, banco 905). OC-49004 e NF ${nfNum} conferidas (3 vias OK). Redirecionar pagamento para o DDA8809004.`,
       evidencias: ["TP499004", "DDA8809004", "OC-49004", "EM599004"],
       acaoMinima: "corrigir_lancamento",
-      sugestao: { campo: "linha_digitavel", valor_novo: linhaDDA, fonte: "DDA8809004", exigeAprovador: false },
+      sugestao: { campo: "linha_digitavel", valor_novo: linhaDDA, fonte: "DDA8809004", exigeAprovador: true }, // trocar linha digitável exige aprovador (ferramentas.csv)
     },
   ];
 

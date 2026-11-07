@@ -3,7 +3,7 @@ import "./globals.css";
 import { CostBar } from "@/components/CostBar";
 
 export const metadata: Metadata = {
-  title: "Guardião de Pagamentos · Gogroup",
+  title: "GoLastro · Gogroup",
   description: "Auditoria de lotes de remessa com agentes (GoHACKS — Desafio 2 · Gogroup)",
 };
 

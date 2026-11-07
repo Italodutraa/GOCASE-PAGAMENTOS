@@ -488,7 +488,7 @@ export function criarRegistro(storeParam?: Store): RegistroTools {
     },
   });
 
-  const CAMPOS_COM_APROVADOR = new Set(["fornecedor_id", "forma_pagamento", "linha_digitavel"]);
+  const CAMPOS_COM_APROVADOR = new Set(["fornecedor_id", "forma_pagamento", "linha_digitavel", "cnpj_beneficiario_boleto"]); // beneficiário do boleto = destino do dinheiro
   const CAMPOS_CORRIGIVEIS = new Set(["valor", "fornecedor_id", "forma_pagamento", "linha_digitavel", "cnpj_beneficiario_boleto", "numero_nf_digitado", "oc_id", "vencimento"]);
   def({
     nome: "corrigir_lancamento",

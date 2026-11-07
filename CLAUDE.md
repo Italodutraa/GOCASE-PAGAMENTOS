@@ -2,7 +2,7 @@
 
 ## Projeto (M0 concluído)
 - Next.js 15 + React 19 + TS + Tailwind 4, Node 26 LTS em `C:\Program Files\nodejs` (em PowerShell novo, recarregar PATH).
-- `npm run dev` (ou preview `guardiao-dev` em `.claude/launch.json`), `npm test` (vitest), `npm run typecheck`, `npm run ping` (chat + Jev pelo wrapper).
+- `npm run dev` (ou preview `golastro-dev` em `.claude/launch.json`), `npm test` (vitest), `npm run typecheck`, `npm run ping` (chat + Jev pelo wrapper).
 - AI: `lib/ai/proxy.ts` (chat, jev, listarModelos), `lib/ai/format.ts` (linhas 💲), `lib/ai/session.ts` (contadores + bus), SSE `app/api/custos`, `components/CostBar.tsx`.
 - **M1 (Passo A) concluído**: `lib/data` (loader papaparse, store com índices, normalize) e `lib/rules` (tresVias, duplicidade, extratos, boleto, cadastro, comunicacoes, alcadas, engine). `analisarAgenda()` → `EstadoTitulo[]` com achados, `acaoMinima` (guardrail que o Jev não pode rebaixar), `valorEmRisco`, `alcada` e comunicações vinculadas. `npm run analisar` grava `analise/estado_agenda.json`; `GET /api/analise`. Gabarito em `lib/rules/gabarito.test.ts`.
 - Resultado atual: 797 limpos, 36 atenção, 43 bloqueio; ações 18 retirar, 25 escalar, 11 corrigir; R$ 648.210,75 em risco.
@@ -29,7 +29,7 @@
 - Git: o binário está em `C:\Program Files\Git\cmd` (fora do PATH: `$env:Path += ';C:\Program Files\Git\cmd'`). Remoto `origin` = github.com/Italodutraa/GOCASE-PAGAMENTOS.
 
 ## Regras aprendidas (cada uma aponta para quem a impõe)
-1. Token do proxy nunca em arquivo versionado, log ou doc; `.env.example` só com nomes → hook `.git/hooks/pre-commit` (bloqueia o prefixo do token do proxy) + `npm run segredos` (exit 1). Nunca `--no-verify` nem mexer no hook.
+1. Token do proxy nunca em arquivo versionado, log ou doc; `.env.example` só com nomes → `npm run segredos` (exit 1) antes de todo commit + hook em `scripts/pre-commit-hook.sh` (o usuário instala em `.git/hooks/pre-commit`; a auditoria final achou o hook ausente). Nunca `--no-verify` nem mexer no hook.
 2. Conta bancária completa nunca sai do store (Jev, replay, snapshot): só banco + 4 últimos → `mascararContas` (`lib/orquestrador/replay.ts`), teste de aceite 8, `npm run segredos`.
 3. Antes de commit/snapshot/push: `npm run segredos` tem de passar; alerta que não interrompe é bug → o script aborta por construção.
 4. Mesmo erro mais de 2 vezes: PARAR e explicar (≤ 10 linhas); bloqueio de permissão não se contorna → conduta (sem teste; a conversa é o controle).

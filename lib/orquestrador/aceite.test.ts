@@ -259,3 +259,15 @@ describe("8. state do Jev da Embalarte", () => {
     for (const { id, s } of states()) expect(s, id).not.toContain("4471203-9");
   });
 });
+
+// Auditoria final (A2.2): a mutação "corrigir → manter" não era pega por nenhum teste.
+import { motivoRejeicao as _motivo, transicaoPermitida as _permitida } from "./politica";
+describe("transições proibidas a partir do piso", () => {
+  it("corrigir e retirar nunca viram manter", () => {
+    for (const piso of ["corrigir", "retirar", "escalar", "bloquear"] as const) {
+      expect(_permitida(piso, "manter")).toBe(false);
+      expect(_motivo(piso, "manter")).not.toBeNull();
+    }
+    expect(_permitida("corrigir", "retirar")).toBe(false); // nem troca de tipo
+  });
+});

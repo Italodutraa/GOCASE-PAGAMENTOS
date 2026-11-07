@@ -1,4 +1,4 @@
-Você vai continuar o projeto "Guardião de Pagamentos" (GoHACKS, Desafio 2) numa sessão nova.
+Você vai continuar o projeto "GoLastro" (GoHACKS, Desafio 2) numa sessão nova.
 1. Leia CLAUDE.md e docs/HANDOFF.md. Leia PLAN.md só se precisar. Não releia arquivos grandes sem necessidade; use busca e intervalos de linhas.
 2. Antes de agir, confirme em 5 linhas: estado atual, o que está em andamento e o próximo passo.
 3. Regras fixas:

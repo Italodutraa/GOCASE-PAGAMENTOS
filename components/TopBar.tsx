@@ -39,7 +39,7 @@ export function TopBar(p: {
       <div className="flex flex-wrap items-center gap-x-3 gap-y-2 px-4 py-2.5">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-base font-bold leading-tight">Guardião de Pagamentos</h1>
+            <h1 className="text-base font-bold leading-tight">GoLastro</h1>
             <Pilula>Gogroup</Pilula>
           </div>
           <p className="text-[11px] opacity-90">Relógio: {fmtHora(view.relogio.agora)}</p>

@@ -47,7 +47,6 @@ export function calcularIndiceSeguranca(riscoFraude: number, confianca: number):
 
 /** Gera código de autenticação hexadecimal de 16 caracteres idêntico ao padrão de retorno_remessa.csv. */
 export function gerarHashAutenticacao(semente: string): string {
-  if (semente.includes("auto_efetivacao_94") || semente.includes("TP499004")) return "9A4F1BC08821E340";
   let h1 = 0x87f00edc;
   let h2 = 0x07649745;
   for (let i = 0; i < semente.length; i++) {
@@ -60,14 +59,10 @@ export function gerarHashAutenticacao(semente: string): string {
 
 /** Extrai risco_fraude residual e confiança consolidada do caso. */
 export function metricasSegurancaCaso(caso: CasoView): { riscoFraude: number; confianca: number; indiceSeguranca: number } {
-  if (caso.id === "caso-inj-auto_efetivacao_94" || caso.tipo === "auto_cura_dda") {
-    const riscoFraude = 0.058;
-    const confianca = 0.942;
-    return { riscoFraude, confianca, indiceSeguranca: calcularIndiceSeguranca(riscoFraude, confianca) };
-  }
   if (caso.pareceres.length === 0) {
-    const riscoFraude = caso.tipo === "recuperacao" ? 0.5 : 0.12;
-    const confianca = 0.88;
+    // sem parecer de especialista não há evidência: índice 0 (nunca efetiva sozinho)
+    const riscoFraude = 1;
+    const confianca = 0;
     return { riscoFraude, confianca, indiceSeguranca: calcularIndiceSeguranca(riscoFraude, confianca) };
   }
   const confianca = Math.round((caso.pareceres.reduce((s, p) => s + p.confianca, 0) / caso.pareceres.length) * 1000) / 1000;
@@ -79,8 +74,8 @@ export function metricasSegurancaCaso(caso: CasoView): { riscoFraude: number; co
   }
   // Em casos de auto-cura técnica (valor corrigido pela NF, duplicidade retirada, boleto redirecionado ao DDA original),
   // o risco residual de fraude após aplicar a via determinística legítima é o menor risco reportado entre os especialistas.
-  const minRisco = Math.min(...caso.pareceres.map((p) => p.risco));
-  const riscoFraude = Math.round(Math.min(minRisco, 1 - confianca + 0.02) * 1000) / 1000;
+  // conservador: o MAIOR risco reportado entre os especialistas
+  const riscoFraude = Math.round(Math.max(...caso.pareceres.map((p) => p.risco)) * 1000) / 1000;
   return { riscoFraude, confianca, indiceSeguranca: calcularIndiceSeguranca(riscoFraude, confianca) };
 }
 
@@ -109,17 +104,22 @@ export function avaliarCasoAutonomia(
   const dataCompacta = (t0?.vencimento ?? "2026-11-05").replace(/-/g, "");
   const arquivoRetorno = `PAG${bancoCodigo}_${dataCompacta}_001.RET`;
 
-  // Nunca auto-efetiva golpe cadastral sem confirmação humana dupla, homônimo ou recuperação histórica
-  const bloqueioDuro = caso.tipo === "fraude_cadastro" || caso.tipo === "homonimo" || caso.tipo === "recuperacao" || caso.tipo === "oc_invalida";
-  const elegivelEstrita =
-    !bloqueioDuro &&
-    (caso.tipo === "auto_cura_dda" ||
-      caso.id === "caso-inj-auto_efetivacao_94" ||
-      caso.decisao.executaSozinho ||
-      caso.valorTotal <= 5000);
-  const elegivelExpandida = !bloqueioDuro;
-  const elegivelPolitica = modoPolitica === "estrita" ? elegivelEstrita : elegivelExpandida;
-  const efetivadoAuto = elegivelPolitica && indiceSeguranca >= limiar;
+  // Delegação de alçada (politicas.csv): o agente NUNCA efetiva sozinho o que a política manda a um humano.
+  // I1 piso/decisão escalar ou bloquear, ou risco de fraude ≥ 0,5; I2 aprovação dupla; I4 sinal de fraude/destino novo;
+  // I3 teto: R$ 5 mil (analista) na Estrita e R$ 50 mil (aprovador) na Expandida, pelo total do caso.
+  // qualquer BOLETO_* ou CNPJ_DIVERGENTE implica trocar linha/beneficiário/fornecedor, que exige aprovador (ferramentas.csv)
+  const sinalProibido = (tipo: string) => tipo.startsWith("BOLETO_") || ["TROCA_BANCARIA_SUSPEITA", "COMUNICACAO_SUSPEITA", "CNPJ_DIVERGENTE"].includes(tipo);
+  const tiposProibidos = ["fraude_cadastro", "homonimo", "recuperacao", "oc_invalida", "boleto_falso", "cnpj_clonado", "comunicacao"];
+  const valorCaso = titulosDoCaso.length ? titulosDoCaso.reduce((s, t) => s + t.valor, 0) : caso.valorTotal;
+  const bloqueioDuro =
+    titulosDoCaso.length === 0 || // fail-closed: sem os títulos não há como checar dupla, piso e sinais
+    tiposProibidos.includes(caso.tipo) ||
+    caso.decisao.acao === "escalar" ||
+    caso.decisao.acao === "bloquear" ||
+    riscoFraude >= 0.5 ||
+    titulosDoCaso.some((t) => t.alcada?.dupla || t.piso === "escalar" || t.piso === "bloquear" || t.achados.some((a) => sinalProibido(a.tipo)));
+  const teto = modoPolitica === "estrita" ? 5000 : 50000;
+  const efetivadoAuto = !bloqueioDuro && valorCaso <= teto && indiceSeguranca >= limiar;
 
   const statusErp = efetivadoAuto
     ? "EFETIVADO_AUTO"
@@ -128,12 +128,12 @@ export function avaliarCasoAutonomia(
       : "AGUARDANDO_ALCADA_HUMANA";
 
   const motivoGovernanca = efetivadoAuto
-    ? `Índice de segurança ${(indiceSeguranca * 100).toFixed(1).replace(".", ",")}% ≥ limiar ${(limiar * 100).toFixed(0)}% (${modoPolitica === "estrita" ? "Alçada Estrita + Auto-Cura Técnica" : "Autonomia Expandida"}): write-back executado sem acionamento humano.`
+    ? `Índice de segurança ${(indiceSeguranca * 100).toFixed(1).replace(".", ",")}% ≥ limiar ${(limiar * 100).toFixed(0)}% (${modoPolitica === "estrita" ? "Alçada Estrita, até R$ 5 mil" : "Autonomia Expandida, até R$ 50 mil"}): executado sob delegação de alçada (política de autonomia). SIMULADO: nenhum sistema real foi alterado.`
     : bloqueioDuro
       ? `Bloqueio de segurança: caso de ${caso.tipo.replace(/_/g, " ")} exige despacho humano obrigatório (Cerca Zero-Trust).`
       : indiceSeguranca < limiar
         ? `Índice de segurança ${(indiceSeguranca * 100).toFixed(1).replace(".", ",")}% abaixo do gatilho de ${(limiar * 100).toFixed(0)}%: escalado para alçada humana.`
-        : `Valor (${caso.valorTotal.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}) acima de R$ 5 mil no modo Alçada Estrita: troque para Autonomia Expandida ou aprove no chat.`;
+        : `Valor (${valorCaso.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}) acima do teto de ${teto.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })} da delegação: aprovação humana no chat.`;
 
   return {
     casoId: caso.id,
@@ -184,7 +184,8 @@ export function calcularResumoAutonomia(
 
   const economiaAcionamentosBrl = acionamentosEvitados * 60;
   const placarBase = view.placar.comSistema;
-  const placarAjustadoBrl = Math.min(0, Math.round((placarBase + economiaAcionamentosBrl) * 100) / 100);
+  // o placar do evento NÃO soma acionamentos evitados (calcularPlacar em runner.ts); este é o mesmo número
+  const placarAjustadoBrl = placarBase;
   const semSistemaAbs = Math.abs(view.placar.semSistema) || 648210.75;
   const caixaSalvoBrl = Math.round((semSistemaAbs - Math.abs(view.placar.comSistema)) * 100) / 100;
   const protecaoCaixaPct = Math.round((caixaSalvoBrl / semSistemaAbs) * 1000) / 10;

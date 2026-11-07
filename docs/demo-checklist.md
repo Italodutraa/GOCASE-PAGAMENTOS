@@ -8,9 +8,9 @@
    ```
 2. Abrir `http://localhost:3000`.
 3. Confirmar no topo (`TopBar` azul Gogroup):
-   - Botão **`replay`** ativo com selo **`REPLAY SIMULADO`**.
+   - Botão **`replay`** ativo com selo **`SIMULADO · replay`**.
    - Se já houver cortes avançados de um teste anterior, clicar em **`Reiniciar`** (ou deixar os 25 casos carregados do snapshot para navegação imediata).
-4. Pressionar a tecla **`P`** para ativar o **Modo Palco** (fonte ampliada para projetor e barra de cenas `1` a `4` fixa no topo).
+4. Pressionar a tecla **`P`** para ativar o **Modo Palco** (fonte ampliada para projetor e barra de cenas `1` a `5` fixa no topo).
 
 ---
 
@@ -57,14 +57,14 @@
 
 1. **Sair do Modo Palco**: pressionar **`P`** (ou `Esc`) para exibir o painel completo com o **Funil de Auditoria** e o **Cartão da Renata Paiva (`PS01`)**.
 2. **Abrir o WhatsApp Simulado**:
-   - Clicar em **`Abrir WhatsApp simulado`** no cartão da **Renata Paiva** (ou em **`Chat de aprovações`** no topo).
+   - Clicar em **`Abrir WhatsApp simulado`** no cartão da **Renata Paiva** (ou em **`Chat`** no topo).
    - Mostrar os acionamentos agrupados (1 por pessoa, por janela de corte e por caso — sem misturar fornecedores) e os despachos auditados (`✓✓ registrado na auditoria`) com o selo **`HUMANO SIMULADO`**.
    - Fechar a gaveta clicando em **`Fechar`**.
 3. **Injetar Anomalia ao Vivo**:
    - No bloco **"Injetar anomalia ao vivo"**, clicar em **`+ Nova injeção de prompt`** (ou **`+ Troca de conta por fornecedor novo`**).
-   - Mostrar o novo caso com selo **`CENÁRIO SIMULADO`** aparecendo imediatamente, processado em modo replay sem gastar chamadas do proxy.
+   - Mostrar o novo caso com selo **`SIMULADO`** aparecendo imediatamente, processado em modo replay sem gastar chamadas do proxy.
 4. **Fechamento no Placar**:
-   - Rolar até **"Placar: antes × depois"**: mostrar **−R$ 648.210,75** (sem sistema) vs **−R$ 2.829,51** (Híbrido · Guardião Gogroup) vs **−R$ 326.521,22** (Só LLM na amostra declarada).
+   - Rolar até **"Placar: antes × depois"**: mostrar **−R$ 648.210,75** (sem sistema) vs **−R$ 2.829,51** (Híbrido · GoLastro) vs **−R$ 326.521,22** (Só LLM na amostra declarada).
 
 ---
 
@@ -74,5 +74,5 @@
 |---|---|
 | **Internet ou AI Proxy do evento cair / 429 / 503** | Nada muda na demo: mantenha o seletor em **`replay`** (ou suba com `SOMENTE_REPLAY=1`). Todos os 25 casos e os 3 cenários injetados já estão pré-gravados em `analise/snapshot.json` e `analise/replay/*.json`. |
 | **Estado da tela ficar sujo após cliques de teste** | Clicar no botão **`Reiniciar`** no canto superior direito (`POST /api/reset`) → restaura instantaneamente os 876 títulos e o snapshot completo. |
-| **Aba de avaliação solicitada pela banca** | Clicar em **`Avaliação (ablação)`** no topo (`/avaliacao`) ou abrir `analise/ablacao.json` para mostrar os números brutos e a falha documentada no `cnpj_clonado`. |
+| **Aba de avaliação solicitada pela banca** | Clicar em **`Ablação`** no topo (`/avaliacao`) ou abrir `analise/ablacao.json` para mostrar os números brutos e a falha documentada no `cnpj_clonado`. |
 | **Porta 3000 ocupada ao iniciar** | Rodar `npx next start -p 3100` (o build de produção `.next` já está compilado e validado). |

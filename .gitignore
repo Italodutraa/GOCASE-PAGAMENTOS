@@ -20,3 +20,15 @@ data/*.sqlite
 .handoff-testes.json
 analise/*_progresso.json
 analise/ablacao.teste.json
+
+# build local do TypeScript
+tsconfig.tsbuildinfo
+# originais grandes dos avatares (a UI usa só radar/confere/caixa/faro/maestro/cerca/lupa.png)
+public/agentes/*
+!public/agentes/radar.png
+!public/agentes/confere.png
+!public/agentes/caixa.png
+!public/agentes/faro.png
+!public/agentes/maestro.png
+!public/agentes/cerca.png
+!public/agentes/lupa.png

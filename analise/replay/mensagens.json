@@ -4,31 +4,31 @@
   "critico": "citações e total conferidos"
  },
  "ac-RM20261103-MER-PS04-FP5525": {
-  "mensagem": "Carla, precisamos regularizar a OC-41440, que está cancelada, referente ao título TP433196 da Flexipack, com valor total informado de R$ 14.215,00. Também foi identificada divergência entre o título TP432623 e a duplicata, e compras orientou não pagar antes da verificação do canal de comunicação e da regularização da OC. Você autoriza encaminhar a regularização da OC-41440 a compras?",
+  "mensagem": "Carla, precisamos regularizar a OC-41440, que está cancelada, vinculada ao título TP433196 da Flexipack, no valor total de R$ 14.215,00.\nCompras também apontou divergência no título TP432623 e necessidade de verificar o canal de comunicação do fornecedor antes de qualquer pagamento.\nVocê autoriza escalar a regularização da OC-41440 para Compras, mantendo o pagamento bloqueado até a conclusão das verificações?",
   "critico": "citações e total conferidos"
  },
  "ac-RM20261103-MER-aprovador-FP5525": {
-  "mensagem": "Cláudia, o título TP432623 da Flexipack, com valor total informado de R$ 1.748,88, diverge da duplicata de R$ 17.488,78 e precisa de correção do lançamento.\nO título TP433196 está vinculado à OC-41440, cancelada, e não deve ser pago sem regularização.\nConforme apurado por Compras, os pagamentos dependem da verificação do canal de comunicação e da regularização da OC.\nVocê autoriza corrigir o lançamento do TP432623 para R$ 17.488,78, mantendo os pagamentos bloqueados até a resolução das pendências?",
+  "mensagem": "Cláudia, o título TP432623 da Flexipack, com valor total informado de R$ 1.748,88, diverge da duplicata de R$ 17.488,78 e precisa de correção no lançamento. O título TP433196 está vinculado à OC-41440, cancelada, e não deve ser pago sem regularização. Conforme apurado por Compras, os pagamentos seguem bloqueados até a verificação do canal de comunicação e a regularização da OC. Você autoriza corrigir o lançamento do TP432623 para R$ 17.488,78, mantendo o bloqueio dos pagamentos?",
   "critico": "citações e total conferidos"
  },
  "ac-RM20261103-MER-aprovador-FP4345": {
-  "mensagem": "Cláudia, o título TP431754, de Pigmentos Aquarela, no valor total de R$ 11.740,00, está com linha digitável fraudulenta, conforme divergências de beneficiário e banco e confirmação do fornecedor pelo canal cadastrado. Você autoriza corrigir o lançamento, retirando a linha fraudulenta do lote RM20261103-MER, mantendo o título legítimo TP431706 e reprogramando o TP431754 somente com a linha validada do DDA8802768?",
+  "mensagem": "Cláudia, o título TP431754, de Pigmentos Aquarela, no valor total de R$ 11.740,00, está com linha digitável de boleto identificado como fraudulento, com banco e CNPJ divergentes do fornecedor. O parecer de cadastro/fraude registra confirmação pelo canal cadastrado de que o boleto válido é do banco 289. Você autoriza corrigir o lançamento, retirando a linha fraudulenta do lote RM20261103-MER, mantendo o título legítimo TP431706 e reprogramando o TP431754 somente com a linha validada do DDA8802768?",
   "critico": "citações e total conferidos"
  },
  "ac-RM20261103-MER-PS01-FP4615": {
-  "mensagem": "Renata, solicito sua 2ª aprovação (dupla) para reverter a alteração cadastral da Embalarte registrada em AC31202, AC31205 e AC31208, retornando à conta anterior no banco 774. A troca foi feita sem confirmação, a partir de e-mail com domínio imitador, e o fornecedor confirmou pelo canal cadastrado que não mudou de banco. São 25 títulos, sendo o primeiro TP431502, no valor total de R$ 194.440,08; são dívidas legítimas que seguirão para a conta antiga, não uma liberação de pagamento novo. Você aprova desfazer a troca de conta e restabelecer os dados bancários anteriores?",
+  "mensagem": "Renata, precisamos da sua 2ª aprovação (dupla) para reverter a alteração cadastral da Embalarte registrada em AC31202, AC31205 e AC31208, devido à fraude confirmada na solicitação de troca bancária. São 25 títulos, sendo o primeiro TP431502, no valor total de R$ 194.440,08. O fornecedor confirmou pelo canal do cadastro que não trocou de banco; não se trata de liberar pagamento novo, mas de manter as dívidas legítimas destinadas à conta antiga. Você aprova desfazer a troca e restaurar a conta anterior do cadastro, no banco 774?",
   "critico": "citações e total conferidos"
  },
  "ac-RM20261103-MER-PS08-FP4615": {
-  "mensagem": "Lívia, os 25 títulos da Embalarte, a partir do TP431502, totalizam R$ 194.440,08 e estão envolvidos em uma tentativa de golpe. A troca bancária foi registrada sem confirmação após solicitação por domínio imitador, e o fornecedor confirmou pelo canal cadastrado que não alterou seus dados bancários. Você autoriza bloquear os 25 títulos, reverter a alteração para a conta original e encaminhar o caso ao compliance/segurança da informação?",
+  "mensagem": "Lívia, os 25 títulos da Embalarte, a partir do TP431502, totalizam R$ 194.440,08 e estão envolvidos em uma tentativa de golpe. A troca bancária foi registrada sem confirmação após e-mail de domínio imitador, e o fornecedor confirmou pelo canal cadastrado que não solicitou a alteração. Você autoriza o bloqueio desses 25 títulos?",
   "critico": "citações e total conferidos"
  },
  "ac-RM20261103-MER-aprovador-FP4615": {
-  "mensagem": "Cláudia, solicito aprovação para reverter as alterações cadastrais AC31202, AC31205 e AC31208 da Embalarte e restabelecer a conta anterior, no banco 774. A troca foi registrada sem confirmação após solicitação por domínio imitador, e o fornecedor confirmou pelo canal do cadastro que não mudou de banco. São 25 títulos, sendo o primeiro TP431502, no valor total de R$ 194.440,08. Não se trata de liberar novo pagamento: são dívidas legítimas que seguirão para a conta antiga. Você aprova a reversão da alteração cadastral?",
+  "mensagem": "Cláudia, solicito aprovação para reverter as alterações cadastrais AC31202, AC31205 e AC31208 da Embalarte e restabelecer a conta anterior, no banco 774. A troca foi registrada sem confirmação, e o fornecedor confirmou pelo canal cadastrado que não mudou de banco nem reconhece o domínio solicitante. A solicitação abrange 25 títulos, sendo o primeiro TP431502, no valor total de R$ 194.440,08; são dívidas legítimas que seguirão para a conta antiga, não uma liberação de pagamento novo. Você aprova a reversão dessas alterações para a conta anterior do cadastro?",
   "critico": "citações e total conferidos"
  },
  "ac-RM20261103-MER-PS03-FP4615": {
-  "mensagem": "Helena, solicito aprovação para reverter a alteração cadastral da Embalarte registrada em AC31202, AC31205 e AC31208, retornando à conta anterior no banco 774. O título TP432130 tem valor total de R$ 96.480,00; também constam nas evidências os títulos TP432024 e TP431243. A troca bancária foi registrada sem confirmação, e o fornecedor confirmou pelo canal do cadastro que não mudou de banco nem reconhece o domínio solicitante. Não se trata de liberar novo pagamento: as dívidas legítimas seguirão para a conta antiga. Você aprova desfazer a troca e restabelecer a conta anterior no cadastro?",
+  "mensagem": "Helena, solicito sua decisão sobre a reversão das alterações cadastrais AC31202, AC31205 e AC31208 da Embalarte, retornando à conta anterior no banco 774. O título TP432130 tem valor total de R$ 96.480,00; as evidências também citam os títulos TP432024 e TP431243. A troca bancária foi registrada sem confirmação, e o fornecedor confirmou pelo canal do cadastro que não mudou de banco nem reconhece o domínio que solicitou a alteração. Não se trata de liberar novo pagamento: os títulos são dívidas legítimas que seguirão para a conta antiga. Você autoriza reverter a alteração cadastral para a conta anterior?",
   "critico": "citações e total conferidos"
  },
  "ac-RM20261105-MER-aprovador-FP1262": {
@@ -92,11 +92,11 @@
   "critico": "citações e total conferidos"
  },
  "ac-RM20261103-MER-aprovador-FP5940": {
-  "mensagem": "Cláudia, solicito sua decisão sobre a reversão da troca de conta da Duraplast (AC39001, AC39002 e AC39003), referente ao título TP499001, no total de R$ 18.400,00. A alteração veio de remetente fora do cadastro (EM599001), sem confirmação registrada no momento da troca, embora a ligação posterior ao telefone cadastrado tenha confirmado os novos dados. A solicitação é retornar ao banco anterior do cadastro, não liberar um novo pagamento: o título é uma dívida legítima e seguirá para a conta antiga. Você aprova a reversão da alteração cadastral?",
+  "mensagem": "Cláudia, solicito sua decisão sobre a reversão da troca de conta da Duraplast (AC39001, AC39002 e AC39003), referente ao título TP499001, no valor total de R$ 18.400,00. A alteração ocorreu por e-mail de remetente fora do cadastro, sem confirmação registrada no momento, embora uma ligação posterior ao telefone cadastrado tenha confirmado os novos dados. A solicitação é voltar ao banco anterior do cadastro, não liberar um novo pagamento: o título é uma dívida legítima e seguirá para a conta antiga. Você aprova reverter a alteração cadastral e restabelecer a conta anterior?",
   "critico": "citações e total conferidos"
  },
  "ac-RM20261103-MER-PS01-FP5940": {
-  "mensagem": "Renata, solicito sua 2ª aprovação para reverter a alteração cadastral da Duraplast (AC39001, AC39002 e AC39003), referente ao título TP499001, no total de R$ 18.400,00. A troca bancária foi feita por e-mail fora do cadastro, sem confirmação registrada no momento da alteração; posteriormente, uma ligação ao telefone cadastrado confirmou os novos dados. A decisão solicitada é desfazer a troca e retornar à conta anterior, não liberar um novo pagamento: o título é uma dívida legítima que seguirá para a conta antiga. Você aprova a reversão para o banco e a conta anteriores do cadastro?",
+  "mensagem": "Renata, solicito sua 2ª aprovação para reverter as alterações cadastrais AC39001, AC39002 e AC39003 da Duraplast, retornando ao banco anterior para o título TP499001, no valor total de R$ 18.400,00. A troca foi feita por e-mail de remetente fora do cadastro, sem confirmação registrada naquele momento; posteriormente, a ligação ao telefone cadastrado confirmou os novos dados. A decisão solicitada é desfazer a troca, não liberar um novo pagamento: o título é uma dívida legítima e seguirá para a conta antiga. Você aprova a reversão ao banco anterior do cadastro?",
   "critico": "citações e total conferidos"
  },
  "ac-RM20261103-MER-aprovador-FP6026": {

@@ -1,4 +1,4 @@
-# PLAN – MVP "Guardião de Pagamentos" (Desafio 2) · v2 com AI Proxy
+# PLAN – MVP "GoLastro" (Desafio 2) · v2 com AI Proxy
 
 > Status: **aguardando validação**. Nada de app foi criado ainda.
 

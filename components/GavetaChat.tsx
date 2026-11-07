@@ -94,7 +94,7 @@ export function GavetaChat({
                 <div className="max-w-[90%] rounded-2xl rounded-tl-sm border-2 border-[#2659a5] bg-white p-3.5 text-sm shadow-xs">
                   <div className="mb-1.5 flex flex-wrap items-center gap-2 text-[11px] font-bold">
                     <AgenteAvatar id="maestro" size="sm" />
-                    <span>Maestro · Guardião Gogroup</span>
+                    <span>Maestro · GoLastro</span>
                     <Pilula>{a.janela}</Pilula>
                   </div>
                   <p className="leading-snug">{a.mensagem}</p>

@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import type { CasoView, TituloView } from "@/lib/contratos/types";
-import { num, Pilula } from "./ui";
+import { num, Pilula, SeloSimulado } from "./ui";
 
 export function GovernancaZeroTrust({ caso, titulos }: { caso: CasoView; titulos: TituloView[] }) {
   const [aberta, setAberta] = useState(false);
@@ -35,6 +35,7 @@ export function GovernancaZeroTrust({ caso, titulos }: { caso: CasoView; titulos
         <div className="flex flex-wrap items-center gap-2">
           <h3 className="text-sm font-bold">🛡️ Governança Zero-Trust (O que a IA viu vs. O que é Ocultado)</h3>
           <Pilula>Privacidade & Anti-Injection</Pilula>
+          <SeloSimulado texto="exemplo ilustrativo · números da agenda original" />
         </div>
         <button
           type="button"
@@ -55,7 +56,7 @@ export function GovernancaZeroTrust({ caso, titulos }: { caso: CasoView; titulos
       {/* 3 Pílulas de Destaque de Privacidade */}
       <div className={`mt-3 grid gap-2.5 sm:grid-cols-3 ${num}`}>
         <div className="rounded-xl border-2 border-[#2659a5] bg-[#d7d900]/35 p-2.5">
-          <div className="text-xs font-bold">91% Filtrados na Origem</div>
+          <div className="text-xs font-bold">90,98% filtrados na origem (agenda original)</div>
           <p className="mt-0.5 text-[11px] leading-snug">
             <strong>797 de 876</strong> títulos limpos resolvidos em código puro (0 tokens / zero exposição ao LLM).
           </p>

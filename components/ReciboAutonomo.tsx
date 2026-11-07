@@ -2,7 +2,7 @@
 import { useState } from "react";
 import type { CasoView } from "@/lib/contratos/types";
 import type { ReciboWriteBack } from "@/lib/orquestrador/autonomia";
-import { brl, num, Pilula } from "./ui";
+import { brl, num, Pilula, SeloSimulado } from "./ui";
 
 export function ReciboAutonomo({ caso, recibo, limiar }: { caso: CasoView; recibo: ReciboWriteBack; limiar: number }) {
   const [copiado, setCopiado] = useState(false);
@@ -29,7 +29,7 @@ export function ReciboAutonomo({ caso, recibo, limiar }: { caso: CasoView; recib
           <div className="flex flex-wrap items-center gap-2">
             {recibo.efetivadoAuto ? (
               <span className="inline-block rounded-md border-2 border-[#2659a5] bg-[#d7d900] px-2.5 py-1 text-xs font-black uppercase tracking-wider text-[#2659a5]">
-                ✓ EFETIVADO NO SISTEMA ≥ {limPct}%
+                ✓ EXECUTADO SOB DELEGAÇÃO DE ALÇADA ≥ {limPct}% <SeloSimulado texto="simulado · recibo e hash de demonstração" />
               </span>
             ) : (
               <span className="inline-block rounded-md border-2 border-[#2659a5] bg-[#f8ae13] px-2.5 py-1 text-xs font-black uppercase tracking-wider text-[#2659a5]">

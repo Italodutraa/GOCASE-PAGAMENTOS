@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it } from "vitest";
 import { extrairIdsValidos, montarUsuario } from "@/lib/agents/especialistas/comum";
-import type { CasoView } from "@/lib/contratos/types";
+import type { CasoView, TituloView } from "@/lib/contratos/types";
 import { montarStore } from "@/lib/data/store";
 import { CENARIOS, resetCenarios } from "@/lib/mock/cenarios";
 import { avaliarCasoAutonomia, calcularIndiceSeguranca, gerarHashAutenticacao } from "./autonomia";
@@ -16,7 +16,7 @@ describe("Motor de Auto-Efetivação (≥90%) e Governança Zero-Trust", () => {
 
   it("gera hash hexadecimal de 16 caracteres compatível com retorno_remessa.csv", () => {
     const h = gerarHashAutenticacao("caso-inj-auto_efetivacao_94:TP499004");
-    expect(h).toBe("9A4F1BC08821E340");
+    expect(h).toMatch(/^[0-9A-F]{16}$/); // hash de demonstração, sem valor fixo
     expect(h).toMatch(/^[0-9A-F]{16}$/);
   });
 
@@ -72,17 +72,64 @@ describe("Motor de Auto-Efetivação (≥90%) e Governança Zero-Trust", () => {
       simulado: true,
     };
 
+    // auditoria final: sem os títulos do caso a delegação falha fechada; e este caso troca a linha digitável (exige aprovador)
     const recibo90 = avaliarCasoAutonomia(casoView, [], 0.9, "estrita");
-    expect(recibo90.efetivadoAuto).toBe(true);
+    expect(recibo90.efetivadoAuto).toBe(false);
     expect(recibo90.indiceSeguranca).toBeCloseTo(0.942, 4);
-    expect(recibo90.statusErp).toBe("EFETIVADO_AUTO");
-    expect(recibo90.codigoOcorrencia).toBe("00");
-    expect(recibo90.hashAutenticacao).toBe("9A4F1BC08821E340");
-    expect(recibo90.economiaHumanoBrl).toBe(60);
-    expect(recibo90.custoAtrasoBrl).toBe(0);
+    expect(recibo90.statusErp).not.toBe("EFETIVADO_AUTO");
+    expect(recibo90.economiaHumanoBrl).toBe(0);
 
     // Se o usuário subir o slider para 96%, o caso de 94,2% deixa de ser auto-efetivado:
     const recibo96 = avaliarCasoAutonomia(casoView, [], 0.96, "estrita");
     expect(recibo96.efetivadoAuto).toBe(false);
+  });
+});
+
+// Auditoria final (A2): delegação de alçada nunca efetiva o que a política manda a um humano.
+describe("invariantes da delegação de alçada", () => {
+  const caso = (over: Partial<CasoView> = {}): CasoView => ({
+    id: "caso-x", tipo: "valor_errado", titulo: "x", fornecedor_id: "FP0001", titulos: ["TPX"], valorTotal: 1000, trace: [],
+    pareceres: [{ especialista: "compras", acao: "corrigir", confianca: 0.99, risco: 0.01, resumo: "ok", evidencias: [] }],
+    decisao: { acao: "corrigir", justificativa: "", executaSozinho: true, tituloIds: ["TPX"], origem: "orquestrador", evidencias: [] },
+    ...over,
+  });
+  const titulo = (over: Record<string, unknown> = {}) =>
+    ({ titulo_id: "TPX", valor: 1000, piso: "corrigir", achados: [], alcada: { nivel: "analista_cp", valorBase: 1000, dupla: false, motivosDupla: [], aprovadores: [] }, ...over }) as unknown as TituloView;
+
+  it("caso limpo dentro do teto e com índice alto: efetiva, rotulado como delegação simulada", () => {
+    const r = avaliarCasoAutonomia(caso(), [titulo()], 0.9, "estrita");
+    expect(r.efetivadoAuto).toBe(true);
+    expect(r.motivoGovernanca).toContain("executado sob delegação de alçada (política de autonomia)");
+  });
+  it("I3: acima de R$ 5 mil na Estrita e de R$ 50 mil na Expandida, nunca", () => {
+    expect(avaliarCasoAutonomia(caso(), [titulo({ valor: 5000.01 })], 0.75, "estrita").efetivadoAuto).toBe(false);
+    expect(avaliarCasoAutonomia(caso(), [titulo({ valor: 50000.01 })], 0.75, "expandida").efetivadoAuto).toBe(false);
+  });
+  it("I2: aprovação dupla, nunca", () => {
+    const t = titulo({ alcada: { nivel: "analista_cp", valorBase: 1000, dupla: true, motivosDupla: ["sem NF"], aprovadores: ["aprovador", "PS01"] } });
+    expect(avaliarCasoAutonomia(caso(), [t], 0.75, "expandida").efetivadoAuto).toBe(false);
+  });
+  it("I1/I4: piso ou decisão escalar/bloquear, risco ≥ 0,5, sinal de fraude ou tipo proibido, nunca", () => {
+    expect(avaliarCasoAutonomia(caso(), [titulo({ piso: "escalar" })], 0.75, "expandida").efetivadoAuto).toBe(false);
+    expect(avaliarCasoAutonomia(caso({ decisao: { ...caso().decisao, acao: "bloquear" } }), [titulo()], 0.75, "expandida").efetivadoAuto).toBe(false);
+    expect(avaliarCasoAutonomia(caso({ pareceres: [{ especialista: "cadastro_fraude", acao: "corrigir", confianca: 0.99, risco: 0.6, resumo: "", evidencias: [] }] }), [titulo()], 0.3, "expandida").efetivadoAuto).toBe(false);
+    expect(avaliarCasoAutonomia(caso(), [titulo({ achados: [{ tipo: "COMUNICACAO_SUSPEITA", severidade: "ALTA", detalhe: "" }] })], 0.75, "expandida").efetivadoAuto).toBe(false);
+    expect(avaliarCasoAutonomia(caso({ tipo: "cnpj_clonado" }), [titulo()], 0.75, "expandida").efetivadoAuto).toBe(false);
+  });
+  it("sem parecer de especialista, nunca (sem confiança inventada)", () => {
+    expect(avaliarCasoAutonomia(caso({ pareceres: [] }), [titulo()], 0.75, "expandida").efetivadoAuto).toBe(false);
+  });
+});
+
+describe("delegação nunca troca a via de pagamento (I4)", () => {
+  it("cenário auto_efetivacao_94 com seus títulos reais NÃO é efetivado (trocar linha digitável exige aprovador)", () => {
+    const s = montarStore();
+    const { entrada } = CENARIOS.auto_efetivacao_94(s);
+    const ts = entrada.titulos.map((t) => ({ ...t, piso: "corrigir", achados: t.achados.map((a) => ({ tipo: a.tipo, severidade: a.severidade, detalhe: a.detalhe })) })) as unknown as TituloView[];
+    const v = { id: entrada.id, tipo: entrada.tipo, titulo: "x", fornecedor_id: entrada.fornecedor_id, titulos: ts.map((t) => t.titulo_id), valorTotal: 4860, trace: [],
+      pareceres: [{ especialista: "bancario" as const, acao: "corrigir" as const, confianca: 0.99, risco: 0.01, resumo: "", evidencias: [] }],
+      decisao: { acao: "corrigir" as const, justificativa: "", executaSozinho: true, tituloIds: [], origem: "orquestrador" as const, evidencias: [] } };
+    for (const modo of ["estrita", "expandida"] as const) expect(avaliarCasoAutonomia(v, ts, 0.75, modo).efetivadoAuto).toBe(false);
+    resetCenarios();
   });
 });
