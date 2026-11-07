@@ -83,6 +83,9 @@ export function TopBar(p: {
         {p.autonomia}
         <div className="ml-auto flex items-center gap-2">
           {p.exemplo && <span className="rounded-full bg-[#f8ae13] px-2.5 py-0.5 text-[11px] font-bold text-[#2659a5]">exemplo</span>}
+          <Link href="/hoje" className="rounded-full border border-white/70 px-2.5 py-1 text-xs font-bold text-white hover:bg-white hover:text-[#2659a5]">
+            Visão simples
+          </Link>
           <Link href="/avaliacao" className="rounded-full border border-white/70 px-2.5 py-1 text-xs font-bold text-white hover:bg-white hover:text-[#2659a5]">
             Ablação
           </Link>

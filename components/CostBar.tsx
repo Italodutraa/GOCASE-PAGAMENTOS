@@ -1,5 +1,6 @@
 "use client";
 // Barra fixa com as linhas 💲 do AI Proxy (via SSE /api/custos). Chat em tokens e Jev em US$, sempre separados.
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 type Sessao = { chatChamadas: number; chatTokens: number; jevChamadas: number; jevUsd: number };
@@ -8,6 +9,7 @@ type Ev = { tipo: "chat" | "jev"; linha: string; em: string; sessao: Sessao };
 const usd = (v: number) => v.toLocaleString("pt-BR", { maximumFractionDigits: 7, useGrouping: false });
 
 export function CostBar() {
+  const pathname = usePathname();
   const [linhas, setLinhas] = useState<Ev[]>([]);
   const [s, setS] = useState<Sessao>({ chatChamadas: 0, chatTokens: 0, jevChamadas: 0, jevUsd: 0 });
   const [aberta, setAberta] = useState(false);
@@ -28,6 +30,8 @@ export function CostBar() {
   }, []);
 
   const ultima = linhas[linhas.length - 1];
+  // a tela simples (/hoje) não mostra custos de IA (vocabulário técnico)
+  if (pathname?.startsWith("/hoje")) return null;
   return (
     <div className="fixed inset-x-0 bottom-0 z-50 border-t-4 border-[#d7d900] bg-[#2659a5] text-xs text-white shadow-lg">
       <button onClick={() => setAberta((a) => !a)} className="flex w-full flex-wrap items-center gap-x-4 gap-y-1 px-4 py-2 text-left">
