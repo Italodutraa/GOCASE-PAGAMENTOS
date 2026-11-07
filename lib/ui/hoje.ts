@@ -34,10 +34,14 @@ export function faltam(agoraIso: string, emIso: string): string {
 /** Valor em milhões para o topo: 10206764.09 → "R$ 10,2 mi". */
 export const emMilhoes = (v: number) => `R$ ${(v / 1e6).toLocaleString("pt-BR", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} mi`;
 
-/** "RM20261103-MER" → "03/11 às 10h". */
-export function prazoDaJanela(janela: string): string {
+/** "RM20261103-MER" → "03/11 às 10h"; se esse fechamento já passou, diz o que acontece com o pagamento. */
+export function prazoDaJanela(janela: string, agoraIso?: string): string {
   const m = /^RM(\d{4})(\d{2})(\d{2})-(MER|LIT)$/.exec(janela);
-  return m ? `${m[3]}/${m[2]} às ${HORA_DO_LOTE[m[4] as "MER" | "LIT"]}` : "no próximo fechamento";
+  if (!m) return "no próximo fechamento";
+  const lote = m[4] as "MER" | "LIT";
+  const texto = `${m[3]}/${m[2]} às ${HORA_DO_LOTE[lote]}`;
+  const fecha = new Date(`${m[1]}-${m[2]}-${m[3]}T${lote === "MER" ? "10" : "14"}:00:00`).getTime();
+  return agoraIso && fecha <= new Date(agoraIso).getTime() ? `${texto} (já fechou; o pagamento fica travado até você decidir)` : texto;
 }
 
 const ACOES_PEDIDAS: Record<string, string> = {
@@ -49,7 +53,7 @@ const ACOES_PEDIDAS: Record<string, string> = {
   recuperar_pagamento_indevido: "Recuperar pagamento feito em duplicidade",
 };
 export const pedidoDe = (acaoSolicitada?: string) =>
-  (acaoSolicitada ?? "").split(" + ").map((a) => ACOES_PEDIDAS[a.trim()] ?? "Decidir sobre o pagamento").filter((v, i, a) => a.indexOf(v) === i).join(" e ") || "Decidir sobre o pagamento";
+  (acaoSolicitada ?? "").split(" + ").map((a) => ACOES_PEDIDAS[a.trim()] ?? "Avaliar o caso").filter((v, i, a) => a.indexOf(v) === i).join(" e ") || "Avaliar o caso";
 
 /** Rótulo simples para a decisão final de um pagamento. */
 export const ROTULO_ACAO: Record<Acao, string> = {
@@ -124,7 +128,7 @@ export function derivarHoje(view: ExecucaoView, nomePessoa: (id: string) => stri
       pedido: pedidoDe(a.acaoSolicitada),
       valor: a.valorTotal,
       porque: porque(caso?.decisao.justificativa),
-      prazo: prazoDaJanela(a.janela),
+      prazo: prazoDaJanela(a.janela, view.relogio.agora),
     };
   });
 

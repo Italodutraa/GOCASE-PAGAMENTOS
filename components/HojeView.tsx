@@ -1,10 +1,13 @@
 "use client";
 // Tela /hoje: o que é, o que precisa de decisão e quanto tempo há. Só apresentação; os dados vêm de derivarHoje(view).
 import Link from "next/link";
-import type { ExecucaoView } from "@/lib/contratos/types";
-import { derivarHoje, emMilhoes } from "@/lib/ui/hoje";
+import { useState } from "react";
+import type { CasoView, ExecucaoView } from "@/lib/contratos/types";
+import { type CartaoHoje, derivarHoje, emMilhoes } from "@/lib/ui/hoje";
 import { PESSOAS } from "./Avatar";
-import { num, SeloSimulado } from "./ui";
+import { Pareceres } from "./Pareceres";
+import { Timeline } from "./Timeline";
+import { brl, num, SeloSimulado } from "./ui";
 
 export interface HojeProps {
   view: ExecucaoView | null;
@@ -17,6 +20,72 @@ export interface HojeProps {
 
 const transicao = "motion-safe:transition-colors motion-safe:duration-200 motion-safe:ease-out";
 export const nomePessoa = (id: string) => (PESSOAS[id] ? `${PESSOAS[id].nome} · ${PESSOAS[id].papel}` : id);
+
+const LIMITE_CARTOES = 25;
+
+function Cartao({ c, caso, ocupado, onAcao }: { c: CartaoHoje; caso?: CasoView; ocupado: boolean; onAcao: HojeProps["onAcao"] }) {
+  const [aberta, setAberta] = useState(false);
+  const btn = `rounded-full px-4 py-2 text-sm font-bold disabled:opacity-60 ${transicao}`;
+  return (
+    <li className="rounded-2xl border-2 border-[#2659a5] bg-white p-4 text-[#2659a5]">
+      <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-1">
+        <h3 className="min-w-0 flex-1 text-base font-bold [overflow-wrap:anywhere]">{c.quem}</h3>
+        <p className={`text-xl font-extrabold ${num}`}>{brl(c.valor)}</p>
+      </div>
+      <p className="mt-1 text-sm">{c.porque}</p>
+      <dl className="mt-2 grid gap-x-4 gap-y-1 text-sm sm:grid-cols-2">
+        <div><dt className="inline font-bold">Pede: </dt><dd className="inline">{c.pedido}</dd></div>
+        <div><dt className="inline font-bold">Quem decide: </dt><dd className="inline [overflow-wrap:anywhere]">{c.pedidoA}</dd></div>
+        <div><dt className="inline font-bold">Prazo: </dt><dd className={`inline ${num}`}>{c.prazo}</dd></div>
+      </dl>
+      <div className="mt-3 flex flex-wrap gap-2">
+        <button type="button" disabled={ocupado} onClick={() => onAcao(c.id, "aprovar")} className={`${btn} bg-[#2659a5] text-white hover:bg-[#3dbfef] hover:text-[#2659a5]`}>Aprovar</button>
+        <button type="button" disabled={ocupado} onClick={() => onAcao(c.id, "recusar")} className={`${btn} border-2 border-[#2659a5] hover:bg-[#2659a5] hover:text-white`}>Recusar</button>
+        <button type="button" disabled={ocupado} onClick={() => onAcao(c.id, "mais_info")} className={`${btn} border-2 border-[#2659a5] hover:bg-[#2659a5] hover:text-white`}>Pedir mais informação</button>
+      </div>
+      {caso && (
+        <div className="mt-3 border-t border-[#2659a5]/20 pt-2">
+          <button type="button" aria-expanded={aberta} onClick={() => setAberta((a) => !a)} className={`text-sm font-bold underline-offset-2 hover:underline ${transicao}`}>
+            {aberta ? "Esconder como o GoLastro chegou nisso" : "Ver como o GoLastro chegou nisso"}
+          </button>
+          {aberta && (
+            <div className="mt-2 space-y-3">
+              <Pareceres pareceres={caso.pareceres} />
+              <Timeline trace={caso.trace} />
+            </div>
+          )}
+        </div>
+      )}
+    </li>
+  );
+}
+
+function PrecisaDeVoce({ view, cartoes, ocupado, onAcao }: { view: ExecucaoView; cartoes: CartaoHoje[]; ocupado: boolean; onAcao: HojeProps["onAcao"] }) {
+  const [todos, setTodos] = useState(false);
+  const visiveis = todos ? cartoes : cartoes.slice(0, LIMITE_CARTOES);
+  const casos = new Map(view.casos.map((c) => [c.id, c]));
+  return (
+    <section aria-labelledby="precisa" className="mt-6">
+      <h2 id="precisa" className="font-['Poppins',sans-serif] text-xl font-bold text-[#2659a5]">Precisa de você ({cartoes.length})</h2>
+      {cartoes.length === 0 ? (
+        <p className="mt-2 rounded-2xl bg-[#3dbfef]/20 p-4 text-[#2659a5]">Nada precisa de você agora.</p>
+      ) : (
+        <>
+          <ul className="mt-2 space-y-3">
+            {visiveis.map((c) => (
+              <Cartao key={c.id} c={c} caso={c.casoId ? casos.get(c.casoId) : undefined} ocupado={ocupado} onAcao={onAcao} />
+            ))}
+          </ul>
+          {cartoes.length > LIMITE_CARTOES && !todos && (
+            <button type="button" onClick={() => setTodos(true)} className={`mt-3 rounded-full border-2 border-[#2659a5] px-4 py-2 text-sm font-bold text-[#2659a5] hover:bg-[#2659a5] hover:text-white ${transicao}`}>
+              Mostrar os outros {cartoes.length - LIMITE_CARTOES}
+            </button>
+          )}
+        </>
+      )}
+    </section>
+  );
+}
 
 export function HojeView(p: HojeProps) {
   const { view } = p;
@@ -82,6 +151,17 @@ export function HojeView(p: HojeProps) {
           </>
         )}
       </section>
+
+      {h.conferiu && (
+        <p role="status" className="mt-4 rounded-2xl bg-[#3dbfef]/20 p-3 text-sm font-bold text-[#2659a5]">
+          Lote conferido.{" "}
+          {h.cartoes.length === 0
+            ? "Nada precisa de você agora."
+            : `${h.cartoes.length} ${h.cartoes.length === 1 ? "pedido de decisão aguarda" : "pedidos de decisão aguardam"} você.`}
+        </p>
+      )}
+
+      <PrecisaDeVoce view={view} cartoes={h.cartoes} ocupado={!!p.ocupado} onAcao={p.onAcao} />
 
       <p className="mt-6 flex items-center gap-2 text-xs text-[#2659a5]">
         <SeloSimulado texto="simulado" /> Dados fictícios; respostas de fornecedores e de aprovadores são simuladas.
