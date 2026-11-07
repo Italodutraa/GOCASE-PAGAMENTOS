@@ -1,8 +1,9 @@
 # HANDOFF (gerado por `npm run handoff`; não editar à mão)
 
-Gerado: 07/11/2026, 15:17:42 · branch: main · último commit: 8de7fc6 docs(handoff): compactacao completa do estado atual para retomada no Claude
+Gerado: 07/11/2026, 15:20:06 · branch: main · último commit: d3fd035 Auditoria final: renomeia para GoLastro e corrige P0 da delegação de alçada
 
 ## git
+- d3fd035 Auditoria final: renomeia para GoLastro e corrige P0 da delegação de alçada
 - 8de7fc6 docs(handoff): compactacao completa do estado atual para retomada no Claude
 - 0de017c fix(orquestrador): garante execucao real de Jev (/v1/systemone) e Chat (/v1/chat/completions) no modo live
 - 2418b1e fix(ui): preserva posicao de scroll ao clicar em botoes, trocar casos ou abrir gavetas
@@ -12,8 +13,7 @@ Gerado: 07/11/2026, 15:17:42 · branch: main · último commit: 8de7fc6 docs(han
 - ad0e2fa UI: avatares dos agentes
 - af4c1e2 F4.4 modo Palco: tecla P, cenas 1-4 (Embalarte, duplicidades, injecao EM570996, agente barrado), Esc sai
 - 30ab53b F4.3 placar antes x depois com barras e ablacao medida (so_regras, so LLM com amostra, hibrido)
-- 72d61f5 F4.2 carimbos padronizados: BLOQUEADO, RETIRADO DO LOTE, ESCALADO, CORRIGIDO, INJECAO IGNORADA, SIMULADO
-Não commitados (37): M .claude/agents/avaliacao.md | M .claude/agents/docs-dados.md | M .claude/agents/tools-sim.md | M .claude/agents/ui.md | M .claude/launch.json | M .gitignore | M AGENTS.md | M CLAUDE.md | +29
+Não commitados (1): M docs/ACEITE.md
 
 ## Testes
 OK em 07/11/2026, 15:17:42: Tests  107 passed (107)
